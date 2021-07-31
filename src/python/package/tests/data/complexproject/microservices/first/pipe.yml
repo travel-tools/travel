@@ -1,0 +1,7 @@
+python: 3.7.4
+
+dependencies:
+  - common
+
+requirements:
+  jsonargon: 0.1.1

@@ -1,0 +1,11 @@
+# do not perform conversions
+* -text
+
+# ensure unix style line endings for specific files
+*.sh text eol=lf
+tests
+__init__.py
+MANIFEST.in
+python.cfg
+requirements.txt
+setup.py
