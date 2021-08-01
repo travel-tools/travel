@@ -1,5 +1,7 @@
+import logging
 import os
 from pathlib import Path
+from typing import List
 
 import yaml
 from piper.config.pipe import Pipe
@@ -7,7 +9,10 @@ from piper.config.pipe import Pipe
 _PIPE_FILE = "pipe.yml"
 
 
-def _read_pipe(location: str) -> Pipe:
+logger = logging.getLogger(__name__)
+
+
+def read_pipe(location: str) -> Pipe:
 
     # Read the pipe file
     path = os.path.join(location, _PIPE_FILE)
@@ -16,12 +21,31 @@ def _read_pipe(location: str) -> Pipe:
         return Pipe(location=location, yml=yml)
 
 
-def read_pipe_files(location: str):
+def _has_pipe(location: str) -> bool:
+    return os.path.isfile(os.path.join(location, _PIPE_FILE))
 
-    # Read all pipes
-    pipes = [
-        _read_pipe(os.path.join(*path.parts[:-1])) for path in Path(location).rglob(_PIPE_FILE)
-        # # Only if there is a previous pipe file in the upper folder (if you comment it, read the main one too)
-        #if os.path.isfile(os.path.join(*path.parts[:-2], _PIPEFILE))
-    ]
+
+def read_pipe_files(location: str) -> List[Pipe]:
+
+    # Find the uppermost (parent) pipe file
+    uppermost = location
+    while _has_pipe(location):
+        uppermost = location
+        location = str(Path(location).parent)
+
+    # Read main pipe file and nested pipe files
+    return [read_pipe(uppermost)] + _read_pipe_files_from(uppermost)
+
+
+def _read_pipe_files_from(location: str) -> List[Pipe]:
+
+    # Read all pipes recursively
+    pipes = []
+    for directory in os.listdir(location):
+        try:
+            current = os.path.join(location, directory)
+            pipes.append(read_pipe(current))
+            pipes = pipes + _read_pipe_files_from(current)
+        except FileNotFoundError:
+            pass
     return pipes
