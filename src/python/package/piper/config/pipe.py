@@ -15,7 +15,7 @@ class Pipe:
 
         # If there are still configs, they are unknown. Raise an error
         if config:
-            raise KeyError(f"Unkown configuration in pipe file: {config}")
+            raise KeyError(f"Unknown configuration in pipe file: {config}")
 
     def __str__(self):
         return str(vars(self))
