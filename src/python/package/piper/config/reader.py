@@ -1,7 +1,7 @@
 import logging
 import os
 from pathlib import Path
-from typing import List
+from typing import List, Dict
 
 import yaml
 from piper.config.pipe import Pipe
@@ -12,7 +12,7 @@ _PIPE_FILE = "pipe.yml"
 logger = logging.getLogger(__name__)
 
 
-def read_pipe(location: str) -> Pipe:
+def _read_pipe(location: str) -> Pipe:
 
     # Read the pipe file
     path = os.path.join(location, _PIPE_FILE)
@@ -25,7 +25,11 @@ def _has_pipe(location: str) -> bool:
     return os.path.isfile(os.path.join(location, _PIPE_FILE))
 
 
-def read_pipe_files(location: str) -> List[Pipe]:
+def get_pipe_name(location: str) -> str:
+    return os.path.basename(os.path.normpath(location))
+
+
+def read_all_pipes(location: str) -> Dict[str, Pipe]:
 
     # Find the uppermost (parent) pipe file
     uppermost = location
@@ -34,18 +38,27 @@ def read_pipe_files(location: str) -> List[Pipe]:
         location = str(Path(location).parent)
 
     # Read main pipe file and nested pipe files
-    return [read_pipe(uppermost)] + _read_pipe_files_from(uppermost)
+    main = _read_pipe(uppermost)
+    pipes = {
+        main.name: main,
+        **{pipe.name: pipe for pipe in _read_pipes_from(uppermost)}
+    }
+
+    # Build dependencies
+    for name in pipes:
+        for pipe in pipes.values():
+            if name in pipe.dependencies:
+                pipe.fill_dependency_with_pipe(pipes[name])
+    return pipes
 
 
-def _read_pipe_files_from(location: str) -> List[Pipe]:
+def _read_pipes_from(location: str) -> List[Pipe]:
 
     # Read all pipes recursively
     pipes = []
     for directory in os.listdir(location):
-        try:
-            current = os.path.join(location, directory)
-            pipes.append(read_pipe(current))
-            pipes = pipes + _read_pipe_files_from(current)
-        except FileNotFoundError:
-            pass
+        current = os.path.join(location, directory)
+        if _has_pipe(current):
+            pipes.append(_read_pipe(current))
+            pipes = pipes + _read_pipes_from(current)
     return pipes
