@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from typing import Set
 
 from piper.config.pipe import Pipe
 from piper.config.reader import get_pipe_name, read_all_pipes
@@ -21,14 +22,25 @@ def _setup(pipe: Pipe):
     venv.freeze()
 
 
+def _setup_from_pipe(pipe: Pipe, done: Set[Pipe]):
+
+    if not pipe.group:
+
+        # Setup dependencies first, then the pipe
+        for p in [*pipe.flat_dependencies(), pipe]:
+            if p not in done:
+                _setup(p)
+                done.add(p)
+
+    else:
+
+        # Setup each element of the group
+        for pipe in pipe.group:
+            _setup_from_pipe(pipe, done=done)
+
+
 def setup_from_pipe(pipe: Pipe):
-
-    # Setup dependencies first
-    for dep in pipe.flat_dependencies():
-        _setup(dep)
-
-    # Setup this pipe
-    _setup(pipe)
+    _setup_from_pipe(pipe, done=set())
 
 
 def setup(pipe_location: str):

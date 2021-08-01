@@ -10,6 +10,7 @@ class Pipe:
     def __init__(self, location: str, yml: dict):
         self.location = location
         self.name = os.path.basename(os.path.normpath(location))
+        self.group = []
 
         # Pop the config entries  # TODO sanity checks! Because we will execute scripts
         config = yml.copy()

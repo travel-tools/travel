@@ -38,11 +38,7 @@ def read_all_pipes(location: str) -> Dict[str, Pipe]:
         location = str(Path(location).parent)
 
     # Read main pipe file and nested pipe files
-    main = _read_pipe(uppermost)
-    pipes = {
-        main.name: main,
-        **{pipe.name: pipe for pipe in _read_pipes_from(uppermost)}
-    }
+    pipes = {pipe.name: pipe for pipe in _read_pipes_from(uppermost)}
 
     # Build dependencies
     for name in pipes:
@@ -54,11 +50,19 @@ def read_all_pipes(location: str) -> Dict[str, Pipe]:
 
 def _read_pipes_from(location: str) -> List[Pipe]:
 
+    # Read the local pipe
+    group = []
+    pipe = _read_pipe(location)
+
     # Read all pipes recursively
-    pipes = []
+    pipes = [pipe]
     for directory in os.listdir(location):
         current = os.path.join(location, directory)
         if _has_pipe(current):
-            pipes.append(_read_pipe(current))
-            pipes = pipes + _read_pipes_from(current)
+            children = _read_pipes_from(current)
+            group = group + children
+            pipes = pipes + children
+
+    # Set the nested group
+    pipe.group = group
     return pipes
