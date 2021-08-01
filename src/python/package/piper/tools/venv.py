@@ -4,6 +4,7 @@ import re
 import subprocess
 
 from piper.config.pipe import Pipe
+from piper.tools.pip import Pip
 from piper.tools.python import Python
 
 logger = logging.getLogger(__name__)
@@ -17,10 +18,14 @@ _CREATE_VENV = "(" + ") || (".join(["{python} -m venv {venv}",
 class Virtualenv:
 
     def __init__(self, main_python: Python, pipe: Pipe):
-        self.pipe = pipe
         self._main_python = main_python
         self._name = f"venv-{pipe.name}"
         self._path = os.path.join(pipe.location, self._name)
+
+        self.pipe = pipe
+        activate = self._get_activate_command()
+        self.python = Python(path=os.path.join(self._path, ""), pre_command=activate)
+        self.pip = Pip(pre_command=activate)
 
     def create(self) -> None:
         # Create the virtualenv if it does not exist
@@ -40,12 +45,7 @@ class Virtualenv:
         # Update it
         self.update()
 
-    def get_python(self) -> Python:
-        # TODO
-        pass
-
-    def _run(self, command: str) -> str:
-
+    def _get_activate_command(self) -> str:
         # Get activate command
         if os.name == "nt":
             activate = f"{self._path}\\Scripts\\activate"
@@ -53,29 +53,22 @@ class Virtualenv:
             activate = f"source {self._path}/bin/activate"
         else:
             raise NotImplementedError(f"Operating System {os.name} not supported.")
-
-        # Run in venv
-        return subprocess.run(
-            f"{activate} && {command}",
-            check=True,
-            shell=True,
-            capture_output=True
-        ).stdout.decode("utf-8")
+        return activate
 
     def update(self):
 
         # Install requirements
         logger.info("Installing requirements...")
         for pipe in [*self.pipe.flat_dependencies(), self.pipe]:
-            self._run(f"pip install -e {pipe.setup_py_folder}")
+            self.pip.run(f"install -e {pipe.setup_py_folder}")
             if pipe.requirements:
-                self._run(f"pip install {' '.join([f'{name}=={version}' for name, version in pipe.requirements.items()])}")
+                self.pip.run(f"install {' '.join([f'{name}=={version}' for name, version in pipe.requirements.items()])}")
         logger.info("Done.")
 
     def freeze(self):
 
         # Pip freeze
-        output = self._run(f"pip freeze")
+        output = self.pip.run(f"freeze")
         requirements = re.sub("[\r\n]+", "\n", output).split("\n")
 
         # Get real requirements and update the requirements.txt file
