@@ -12,12 +12,14 @@ Piper is inspired by what **[Maven](https://maven.apache.org/)** is for Java and
 
 ## Why Piper
 
-**Python is great** in many things, particularly for **scripting**. 
+**Python is great** in many things, particularly for **scripting**. But it is powerful enough to create **complex software** too. Still, when doing so, it lacks some robustness and quickness.
 
-But it is powerful enough to create **complex software** too. Still, when doing so, it lacks some ease of setup (think of PYTHONPATH, virtualenvs...) and robust development-lifecycle mechanism. Yes, Python is an interpreted language, not compiled, but this is not an excuse to avoid some kind of **setup before the run**. Or to prevent the design of **proper code structure and modularity**.
+Instead:
+ 
+- Piper lets you **forget about repetitive setup of Python projects**, with creation of Virtual Environments, issues with imports, PYTHONPATH, folder structures. It does all of this for you.
 
-Piper lets you **forget about repetitive setup of Python projects**, with creation of Virtual Environments, issues with imports, folder structures. It does all of this for you.
+- Piper ensures that when you run a Python script, all its **requirements are implicitly installed**. Along with reproducibility, this makes room for **easy collaboration** between developers.
 
-Piper ensures that when you run a Python script, all its **requirements are implicitly installed**. Along with reproducibility, this makes room for **easy collaboration** between developers.
+- Also, while with standard tools it's hard to have multiple packages, one requiring the other, with Piper is a matter of **few YAML files**. You can **split your project** in several packages instead of having tons of requirements, code replication and/or single package-monoliths. 
 
-Also, while with standard tools it's hard to have multiple packages, one requiring the other, with Piper is a matter of **few YAML files**. You can **split your project** in several packages instead of having tons of requirements, code replication and/or single package-monoliths. 
+All in all, Piper lets you design **proper code structure and modularity** for your code. No worries about imports and low-level stuff.
