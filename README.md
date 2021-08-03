@@ -22,7 +22,7 @@ Instead:
 
 - Also, while with standard tools it's hard to have multiple packages, one requiring the other, with Piper is a matter of **few YAML files**. You can **split your project** in several packages instead of having tons of requirements, code replication and/or single package-monoliths. 
 
-All in all, Piper lets you design **proper code structure and modularity** for your code. No worries about imports and low-level stuff.
+All in all, Piper lets you design **proper structure and modularity** for your code. No worries about imports and low-level stuff.
 
 ## Example of Piper Project
 
