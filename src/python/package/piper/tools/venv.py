@@ -42,8 +42,6 @@ class Virtualenv:
                 check=True,
                 shell=True
             )
-        # Update it
-        self.update()
 
     def _get_activate_command(self) -> str:
         # Get activate command

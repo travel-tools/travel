@@ -17,6 +17,7 @@ def _setup(pipe: Pipe):
     # Create the virtualenv
     venv = Virtualenv(main_python=main_python, pipe=pipe)
     venv.create()
+    venv.update()
 
     # Pip freeze
     venv.freeze()
