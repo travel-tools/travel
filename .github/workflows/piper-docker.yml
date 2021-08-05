@@ -13,7 +13,7 @@ jobs:
         with:
           file: containers/python/Dockerfile
           push: true
-          tags: piper-tools/piper:${{ github.sha }}
+          tags: ghcr.io/piper-tools/piper:${{ github.sha }}
 
   test:
     needs: build
