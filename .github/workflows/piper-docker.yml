@@ -27,8 +27,10 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/piper-tools/piper:${{ github.sha }}
     steps:
-      - run: ls -la /
       - name: Test the Complex Project
         run: |
-          cd tests/data/complexproject
+          cd /application/tests/data/complexproject
           python -m piper setup
+          cd microservices/second/package/
+          source venv-second/bin/activate
+          python second/__init__.py
