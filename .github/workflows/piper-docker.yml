@@ -46,6 +46,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Delete all except last 5
+        env:
+          REGISTRY_PAT: ${{ secrets.REGISTRY_PATH }}
         run: |
           pip install requests==2.26.0
           python devops/github/registry.py --artifact piper --action delete-all-except-last --keep 5
