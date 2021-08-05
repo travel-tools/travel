@@ -16,6 +16,7 @@ jobs:
           tags: piper-tools/piper:${GITHUB_SHA}
 
   test:
+    needs: build
     runs-on: ubuntu-latest
     container: ghcr.io/piper-tools/piper:${GITHUB_SHA}
     steps:
