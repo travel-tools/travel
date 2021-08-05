@@ -10,8 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: docker/build-push-action@v2.6.1
-        file: containers/python/Dockerfile
-        push: piper-tools/piper:${GITHUB_SHA}
+        with:
+          file: containers/python/Dockerfile
+          push: piper-tools/piper:${GITHUB_SHA}
 
   test:
     runs-on: ubuntu-latest
