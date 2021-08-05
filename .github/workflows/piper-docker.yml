@@ -1,0 +1,21 @@
+name: Piper Docker
+on:
+  push:
+    branches: [ release/docker/* ]
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: docker/build-push-action@v2.6.1
+        push: piper-tools/piper:${GITHUB_SHA}
+
+  test:
+    runs-on: ubuntu-latest
+    container: ghcr.io/piper-tools/piper:${GITHUB_SHA}
+    steps:
+      - run: |
+          cd piper/tests/data/complexproject
+          python -m piper setup
