@@ -38,9 +38,9 @@ jobs:
         run: |
           cd /application/tests/data/complexproject
           python -m piper setup
-          cd microservices/second/package/
+          cd microservices/second/
           source venv-second/bin/activate
-          python second/__init__.py
+          python package/second/__init__.py
 
   clean:
     needs: build
