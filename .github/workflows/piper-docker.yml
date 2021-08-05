@@ -1,4 +1,4 @@
-name: Piper Docker
+name: Build Piper Docker
 on:
   push:
     branches: [ release/docker/* ]
