@@ -32,7 +32,7 @@ class GitHubRegistry:
         versions = self.get_versions(artifact)
         to_delete = sorted(versions, key=lambda v: v["updated_at"])[:-n]
         for version in to_delete:
-            print(f"Deleting {artifact}:{version['tags']}")
+            print(f"Deleting {artifact}:{version.get('metadata',{}).get('container',{}).get('tags',version['id'])}")
             self.delete(artifact, version["id"])
 
 
