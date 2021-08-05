@@ -1,4 +1,6 @@
+import os
 import subprocess
+import shlex
 
 
 class VirtualenvTool:
@@ -9,8 +11,8 @@ class VirtualenvTool:
 
     def run(self, command: str) -> str:
         return subprocess.run(
-            (f"{self._pre_command} && " if self._pre_command else "") + f"{self._tool} {command}",
+            shlex.split((f"{self._pre_command} && " if self._pre_command else "") + f"{self._tool} {command}"),
             check=True,
-            shell=True,
-            capture_output=True
+            capture_output=True,
+            executable="/bin/bash" if os.name == "posix" else None
         ).stdout.decode("utf-8")
