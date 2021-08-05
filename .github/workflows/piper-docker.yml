@@ -12,7 +12,8 @@ jobs:
       - uses: docker/build-push-action@v2.6.1
         with:
           file: containers/python/Dockerfile
-          push: piper-tools/piper:${GITHUB_SHA}
+          push: true
+          tags: piper-tools/piper:${GITHUB_SHA}
 
   test:
     runs-on: ubuntu-latest
