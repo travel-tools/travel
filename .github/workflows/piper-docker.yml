@@ -9,7 +9,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: docker/build-push-action@v2.6.1
+      - name: Login to GHCR
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and Push
+        uses: docker/build-push-action@v2.6.1
         with:
           file: containers/python/Dockerfile
           push: true
@@ -20,6 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/piper-tools/piper:${{ github.sha }}
     steps:
-      - run: |
+      - name: Test the Complex Project
+        run: |
           cd tests/data/complexproject
           python -m piper setup
