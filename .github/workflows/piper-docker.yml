@@ -2,6 +2,9 @@ name: Build Piper Docker
 on:
   push:
     branches: [ release/docker/* ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [ dev ]
   workflow_dispatch:
 
 defaults:
