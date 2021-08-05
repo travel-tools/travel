@@ -38,3 +38,14 @@ jobs:
           cd microservices/second/package/
           source venv-second/bin/activate
           python second/__init__.py
+
+  clean:
+    needs: build
+    runs-on: ubuntu-latest
+    container: python:3.7.4-slim
+    steps:
+      - uses: actions/checkout@v2
+      - name: Delete all except last 5
+        run: |
+          pip install requests==2.26.0
+          python devops/github/registry.py --artifact piper --action delete-all-except-last --keep 5
