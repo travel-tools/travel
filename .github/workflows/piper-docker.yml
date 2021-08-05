@@ -13,12 +13,12 @@ jobs:
         with:
           file: containers/python/Dockerfile
           push: true
-          tags: piper-tools/piper:${{GITHUB_SHA}}
+          tags: piper-tools/piper:${{ github.sha }}
 
   test:
     needs: build
     runs-on: ubuntu-latest
-    container: ghcr.io/piper-tools/piper:${{GITHUB_SHA}}
+    container: ghcr.io/piper-tools/piper:${{ github.sha }}
     steps:
       - run: |
           cd tests/data/complexproject
