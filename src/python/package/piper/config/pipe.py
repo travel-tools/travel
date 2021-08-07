@@ -17,7 +17,7 @@ class Pipe:
         config = yml.copy()
         self.python = python.sanitize_version(config.pop("python", None), nullable=True)
         self.dependencies = {pip.sanitize_package(dep): None for dep in config.pop("dependencies", [])}
-        self.requirements = {pip.sanitize_package(name): pip.sanitize_version(version) for name, version in config.pop("requirements", {}.items())}
+        self.requirements = {pip.sanitize_package(name): pip.sanitize_version(version) for name, version in config.pop("requirements", {}).items()}
 
         # Extra utils
         self.package = self.name  # But could be different
