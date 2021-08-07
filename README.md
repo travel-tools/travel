@@ -26,4 +26,4 @@ All in all, Piper lets you design **proper structure and modularity** for your c
 
 ## Example of Piper Project
 
-You can find an example of Piper project [here](https://github.com/federicopugliese/piper/tree/master/src/python/package/tests/data/complexproject).
+You can find an example of Piper project [here](https://github.com/piper-tools/piper/tree/master/src/piper/tests/data/complexproject).
