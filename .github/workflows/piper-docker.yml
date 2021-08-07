@@ -39,6 +39,7 @@ jobs:
           cd /application/tests/data/complexproject
           piper setup
           piper python second -c "import first; import yaml"
+          piper clean
 
   clean:
     needs: build
