@@ -45,11 +45,11 @@ class PiperCommand(abc.ABC):
     def manage_from_pipe(self, pipe: Pipe):
         self._manage_from_pipe_recursive(pipe, done=set())
 
-    def manage(self, pipe_location: str) -> (Pipe, Pipe):
+    def manage(self, context: str, package: str = None) -> (Pipe, Pipe):
 
         # Read the target pipe and all the pipes
-        target = get_pipe_name(pipe_location)
-        pipes = read_all_pipes(pipe_location)
+        target = package or get_pipe_name(context)
+        pipes = read_all_pipes(context)
 
         # Manage this target pipe
         pipe = pipes[target]

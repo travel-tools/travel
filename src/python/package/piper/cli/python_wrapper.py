@@ -8,10 +8,10 @@ from piper.tools.venv import Virtualenv
 logger = logging.getLogger(__name__)
 
 
-def run(pipe_location: str, package: str, command: str = None):
+def run(context: str, package: str, command: str = None):
 
     # Setup the pipes and dependencies
-    current_pipe, all_pipes = Setupper().manage(pipe_location)
+    current_pipe, all_pipes = Setupper().manage(context, package=package)
 
     # Run the code
     env = Virtualenv(all_pipes[package])
@@ -19,4 +19,9 @@ def run(pipe_location: str, package: str, command: str = None):
         python = env.python
     else:
         python = main_python
-    python.run(command)
+
+    # Good in unix
+    if os.name == "posix":
+        python.replace_process(command)
+    else:
+        logger.error(f" !!! Run the same command with {python.path}")

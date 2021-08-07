@@ -17,7 +17,6 @@ class Shell:
         self._pre_command = f"{pre_command} && " if pre_command else ""
 
     def run(self, command: str, capture: bool = False, text: bool = True) -> Optional[subprocess.CompletedProcess]:
-
         if capture:
             return self.captured_run(command, text=text)
         else:
@@ -64,22 +63,29 @@ class Shell:
         while outcome is None:
 
             try:
-                # Get a line, waiting at most one second (cannot be less)
-                line = output.get(timeout=0.2)
-            except queue.Empty:
-                # Nothing to do
-                pass
-            else:
-                # Print that line
-                std, msg = line
-                msg = msg.rstrip("\r\n") if text else msg
-                if std == _STDOUT:
-                    logger.info(msg)
+
+                try:
+                    # Get a line, waiting at most one second (cannot be less)
+                    line = output.get(timeout=0.2)
+                except queue.Empty:
+                    # Nothing to do
+                    pass
                 else:
-                    logger.error(msg)
-            finally:
-                # Check if the process has ended
-                outcome = process.poll()
+                    # Print that line
+                    std, msg = line
+                    msg = msg.rstrip("\r\n") if text else msg
+                    if std == _STDOUT:
+                        logger.info(msg)
+                    else:
+                        logger.error(msg)
+                finally:
+                    # Check if the process has ended
+                    outcome = process.poll()
+
+            except KeyboardInterrupt:
+
+                process.kill()
+                outcome = -9
 
         # Release resources (if possible)
         stdout.join(1)

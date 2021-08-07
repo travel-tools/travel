@@ -29,8 +29,7 @@ def main():
     # Python
     python = subparsers.add_parser("python")
     python.add_argument("package", help="Name of the pipe (it will be used to activate its venv)")
-    # Since OS parses the quotes before getting here, we know that if a command in argv had spaces, the user called it with quotes. Put it there again.
-    python.set_defaults(action=lambda args, rest: python_wrapper.run(args.context, args.package, ' '.join([f'"{arg}"' if ' ' in arg else arg for arg in rest])))
+    python.set_defaults(action=lambda args, rest: python_wrapper.run(args.context, args.package, rest))
 
     # Parse args and invoke the corresponding functions
     arguments, remainder = parser.parse_known_args()
