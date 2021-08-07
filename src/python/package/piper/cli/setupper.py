@@ -3,7 +3,6 @@ from pathlib import Path
 
 from piper.cli.base import PiperCommand
 from piper.config.pipe import Pipe
-from piper.tools.python import main_python
 from piper.tools.venv import Virtualenv
 
 
@@ -16,7 +15,7 @@ class Setupper(PiperCommand):
             Path(pipe.requirements_file).touch()
 
         # Create the virtualenv
-        venv = Virtualenv(main_python=main_python, pipe=pipe)
+        venv = Virtualenv(pipe)
         venv.create()
         venv.update()
 
