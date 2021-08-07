@@ -1,10 +1,10 @@
-from piper.cli.setupper import setup
+from piper.cli.setupper import Setupper
 
 
 def run(pipe_location: str, script: str = None):
 
     # Setup the pipes and dependencies
-    setup(pipe_location)
+    Setupper().manage(pipe_location)
 
     # Run the code
     pass

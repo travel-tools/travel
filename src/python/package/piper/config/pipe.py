@@ -1,6 +1,7 @@
 import logging
 import os
 
+from piper.config.sanitizers import python, pip
 
 logger = logging.getLogger(__name__)
 
@@ -12,14 +13,15 @@ class Pipe:
         self.name = os.path.basename(os.path.normpath(location))
         self.group = []
 
-        # Pop the config entries  # TODO sanity checks! Because we will execute scripts
+        # Pop the config entries
         config = yml.copy()
-        self.python = config.pop("python", None)
-        self.dependencies = {dep: None for dep in config.pop("dependencies", [])}
-        self.requirements = config.pop("requirements", {})
+        self.python = python.sanitize_version(config.pop("python", None), nullable=True)
+        self.dependencies = {pip.sanitize_package(dep): None for dep in config.pop("dependencies", [])}
+        self.requirements = {pip.sanitize_package(name): pip.sanitize_version(version) for name, version in config.pop("requirements", {}).items()}
 
         # Extra utils
-        self.setup_py_folder = os.path.join(self.location, "package")
+        self.package = self.name  # But could be different
+        self.setup_py_folder = os.path.join(self.location, "package")  # But could be different
         self.requirements_file = os.path.join(self.setup_py_folder, "requirements.txt")
 
         # If there are still configs, they are unknown. Raise an error
