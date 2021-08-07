@@ -1,10 +1,10 @@
 import os
 import sys
 
-from piper.tools.venv_tool import VirtualenvTool
+from piper.tools.executable import Executable
 
 
-class Python(VirtualenvTool):
+class Python(Executable):
 
     def __init__(self, path: str = None, pre_command: str = None):
         self.path = path or os.environ.get("PIPER_PYTHON_PATH", sys.executable)

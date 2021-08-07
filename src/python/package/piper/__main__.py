@@ -1,14 +1,20 @@
 import argparse
+import logging
 import os
 from enum import Enum
 
-from piper.cli import runner, setupper
+from piper.cli import runner
+from piper.cli.cleaner import Cleaner
+from piper.cli.setupper import Setupper
+
+logger = logging.getLogger(__name__)
 
 
 class Action(str, Enum):
 
     RUN = "run"
     SETUP = "setup"
+    CLEAN = "clean"
 
 
 def get_args():
@@ -35,11 +41,17 @@ def main():
 
     elif action == Action.SETUP:
 
-        setupper.setup(pipe_location=pipe_location)
+        Setupper().manage(pipe_location=pipe_location)
+
+    elif action == Action.CLEAN:
+
+        Cleaner().manage(pipe_location=pipe_location)
 
     else:
 
         raise RuntimeError(f"Action {action} unknown")
+
+    logger.info("All done.")
 
 
 if __name__ == '__main__':

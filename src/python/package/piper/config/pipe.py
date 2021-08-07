@@ -19,7 +19,8 @@ class Pipe:
         self.requirements = config.pop("requirements", {})
 
         # Extra utils
-        self.setup_py_folder = os.path.join(self.location, "package")
+        self.package = self.name  # But could be different
+        self.setup_py_folder = os.path.join(self.location, "package")  # But could be different
         self.requirements_file = os.path.join(self.setup_py_folder, "requirements.txt")
 
         # If there are still configs, they are unknown. Raise an error

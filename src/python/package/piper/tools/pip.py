@@ -1,7 +1,7 @@
-from piper.tools.venv_tool import VirtualenvTool
+from piper.tools.executable import Executable
 
 
-class Pip(VirtualenvTool):
+class Pip(Executable):
 
     def __init__(self, pre_command: str = None):
         super().__init__("pip", pre_command=pre_command)
