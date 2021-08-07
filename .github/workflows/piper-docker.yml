@@ -25,7 +25,7 @@ jobs:
       - name: Build and Push
         uses: docker/build-push-action@v2.6.1
         with:
-          file: containers/python/Dockerfile
+          file: containers/piper/Dockerfile
           push: true
           tags: ghcr.io/piper-tools/piper:${{ github.sha }}
 
@@ -37,7 +37,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Test the Complex Project
         run: |
-          cd src/python/tests/data/complexproject
+          cd src/piper/tests/data/complexproject
           piper setup
           cd microservices/second/
           source venv-second/bin/activate
