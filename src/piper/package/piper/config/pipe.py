@@ -1,7 +1,7 @@
 import logging
 import os
 
-from piper.config.sanitizers import python, pip
+from piper.config.sanitizers import python_sanitizer, pip_sanitizer
 
 logger = logging.getLogger(__name__)
 
@@ -15,9 +15,9 @@ class Pipe:
 
         # Pop the config entries
         config = yml.copy()
-        self.python = python.sanitize_version(config.pop("python", None), nullable=True)
-        self.dependencies = {pip.sanitize_package(dep): None for dep in config.pop("dependencies", [])}
-        self.requirements = {pip.sanitize_package(name): pip.sanitize_version(version) for name, version in config.pop("requirements", {}).items()}
+        self.python = python_sanitizer.sanitize_version(config.pop("python", None), nullable=True)
+        self.dependencies = {pip_sanitizer.sanitize_package(dep): None for dep in config.pop("dependencies", [])}
+        self.requirements = {pip_sanitizer.sanitize_package(name): pip_sanitizer.sanitize_version(version) for name, version in config.pop("requirements", {}).items()}
 
         # Extra utils
         self.package = self.name  # But could be different

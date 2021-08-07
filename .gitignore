@@ -3,9 +3,6 @@
 # Learn more about .gitignore:
 #     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 
-# Specific
-/src/solver/data/
-
 
 # Most of the content is taken from https://github.com/github/gitignore/blob/master/Python.gitignore
 
