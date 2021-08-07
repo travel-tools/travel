@@ -1,7 +1,6 @@
 import argparse
 import logging
 import os
-from enum import Enum
 
 from piper.cli import python_wrapper
 from piper.cli.cleaner import Cleaner
