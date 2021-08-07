@@ -1,6 +1,6 @@
 FROM python:3.7.4-slim
 
-ARG SRC="src/python/package"
+ARG SRC="src/piper/package"
 WORKDIR application
 
 # Pre-install requirements, so that this sub-image is cached - no need to re-download it upon code-only change.
