@@ -38,7 +38,10 @@ jobs:
         run: |
           cd /application/tests/data/complexproject
           piper setup
-          piper python second -c "import first; import yaml"
+          cd microservices/second/
+          source venv-second/bin/activate
+          python package/second/__init__.py
+          cd /application/tests/data/complexproject/microservices
           piper clean
 
   clean:
