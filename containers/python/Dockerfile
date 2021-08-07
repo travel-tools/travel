@@ -11,7 +11,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY ${SRC}/setup.py .
 COPY ${SRC}/MANIFEST.in .
 COPY ${SRC}/piper piper/
-COPY ${SRC}/tests tests/
 
 # Install the package
 RUN pip install -e .
