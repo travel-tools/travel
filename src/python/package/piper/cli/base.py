@@ -1,9 +1,13 @@
 import abc
+import logging
 from typing import Set
 
 from piper.config.pipe import Pipe
 from piper.config.reader import get_pipe_name, read_all_pipes
 from piper.tools.python import main_python, Python
+
+
+logger = logging.getLogger(__name__)
 
 
 class PiperCommand(abc.ABC):
@@ -22,7 +26,14 @@ class PiperCommand(abc.ABC):
             # Manage dependencies first, then the pipe
             for p in [*pipe.flat_dependencies(), pipe]:
                 if p not in done:
+                    logger.info("")
+                    logger.info("="*60)
+                    logger.info(f"=== {p.name.center(52, ' ')} ===")
+                    logger.info("="*60)
                     self._manage(p)
+                    logger.info("=" * 60)
+                    logger.info("")
+                    logger.info("")
                     done.add(p)
 
         else:
@@ -34,11 +45,13 @@ class PiperCommand(abc.ABC):
     def manage_from_pipe(self, pipe: Pipe):
         self._manage_from_pipe_recursive(pipe, done=set())
 
-    def manage(self, pipe_location: str):
+    def manage(self, pipe_location: str) -> (Pipe, Pipe):
 
         # Read the target pipe and all the pipes
         target = get_pipe_name(pipe_location)
         pipes = read_all_pipes(pipe_location)
 
         # Manage this target pipe
-        self.manage_from_pipe(pipes[target])
+        pipe = pipes[target]
+        self.manage_from_pipe(pipe)
+        return pipe, pipes

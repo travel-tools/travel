@@ -18,9 +18,16 @@ with open(requirements_file, "r") as f:
 
 
 # Package configuration
-setup(name="piper",
-      version="0.0.0",
-      description="A Snake Charmer to manage you Python code",
-      packages=find_packages(),
-      package_data={"piper": _get_resources("piper")},
-      install_requires=requirements)
+setup(
+    name="piper",
+    version="0.0.0",
+    description="A Snake Charmer to manage you Python code",
+    packages=find_packages(),
+    package_data={"piper": _get_resources("piper")},
+    install_requires=requirements,
+    entry_points={
+        'console_scripts': [
+            'piper = piper.__main__:main',
+        ],
+    },
+)

@@ -37,7 +37,7 @@ jobs:
       - name: Test the Complex Project
         run: |
           cd /application/tests/data/complexproject
-          python -m piper setup
+          piper setup
           cd microservices/second/
           source venv-second/bin/activate
           python package/second/__init__.py

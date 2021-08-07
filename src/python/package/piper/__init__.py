@@ -10,7 +10,7 @@ CONFIG_LOCATION = os.path.join(RESOURCES_LOCATION, "config")
 
 def _init_logger():
     root_log = logging.getLogger()
-    formatter = logging.Formatter("%(asctime)s [%(process)d] %(levelname)-5s [%(name)-48s] %(message)s")
+    formatter = logging.Formatter("%(message)s")
     stream_handler = logging.StreamHandler(sys.stdout)
     stream_handler.setFormatter(formatter)
     root_log.addHandler(stream_handler)

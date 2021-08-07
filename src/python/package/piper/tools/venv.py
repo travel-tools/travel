@@ -7,6 +7,7 @@ from piper.config.pipe import Pipe
 from piper.tools.pip import Pip
 from piper.tools.python import Python
 from piper.tools.shell import Shell
+from piper.tools.python import main_python as default_python
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +19,7 @@ _CREATE_VENV = "(" + ") || (".join(["{python} -m venv {venv}",
 
 class Virtualenv:
 
-    def __init__(self, main_python: Python, pipe: Pipe):
+    def __init__(self, pipe: Pipe, main_python: Python = default_python):
         self._main_python = main_python
         self._name = f"venv-{pipe.name}"
 
@@ -47,25 +48,29 @@ class Virtualenv:
         # Install requirements
         logger.info("Installing requirements...")
         for pipe in [*self.pipe.flat_dependencies(), self.pipe]:
-            out = self.pip.run(f"install -e {pipe.setup_py_folder}")
-            logger.info(f"{out.stdout}, {out.stderr}")
+            self.pip.run(f"install -e {pipe.setup_py_folder}")
             if pipe.requirements:
-                out = self.pip.run(f"install {' '.join([f'{name}=={version}' for name, version in pipe.requirements.items()])}")
-                logger.info(f"{out.stdout}, {out.stderr}")
+                self.pip.run(f"install {' '.join([f'{name}=={version}' for name, version in pipe.requirements.items()])}")
         logger.info("Done.")
 
     def freeze(self):
 
-        # Pip freeze
-        output = self.pip.run(f"freeze").stdout
-        requirements = re.sub("[\r\n]+", "\n", output).split("\n")
+        try:
 
-        # Get real requirements and update the requirements.txt file
-        real_requirements = [req for req in requirements if _is_valid_requirement(req)]
-        with open(self.pipe.requirements_file, "w") as f:
-            for requirement in real_requirements:
-                f.write(requirement + "\n")
-            logger.info(f"Freezing {real_requirements}")
+            # Pip freeze
+            output = self.pip.run(f"freeze", capture=True).stdout
+            requirements = re.sub("[\r\n]+", "\n", output).split("\n")
+
+            # Get real requirements and update the requirements.txt file
+            real_requirements = [req for req in requirements if _is_valid_requirement(req)]
+            with open(self.pipe.requirements_file, "w") as f:
+                for requirement in real_requirements:
+                    f.write(requirement + "\n")
+                logger.info(f"Freezing {real_requirements}")
+
+        except subprocess.CalledProcessError as e:
+            logger.error(e.stderr)
+            exit(e.returncode)
 
 
 def _is_valid_requirement(requirement: str) -> bool:
