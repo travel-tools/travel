@@ -3,8 +3,9 @@ pipes:
   common:
     blueprint: piperbluebasic==0.0.0
     config:
-      name: common
-      description: bla
+      package:
+        name: common
+        description: bla
       python: 3.7.4
 
   microservices:
@@ -13,14 +14,15 @@ pipes:
       first:
         blueprint: piperbluebasic==0.0.0
         config:
-          name: first
-          description: bla
+          package:
+            name: first
+            description: bla
           python: 3.7.4
 
       second:
         blueprint: piperbluebasic==0.0.0
         config:
-          name: second
-          description: bla
+          package:
+            name: second
+            description: bla
           python: 3.7.4
-

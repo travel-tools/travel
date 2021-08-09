@@ -31,6 +31,8 @@ def main():
 
     # Pack
 
+    # Release
+
     # Python
     python = subparsers.add_parser("python")
     python.add_argument("package", help="Name of the pipe (it will be used to activate its venv)")
