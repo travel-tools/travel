@@ -16,22 +16,23 @@ class Shell:
     def __init__(self, pre_command: str = None):
         self._pre_command = f"{pre_command} && " if pre_command else ""
 
-    def run(self, command: str, capture: bool = False, text: bool = True) -> Optional[subprocess.CompletedProcess]:
+    def run(self, command: str, capture: bool = False, text: bool = True, cwd: str = None) -> Optional[subprocess.CompletedProcess]:
         if capture:
-            return self.captured_run(command, text=text)
+            return self.captured_run(command, text=text, cwd=cwd)
         else:
-            self.live_run(command, text=text)
+            self.live_run(command, text=text, cwd=cwd)
 
-    def captured_run(self, command: str, text: bool = True):
+    def captured_run(self, command: str, text: bool = True, cwd: str = None):
         return subprocess.run(
             self._pre_command + command,
             check=True,
             capture_output=True,
             text=text,
-            shell=True
+            shell=True,
+            cwd=cwd
         )
 
-    def live_run(self, command: str, text: bool = True):
+    def live_run(self, command: str, text: bool = True, cwd: str = None):
 
         output = Queue()
 
@@ -49,7 +50,8 @@ class Shell:
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=text,
-            shell=True
+            shell=True,
+            cwd=cwd
         )
 
         # Start the producers

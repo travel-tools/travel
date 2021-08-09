@@ -52,6 +52,8 @@ class PiperCommand(abc.ABC):
         pipes = read_all_pipes(context)
 
         # Manage this target pipe
+        if target not in pipes:
+            raise ValueError(f"The specified pipe does not exist: {context}")
         pipe = pipes[target]
         self.manage_from_pipe(pipe)
         return pipe, pipes

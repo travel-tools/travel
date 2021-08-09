@@ -16,7 +16,8 @@ class Cleaner(PiperCommand):
         logger.info(f"Cleaning {pipe.name}")
         to_remove = [
             os.path.join(pipe.setup_py_folder, f"{pipe.package}.egg-info"),     # egg-info
-            Virtualenv(pipe).path                                               # venv folder
+            Virtualenv(pipe).path,                                              # venv folder
+            pipe.build_folder                                                   # artifacts build folder
         ]
 
         # Clean

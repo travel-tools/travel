@@ -12,5 +12,5 @@ class Executable(Shell):
         super().__init__(pre_command)
         self._tool = tool
 
-    def run(self, command: str, capture: bool = False, text: bool = True) -> subprocess.CompletedProcess:
-        return super().run(f"{self._tool} {command}", capture=capture, text=text)
+    def run(self, command: str, capture: bool = False, text: bool = True, cwd: str = None) -> subprocess.CompletedProcess:
+        return super().run(f"{self._tool} {command}", capture=capture, text=text, cwd=cwd)

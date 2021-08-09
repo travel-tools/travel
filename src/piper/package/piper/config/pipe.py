@@ -22,6 +22,7 @@ class Pipe:
         # Extra utils
         self.package = self.name  # But could be different
         self.setup_py_folder = os.path.join(self.location, "package")  # But could be different
+        self.build_folder = os.path.join(self.location, "build")  # But could be different
         self.requirements_file = os.path.join(self.setup_py_folder, "requirements.txt")
 
         # If there are still configs, they are unknown. Raise an error
@@ -31,7 +32,7 @@ class Pipe:
     def fill_dependency_with_pipe(self, pipe):
         self.dependencies[pipe.name] = pipe
 
-    def flat_dependencies(self):
+    def flat_dependencies(self, with_current: bool = False):
 
         def visit(pipe, visited, level=0):
             for dep in pipe.dependencies.values():
@@ -41,6 +42,8 @@ class Pipe:
 
         pipes = visit(self, {})
         dependencies = [pipe for pipe, level in sorted(pipes.items(), key=lambda x: x[1], reverse=True)]
+        if with_current:
+            dependencies.append(self)
         return dependencies
 
     def __str__(self):
