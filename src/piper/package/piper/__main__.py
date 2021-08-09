@@ -2,7 +2,7 @@ import argparse
 import logging
 import os
 
-from piper.cli import python_wrapper, blueprint
+from piper.cli import python_wrapper, blueprinter
 from piper.cli.cleaner import Cleaner
 from piper.cli.setupper import Setupper
 
@@ -23,7 +23,7 @@ def main():
 
     # Blueprint
     setup = subparsers.add_parser("blueprint")
-    setup.set_defaults(action=lambda args, rest: blueprint.run(args.context))
+    setup.set_defaults(action=lambda args, rest: blueprinter.run(args.context))
 
     # Setup
     setup = subparsers.add_parser("setup")
