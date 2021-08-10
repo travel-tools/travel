@@ -50,10 +50,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: piper-dist
+          path: ${{ github.workspace }}/dist
       - name: Install piper
         run: |
           ls -R ${{ github.workspace }}
-          pip install $( ls ${{ github.workspace }}/piper-dist )
+          pip install $( ls ${{ github.workspace }}/dist )
       - uses: actions/checkout@v2
       - name: Test the Complex Project
         run: source devops/piper/test.sh
@@ -71,6 +72,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: piper-dist
+          path: ${{ github.workspace }}/dist
       - name: Login to GHCR
         uses: docker/login-action@v1
         with:
@@ -80,6 +82,8 @@ jobs:
       - name: Build and Push
         uses: docker/build-push-action@v2.6.1
         with:
+          build-args: |
+            DIST=${{ github.workspace }}/dist
           file: containers/piper/Dockerfile
           push: true
           tags: ghcr.io/piper-tools/piper:${{ github.sha }}
