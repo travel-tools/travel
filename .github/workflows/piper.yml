@@ -27,7 +27,7 @@ jobs:
         run: |
           cd src/piper/package
           python setup.py sdist
-          cp -r dist ${{ github.workspace }}
+          cp -r dist /github/workspace
       - name: Upload dist
         uses: actions/upload-artifact@v2
         with:
@@ -45,7 +45,7 @@ jobs:
           name: piper-dist
       - name: Install piper
         run: |
-          pip install $( ls /dist )
+          pip install $( ls /github/workspace/dist )
       - uses: actions/checkout@v2
       - name: Test the Complex Project
         run: source devops/piper/test.sh
@@ -73,7 +73,7 @@ jobs:
         uses: docker/build-push-action@v2.6.1
         with:
           build-args: |
-            SRC=/dist
+            SRC=${{ github.workspace }}/dist
           file: containers/piper/Dockerfile
           push: true
           tags: ghcr.io/piper-tools/piper:${{ github.sha }}
