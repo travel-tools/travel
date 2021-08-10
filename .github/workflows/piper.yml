@@ -41,7 +41,7 @@ jobs:
           name: piper-dist
       - name: Install piper
         run: |
-          pip install $( ls dist )
+          pip install $( ls /dist )
       - uses: actions/checkout@v2
       - name: Test the Complex Project
         run: |
