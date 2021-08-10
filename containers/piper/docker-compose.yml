@@ -6,6 +6,6 @@ services:
 
     build:
       context: "./../.."
-      dockerfile: "containers/piper/Dockerfile"
+      dockerfile: "containers/piper/Dockerfile.source"
 
     image: "piper"
