@@ -1,0 +1,51 @@
+name: Piper Package
+on:
+  push:
+    branches: [ release/piper/* ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [ dev ]
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    container: python:3.7.4-slim
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Pack
+        run: |
+          cd src/piper/package
+          python setup.py sdist
+      - name: Upload dist
+        uses: actions/upload-artifact@v2
+        with:
+          name: piper-dist
+          path: dist
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    container: python:3.7.4-slim
+    steps:
+      - name: Download dist
+        uses: actions/download-artifact@v2
+        with:
+          name: piper-dist
+      - name: Install piper
+        run: |
+          pip install $( ls dist )
+      - uses: actions/checkout@v2
+      - name: Test the Complex Project
+        run: |
+          cd src/piper/tests/data/complexproject
+          piper setup
+          cd microservices/second/
+          venv-second/bin/python package/second/__init__.py
+          piper clean

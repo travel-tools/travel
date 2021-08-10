@@ -40,8 +40,7 @@ jobs:
           cd src/piper/tests/data/complexproject
           piper setup
           cd microservices/second/
-          source venv-second/bin/activate
-          python package/second/__init__.py
+          venv-second/bin/python package/second/__init__.py
           piper clean
 
   clean:
