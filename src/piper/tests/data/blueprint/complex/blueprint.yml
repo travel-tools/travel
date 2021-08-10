@@ -1,7 +1,8 @@
 pipes:
 
   common:
-    blueprint: piperbluebasic==0.0.0
+    blueprint:
+      piperbluebasic: 0.0.0
     config:
       package:
         name: common
@@ -12,7 +13,8 @@ pipes:
     pipes:
 
       first:
-        blueprint: piperbluebasic==0.0.0
+        blueprint:
+          piperbluebasic: 0.0.0
         config:
           package:
             name: first
@@ -20,7 +22,8 @@ pipes:
           python: 3.7.4
 
       second:
-        blueprint: piperbluebasic==0.0.0
+        blueprint:
+          piperbluebasic: 0.0.0
         config:
           package:
             name: second

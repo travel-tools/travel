@@ -1,7 +1,6 @@
 import logging
 import os
 import shutil
-from pathlib import Path
 from typing import Dict, Any
 
 import pkg_resources
@@ -20,24 +19,23 @@ def _generate_breath_first(blueprint_file: str, venv: Virtualenv, context: str, 
     # Generate these blueprints
     for pipe, properties in yml.items():
 
-        # Create the directory
+        # Get the folder where the pipe will be created
         pipe = pipe_sanitizer.sanitize_name(pipe)
         pipe_context = os.path.join(context, pipe)
-        os.makedirs(pipe_context, exist_ok=True)
 
         # Is it a blueprint?
         if "blueprint" in properties:
 
             # Get the package of the blueprint
-            name, version = str(properties["blueprint"]).split("==", maxsplit=1)
-            name = pip_sanitizer.sanitize_package(name)
-            version = pip_sanitizer.sanitize_version(version)
-            venv.pip.run(f"install {name}=={version}")
+            blueprint = properties["blueprint"]
+            if len(blueprint) != 1:
+                raise ValueError(f"Error in '{pipe}': this pipe's blueprint must be a single 'name: version_or_path' dictionary")
+            name = pip_sanitizer.sanitize_package(list(blueprint.keys())[0])
+            venv.pip.install(blueprint, allow_local_files=True)
 
             # Generate the blueprint
             command = f'"{_GENERATE_BLUEPRINT}" --context "{pipe_context}" --blueprint {name} --file "{blueprint_file}" --pipe {pipe}'
-            print(command)
-            venv.python.run(f'"{_GENERATE_BLUEPRINT}" --context "{pipe_context}" --blueprint {name} --file "{blueprint_file}" --pipe {pipe}')
+            venv.python.run(command)
 
     # Generate the subpipes
     for pipe, properties in yml.items():
@@ -52,7 +50,7 @@ def run(context: str):
     venv = Virtualenv(Pipe(location=context, yml={}))
     venv.create()
     version = pip_sanitizer.sanitize_version(pkg_resources.get_distribution("PyYAML").version)
-    venv.pip.run(f"install PyYAML=={version}")
+    venv.pip.install({"PyYAML": version})
 
     # Read the blueprint file
     path = os.path.join(context, "blueprint.yml")

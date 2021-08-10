@@ -1,6 +1,8 @@
 import argparse
 import importlib
 import inspect
+import sys
+from pathlib import Path
 
 import yaml
 from piperblue.blueprint import PiperBlueprint
@@ -28,13 +30,17 @@ def _generate(file: str, blueprint_name: str, pipe: str, context: str):
 
     # Import the blueprint class
     module = f"{blueprint_name}.blueprint"
-    blueprint = inspect.getmembers(
+    all_blueprints = inspect.getmembers(
         importlib.import_module(module),
         lambda member: inspect.isclass(member) and member.__module__ == module and issubclass(member, PiperBlueprint)
     )[0]
+    blueprint = all_blueprints[1]
+
+    # Get its resources folder
+    resources_folder = str(Path(sys.modules[blueprint.__module__].__file__).parent / "resources")
 
     # Instantiate it and run it
-    blueprint[1]().generate(context, config)
+    blueprint().generate(resources_folder, context, config)
 
 
 def main():
