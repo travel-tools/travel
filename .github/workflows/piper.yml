@@ -23,7 +23,7 @@ jobs:
         run: |
           cd src/piper/package
           python setup.py sdist
-          cp -r dist {{ github.workspace }}
+          cp -r dist ${{ github.workspace }}
       - name: Upload dist
         uses: actions/upload-artifact@v2
         with:
