@@ -52,7 +52,7 @@ jobs:
           name: piper-dist
       - name: Install piper
         run: |
-          pip install $( ls ${{ github.workspace }}/dist )
+          pip install $( ls ${{ github.workspace }}/piper-dist )
       - uses: actions/checkout@v2
       - name: Test the Complex Project
         run: source devops/piper/test.sh
@@ -79,8 +79,6 @@ jobs:
       - name: Build and Push
         uses: docker/build-push-action@v2.6.1
         with:
-          build-args: |
-            SRC=${{ github.workspace }}/dist
           file: containers/piper/Dockerfile
           push: true
           tags: ghcr.io/piper-tools/piper:${{ github.sha }}
