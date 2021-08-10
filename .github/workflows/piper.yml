@@ -52,6 +52,7 @@ jobs:
           name: piper-dist
       - name: Install piper
         run: |
+          ls -R ${{ github.workspace }}
           pip install $( ls ${{ github.workspace }}/piper-dist )
       - uses: actions/checkout@v2
       - name: Test the Complex Project
