@@ -19,20 +19,24 @@ jobs:
 
   pack:
     runs-on: ubuntu-latest
-    container: python:3.7.4-slim
     steps:
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.4'
       - name: Checkout
         uses: actions/checkout@v2
       - name: Pack
         run: |
           cd src/piper/package
           python setup.py sdist
-          cp -r dist /github/workspace
+          cp -r dist ${{ github.workspace }}
       - name: Upload dist
         uses: actions/upload-artifact@v2
         with:
           name: piper-dist
-          path: /github/workspace/dist
+          path: dist
+          if-no-files-found: error
 
   test-package:
     needs: pack
@@ -43,9 +47,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: piper-dist
+          path: /
       - name: Install piper
         run: |
-          pip install $( ls /github/workspace/dist )
+          pip install $( ls /dist )
       - uses: actions/checkout@v2
       - name: Test the Complex Project
         run: source devops/piper/test.sh
