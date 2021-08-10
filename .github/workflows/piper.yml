@@ -72,8 +72,8 @@ jobs:
       - name: Build and Push
         uses: docker/build-push-action@v2.6.1
         with:
-          build-args:
-            - SRC=/dist
+          build-args: |
+            SRC=/dist
           file: containers/piper/Dockerfile
           push: true
           tags: ghcr.io/piper-tools/piper:${{ github.sha }}
