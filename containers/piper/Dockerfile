@@ -1,5 +1,5 @@
 # Args
-ARG SRC="/dist"
+ARG SRC="src/piper/package/dist"
 ARG TAG="3.7.4-slim"
 
 # From python image
