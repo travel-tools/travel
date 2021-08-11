@@ -4,8 +4,8 @@ ARG TAG="3.7.4-slim"
 FROM python:${TAG}
 
 # Copy the dist
-ARG DIST="DIST/piper/package/dist"
-COPY ${DIST} dist
+ARG DIST="src/piper/package/dist"
+COPY ${DIST}/ dist/
 
 # Install the package
 RUN pip install --no-cache-dir -e $(ls dist)
