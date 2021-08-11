@@ -57,7 +57,7 @@ jobs:
         run: source devops/piperblue/test.sh
 
   release-package-on-test:
-    if: ${{ startsWith(github.head_ref, 'refs/heads/release/major/piperblue') || startsWith(github.head_ref, 'refs/heads/release/minor/piperblue') startsWith(github.head_ref, 'refs/heads/hotfix/major/piperblue') startsWith(github.head_ref, 'refs/heads/hotfix/minor/piperblue') }}
+    if: ${{ startsWith(github.head_ref, 'refs/heads/release/major/piperblue') || startsWith(github.head_ref, 'refs/heads/release/minor/piperblue') || startsWith(github.head_ref, 'refs/heads/hotfix/major/piperblue') || startsWith(github.head_ref, 'refs/heads/hotfix/minor/piperblue') }}
     environment: test-pypi-piperblue
     needs: test-package
     runs-on: ubuntu-latest
