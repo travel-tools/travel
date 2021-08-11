@@ -23,7 +23,6 @@ if __name__ == '__main__':
 
     # Assertions
     assert os.path.isdir(context)
-    package = os.path.join(context, "package")
-    assert os.path.isdir(os.path.join(package, "blueprint"))
-    with open(os.path.join(package, "setup.py")) as f:
+    assert os.path.isdir(os.path.join(context, "package", "blueprint"))
+    with open(os.path.join(context, "pipe.yml")) as f:
         assert "3.7.4" in f.read()
