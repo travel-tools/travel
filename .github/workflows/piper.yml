@@ -84,6 +84,7 @@ jobs:
           build-args: |
             DIST=dist
           file: containers/piper/Dockerfile
+          context: ${{ github.workspace }}
           push: true
           tags: ghcr.io/piper-tools/piper:${{ github.sha }}
 
