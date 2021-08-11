@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+
+  piper:
+
+    build:
+      context: "./../.."
+      dockerfile: "containers/piper/Dockerfile.source"
+
+    image: "piper"
