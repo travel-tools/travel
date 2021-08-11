@@ -58,3 +58,25 @@ jobs:
       - name: Test
         run: source devops/piperblue/test.sh
 
+  release-package-on-test:
+    if: ${{ startsWith(github.ref, 'refs/heads/release') }}
+    environment: test-pypi-piperblue
+    needs: test-package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.11'
+      - name: Download dist
+        uses: actions/download-artifact@v2
+        with:
+          name: piperblue-dist
+          path: ${{ github.workspace }}/dist
+      - name: Release on Test
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+
