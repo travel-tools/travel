@@ -12,22 +12,44 @@ def _get_resources(package_name):
 
 
 # Read requirements
-requirements_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "requirements.txt")
+this_location = os.path.dirname(os.path.realpath(__file__))
+requirements_file = os.path.join(this_location, "requirements.txt")
 with open(requirements_file, "r") as f:
     requirements = f.read().splitlines()
 
+# Read README
+readme_file = os.path.join(this_location, "README.md")
+with open(readme_file, "r", encoding="utf-8") as f:
+    readme = f.read()
+
 
 # Package configuration
+_NAME="piper-tools"
 setup(
-    name="piper",
+    name=_NAME,
     version="0.0.0",
-    description="A Snake Charmer to manage you Python code",
+    description="A software manager for easy development and distribution of Python code",
     packages=find_packages(),
     package_data={"piper": _get_resources("piper")},
     install_requires=requirements,
+    python_requires=">=3.7",
     entry_points={
         'console_scripts': [
             'piper = piper.__main__:main',
         ],
     },
+
+    long_description=readme,
+    long_description_content_type="text/markdown",
+    url="https://github.com/piper-tools/piper",
+    author="Federico Pugliese",
+    author_email="federico.pugliese.wr@gmail.com",
+    license="Apache Software License, Version 2.0",
+    classifiers=[
+        "License :: OSI Approved :: Apache Software License",
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7"
+    ]
 )
