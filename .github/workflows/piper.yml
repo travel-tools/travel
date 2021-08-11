@@ -1,7 +1,7 @@
 name: Piper Package
 on:
   push:
-    branches: [ release/piper/* ]
+    branches: [ release/major/piper/*, release/minor/piper/*, hotfix/major/piper/*, hotfix/minor/piper/* ]
   pull_request:
     types: [opened, synchronize, reopened]
     branches: [ dev ]

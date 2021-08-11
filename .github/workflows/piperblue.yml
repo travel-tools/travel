@@ -1,0 +1,60 @@
+name: Piper Package
+on:
+  push:
+    branches: [ release/major/piper/*, release/minor/piper/*, hotfix/major/piper/*, hotfix/minor/piper/* ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [ dev ]
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+
+  ##########################################
+  # PYTHON
+  ##########################################
+
+  pack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.11'
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Pack
+        run: |
+          cd src/piperblue/package
+          python setup.py sdist
+          cp -r dist ${{ github.workspace }}
+      - name: Upload dist
+        uses: actions/upload-artifact@v2
+        with:
+          name: piperblue-dist
+          path: dist
+          if-no-files-found: error
+
+  test-package:
+    needs: pack
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.11'
+      - name: Download dist
+        uses: actions/download-artifact@v2
+        with:
+          name: piperblue-dist
+          path: ${{ github.workspace }}/dist
+      - name: Install package
+        run: |
+          pip install dist/$( ls dist )
+      - uses: actions/checkout@v2
+      - name: Test
+        run: source devops/piperblue/test.sh
+
