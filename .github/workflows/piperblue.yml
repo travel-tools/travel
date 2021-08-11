@@ -1,10 +1,8 @@
 name: Piperblue
 on:
-  push:
-    branches: [ release/major/piper/*, release/minor/piper/*, hotfix/major/piper/*, hotfix/minor/piper/* ]
   pull_request:
     types: [opened, synchronize, reopened]
-    branches: [ dev ]
+    branches: [ dev, master ]
   workflow_dispatch:
 
 defaults:
@@ -59,7 +57,7 @@ jobs:
         run: source devops/piperblue/test.sh
 
   release-package-on-test:
-    if: ${{ startsWith(github.ref, 'refs/heads/release') }}
+    if: ${{ startsWith(github.head_ref, 'refs/heads/release/major/piperblue') || startsWith(github.head_ref, 'refs/heads/release/minor/piperblue') startsWith(github.head_ref, 'refs/heads/hotfix/major/piperblue') startsWith(github.head_ref, 'refs/heads/hotfix/minor/piperblue') }}
     environment: test-pypi-piperblue
     needs: test-package
     runs-on: ubuntu-latest
