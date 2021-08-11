@@ -5,7 +5,7 @@ FROM python:${TAG}
 
 # Copy the dist
 ARG DIST="src/piper/package/dist"
-COPY ${DIST}/ dist/
+COPY ${DIST} dist/
 
 # Install the package
 RUN pip install --no-cache-dir -e $(ls dist)

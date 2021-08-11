@@ -82,7 +82,7 @@ jobs:
         uses: docker/build-push-action@v2.6.1
         with:
           build-args: |
-            DIST=${{ github.workspace }}/dist
+            DIST=dist
           file: containers/piper/Dockerfile
           push: true
           tags: ghcr.io/piper-tools/piper:${{ github.sha }}
