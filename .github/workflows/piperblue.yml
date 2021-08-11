@@ -1,4 +1,4 @@
-name: Piper Package
+name: Piperblue
 on:
   push:
     branches: [ release/major/piper/*, release/minor/piper/*, hotfix/major/piper/*, hotfix/minor/piper/* ]

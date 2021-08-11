@@ -2,7 +2,7 @@ import os
 import sys
 from pathlib import Path
 
-from piperblueexample import PiperBlueprintExample
+from piperblueexample.blueprint import PiperBlueprintExample
 
 
 if __name__ == '__main__':
