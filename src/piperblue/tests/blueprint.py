@@ -19,7 +19,7 @@ if __name__ == '__main__':
         "python": "3.7.4"
     }
 
-    PiperBlueprintExample(resources_folder, context, yml)
+    PiperBlueprintExample().generate(resources_folder, context, yml)
 
     # Assertions
     assert os.path.isdir(context)
