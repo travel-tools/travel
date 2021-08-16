@@ -55,11 +55,9 @@ jobs:
       - uses: actions/checkout@v2
       - name: Test
         run: source devops/piperblue/test.sh
-      - name: Echo
-        run: echo ${{ github.head_ref }}
 
   release-package-on-test:
-    if: ${{ startsWith(github.head_ref, 'refs/heads/release/major/piperblue') || startsWith(github.head_ref, 'refs/heads/release/minor/piperblue') || startsWith(github.head_ref, 'refs/heads/hotfix/major/piperblue') || startsWith(github.head_ref, 'refs/heads/hotfix/minor/piperblue') }}
+    if: ${{ startsWith(github.head_ref, 'release/major/piperblue') || startsWith(github.head_ref, 'release/minor/piperblue') || startsWith(github.head_ref, 'hotfix/major/piperblue') || startsWith(github.head_ref, 'hotfix/minor/piperblue') }}
     environment: test-pypi-piperblue
     needs: test-package
     runs-on: ubuntu-latest
