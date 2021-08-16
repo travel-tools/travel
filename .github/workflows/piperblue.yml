@@ -55,7 +55,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Test
         run: |
-          pip install pytest pytest-cov
+          pip install pytest
           source devops/piperblue/test.sh
 
   release-package-on-test:
