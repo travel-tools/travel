@@ -54,7 +54,9 @@ jobs:
           pip install dist/$( ls dist )
       - uses: actions/checkout@v2
       - name: Test
-        run: source devops/piperblue/test.sh
+        run: |
+          pip install pytest pytest-cov
+          source devops/piperblue/test.sh
 
   release-package-on-test:
     if: ${{ startsWith(github.head_ref, 'release/major/piperblue') || startsWith(github.head_ref, 'release/minor/piperblue') || startsWith(github.head_ref, 'hotfix/major/piperblue') || startsWith(github.head_ref, 'hotfix/minor/piperblue') }}
