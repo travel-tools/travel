@@ -24,7 +24,7 @@ jobs:
         id: tags
         with:
           script: |
-            github.tags({
+            github.tags.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
             })
