@@ -20,7 +20,7 @@ jobs:
           python-version: '3.7.11'
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: octokit/request-action@v2
+      - uses: octokit/request-action@v2.x
         id: tags
         with:
           route: GET /repos/${{ github.repository }}/git/refs/tags
