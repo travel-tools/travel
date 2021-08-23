@@ -2,7 +2,7 @@ name: Piperblue
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    branches: [ dev, master ]
+    branches: [ master ]
   workflow_dispatch:
 
 defaults:
@@ -18,16 +18,15 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.7.11'
+      - name: Install dependencies
+        run: pip install requests==2.26.0
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: octokit/request-action@v2.x
+      - name: Get next tag
         id: tags
-        with:
-          route: GET /repos/${{ github.repository }}/git/tags
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: "Echo"
-        run: echo "${{steps.tags.outputs.data}}"
+        run: echo "::set-output name=next::$( python devops/github/tags.py ${{ github.repository }} ${{ github.head_ref }} )"
+      - name: "Change tag"
+        run: python devops/github/replace.py version=.+, version="${{ steps.tags.outputs.next }}"
       - name: Pack
         run: |
           cd src/piperblue/package
@@ -36,7 +35,7 @@ jobs:
       - name: Upload dist
         uses: actions/upload-artifact@v2
         with:
-          name: piperblue-dist
+          name: dist
           path: dist
           if-no-files-found: error
 
@@ -51,7 +50,7 @@ jobs:
       - name: Download dist
         uses: actions/download-artifact@v2
         with:
-          name: piperblue-dist
+          name: dist
           path: ${{ github.workspace }}/dist
       - name: Install package
         run: |
@@ -62,25 +61,5 @@ jobs:
           pip install pytest
           source devops/piperblue/test.sh
 
-  release-package-on-test:
-    if: ${{ startsWith(github.head_ref, 'release/major/piperblue') || startsWith(github.head_ref, 'release/minor/piperblue') || startsWith(github.head_ref, 'hotfix/major/piperblue') || startsWith(github.head_ref, 'hotfix/minor/piperblue') }}
-    environment: test-pypi-piperblue
-    needs: test-package
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.7.11'
-      - name: Download dist
-        uses: actions/download-artifact@v2
-        with:
-          name: piperblue-dist
-          path: ${{ github.workspace }}/dist
-      - name: Release on Test
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_TOKEN }}
-          repository_url: https://test.pypi.org/legacy/
+
 
