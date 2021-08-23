@@ -8,10 +8,24 @@ requirements:
 
 tasks:
 
+  clean:
+    pre:
+      - pipertask: jsonargon==0.1.1
+        name: deep-clean
+
   setup:
     pre:
+      - pipertask: jsonargon==0.1.1
+        name: make-argonauts-1
+        config:
+          something: a
+      - pipertask: jsonargon==0.1.1
+        name: make-argonauts-2
+        config:
+          something: g
 
-      - task: jsonargon==0.1.1
-        name: make-argonauts
+    post:
+      - pipertask: jsonargon==0.1.1
+        name: make-argonauts-3
         config:
           something: a

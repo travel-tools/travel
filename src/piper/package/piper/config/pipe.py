@@ -2,7 +2,7 @@ import logging
 import os
 
 from piper.config.sanitizers import python_sanitizer, pip_sanitizer
-from piper.custom.tasks import Task
+from piper.custom.tasks.task import Task
 
 logger = logging.getLogger(__name__)
 
