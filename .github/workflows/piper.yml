@@ -42,6 +42,8 @@ jobs:
           name: dist
           path: dist
           if-no-files-found: error
+    outputs:
+      version: ${{ steps.tags.outputs.next }}
 
   test-package:
     needs: pack
@@ -80,29 +82,63 @@ jobs:
         with:
           name: dist
           path: ${{ github.workspace }}/dist
-      #- name: Release on Test
-      #  uses: pypa/gh-action-pypi-publish@release/v1
-      #  with:
-      #    user: __token__
-      #    password: ${{ secrets.PYPI_TOKEN }}
-      #    repository_url: https://test.pypi.org/legacy/
+      - name: Release on Test
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
 
-  new-tag:
-    needs: release-package-on-test
+  test-package-on-test-pypi:
+    needs: [release-package-on-test, pack]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.11'
+      - name: Install package
+        run: pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ piper-tools==${{ needs.pack.outputs.version }}
+      - uses: actions/checkout@v2
+      - name: Test
+        run: |
+          pip install pytest
+          source devops/${{ github.event.repository.name }}/test.sh
+
+  new-version:
+    needs: [test-package-on-test-pypi, pack]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.11'
+      - name: Checkout from PR
         uses: actions/checkout@v2
-      - name: Tag
+        if: github.event_name == 'pull_request'
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Checkout from branch
+        uses: actions/checkout@v2
+        if: github.event_name != 'pull_request'
+      - name: Change version
+        run: python devops/github/replace.py src/${{ github.event.repository.name }}/package/setup.py version=.+, version=\"${{ steps.tags.outputs.next }}\",
+      - name: Configure
         run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@users.noreply.github.com'
-          git tag ${{ steps.tags.outputs.next }}
-          git push ${{ steps.tags.outputs.next }}
+      - name: Commit
+        run: |
+          git commit -am "[skip ci] Version ${{ needs.pack.outputs.version }}"
+          git push
+      - name: Tag
+        run: |
+          git tag ${{ needs.pack.outputs.version }}
+          git push --tags
 
   release-package:
     environment: prod-pypi
-    needs: new-tag
+    needs: new-version
     runs-on: ubuntu-latest
     steps:
       - name: Setup Python
@@ -114,11 +150,11 @@ jobs:
         with:
           name: dist
           path: ${{ github.workspace }}/dist
-      #- name: Release on Test
-      #  uses: pypa/gh-action-pypi-publish@release/v1
-      #  with:
-      #    user: __token__
-      #    password: ${{ secrets.PYPI_TOKEN }}
+      - name: Release on Test
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN }}
 
 
   ##########################################
