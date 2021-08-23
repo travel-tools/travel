@@ -82,15 +82,31 @@ jobs:
         with:
           name: dist
           path: ${{ github.workspace }}/dist
-      #- name: Release on Test
-      #  uses: pypa/gh-action-pypi-publish@release/v1
-      #  with:
-      #    user: __token__
-      #    password: ${{ secrets.PYPI_TOKEN }}
-      #    repository_url: https://test.pypi.org/legacy/
+      - name: Release on Test
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+
+  test-package-on-test-pypi:
+    needs: pack
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.11'
+      - name: Install package
+        run: pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ piper-tools==${{ needs.pack.outputs.version }}
+      - uses: actions/checkout@v2
+      - name: Test
+        run: |
+          pip install pytest
+          source devops/${{ github.event.repository.name }}/test.sh
 
   new-version:
-    needs: [release-package-on-test, pack]
+    needs: [test-package-on-test-pypi, pack]
     runs-on: ubuntu-latest
     steps:
       - name: Setup Python
@@ -134,11 +150,11 @@ jobs:
         with:
           name: dist
           path: ${{ github.workspace }}/dist
-      #- name: Release on Test
-      #  uses: pypa/gh-action-pypi-publish@release/v1
-      #  with:
-      #    user: __token__
-      #    password: ${{ secrets.PYPI_TOKEN }}
+      - name: Release on Test
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN }}
 
 
   ##########################################
