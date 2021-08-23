@@ -11,6 +11,9 @@ logger = logging.getLogger(__name__)
 
 class Cleaner(PiperCommand):
 
+    def _phase_name(self):
+        return "clean"
+
     def _manage(self, pipe: Pipe):
 
         logger.info(f"Cleaning {pipe.name}")
@@ -24,3 +27,4 @@ class Cleaner(PiperCommand):
         for path in to_remove:
             if os.path.isdir(path):
                 shutil.rmtree(path)
+

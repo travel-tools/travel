@@ -7,7 +7,7 @@ import pkg_resources
 import yaml
 from piper import RESOURCES_LOCATION
 from piper.config.pipe import Pipe
-from piper.config.sanitizers import pip_sanitizer, pipe_sanitizer
+from piper.config.sanitizers import pip_sanitizer, name_sanitizer
 from piper.tools.venv import Virtualenv
 
 logger = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ def _generate_breath_first(blueprint_file: str, venv: Virtualenv, context: str, 
     for pipe, properties in yml.items():
 
         # Get the folder where the pipe will be created
-        pipe = pipe_sanitizer.sanitize_name(pipe)
+        pipe = name_sanitizer.sanitize_name(pipe)
         pipe_context = os.path.join(context, pipe)
 
         # Is it a blueprint?

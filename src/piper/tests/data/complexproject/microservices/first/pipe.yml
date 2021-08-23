@@ -5,3 +5,13 @@ dependencies:
 
 requirements:
   jsonargon: 0.1.1
+
+tasks:
+
+  setup:
+    pre:
+
+      - task: jsonargon==0.1.1
+        name: make-argonauts
+        config:
+          something: a
