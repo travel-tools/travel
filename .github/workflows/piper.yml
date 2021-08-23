@@ -42,6 +42,8 @@ jobs:
           name: dist
           path: dist
           if-no-files-found: error
+    outputs:
+      version: ${{ steps.tags.outputs.next }}
 
   test-package:
     needs: pack
@@ -111,11 +113,11 @@ jobs:
           git config --global user.email 'actions@users.noreply.github.com'
       - name: Commit
         run: |
-          git commit -am "[skip ci] Version ${{ steps.tags.outputs.next }}"
+          git commit -am "[skip ci] Version ${{ needs.pack.outputs.version }}"
           git push
       - name: Tag
         run: |
-          git tag ${{ steps.tags.outputs.next }}
+          git tag ${{ needs.pack.outputs.version }}
           git push --tags
 
   release-package:
