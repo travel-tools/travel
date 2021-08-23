@@ -36,10 +36,10 @@ def main():
 
     # Release
 
-    # Python
-    python = subparsers.add_parser("python")
-    python.add_argument("package", help="Name of the pipe (it will be used to activate its venv)")
-    python.set_defaults(action=lambda args, rest: python_wrapper.run(args.context, args.package, rest))
+    # # Python
+    # python = subparsers.add_parser("python")
+    # python.add_argument("package", help="Name of the pipe (it will be used to activate its venv)")
+    # python.set_defaults(action=lambda args, rest: python_wrapper.run(args.context, args.package, rest))
 
     # Parse args and invoke the corresponding functions
     arguments, remainder = parser.parse_known_args()

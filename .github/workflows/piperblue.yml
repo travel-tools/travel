@@ -1,0 +1,80 @@
+name: Piperblue
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [ dev, master ]
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+
+  ##########################################
+  # PYTHON
+  ##########################################
+
+  pack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.11'
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Pack
+        run: |
+          cd src/piperblue/package
+          python setup.py sdist
+          cp -r dist ${{ github.workspace }}
+      - name: Upload dist
+        uses: actions/upload-artifact@v2
+        with:
+          name: piperblue-dist
+          path: dist
+          if-no-files-found: error
+
+  test-package:
+    needs: pack
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.11'
+      - name: Download dist
+        uses: actions/download-artifact@v2
+        with:
+          name: piperblue-dist
+          path: ${{ github.workspace }}/dist
+      - name: Install package
+        run: |
+          pip install dist/$( ls dist )
+      - uses: actions/checkout@v2
+      - name: Test
+        run: source devops/piperblue/test.sh
+
+  release-package-on-test:
+    if: ${{ startsWith(github.head_ref, 'refs/heads/release/major/piperblue') || startsWith(github.head_ref, 'refs/heads/release/minor/piperblue') || startsWith(github.head_ref, 'refs/heads/hotfix/major/piperblue') || startsWith(github.head_ref, 'refs/heads/hotfix/minor/piperblue') }}
+    environment: test-pypi-piperblue
+    needs: test-package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.11'
+      - name: Download dist
+        uses: actions/download-artifact@v2
+        with:
+          name: piperblue-dist
+          path: ${{ github.workspace }}/dist
+      - name: Release on Test
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+

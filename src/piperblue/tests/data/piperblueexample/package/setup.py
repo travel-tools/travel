@@ -12,17 +12,18 @@ def _get_resources(package_name):
 
 
 # Read requirements
-requirements_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "requirements.txt")
+this_location = os.path.dirname(os.path.realpath(__file__))
+requirements_file = os.path.join(this_location, "requirements.txt")
 with open(requirements_file, "r") as f:
     requirements = f.read().splitlines()
 
 
 # Package configuration
 setup(
-    name="piperblue",
+    name="piperblueexample",
     version="0.0.0",
-    description="The base package to extend to create a Piper Blueprint",
+    description="An example of Piper Blueprint",
     packages=find_packages(),
-    package_data={"piperblue": _get_resources("piperblue")},
+    package_data={"piperblueexample": _get_resources("piperblueexample")},
     install_requires=requirements
 )

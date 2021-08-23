@@ -24,20 +24,15 @@ with open(readme_file, "r", encoding="utf-8") as f:
 
 
 # Package configuration
-_NAME="piper-tools"
+_NAME="piperblue"
 setup(
     name=_NAME,
     version="0.0.0",
-    description="A software manager for easy development and distribution of Python code",
+    description="The base package to extend to create a Piper Blueprint",
     packages=find_packages(),
-    package_data={"piper": _get_resources("piper")},
+    package_data={"piperblue": _get_resources("piperblue")},
     install_requires=requirements,
     python_requires=">=3.7",
-    entry_points={
-        'console_scripts': [
-            'piper = piper.__main__:main',
-        ],
-    },
 
     long_description=readme,
     long_description_content_type="text/markdown",
