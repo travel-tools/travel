@@ -87,22 +87,38 @@ jobs:
       #    password: ${{ secrets.PYPI_TOKEN }}
       #    repository_url: https://test.pypi.org/legacy/
 
-  new-tag:
+  new-version:
     needs: release-package-on-test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.11'
+      - name: Checkout from PR
         uses: actions/checkout@v2
-      - name: Tag
+        if: github.event_name == 'pull_request'
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Checkout from branch
+        uses: actions/checkout@v2
+        if: github.event_name != 'pull_request'
+      - name: Change version
+        run: python devops/github/replace.py src/${{ github.event.repository.name }}/package/setup.py version=.+, version=\"${{ steps.tags.outputs.next }}\",
+      - name: Configure
         run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@users.noreply.github.com'
+      - name: Commit
+          git commit -am "[skip ci] Version ${{ steps.tags.outputs.next }}"
+          git push
+      - name: Tag
           git tag ${{ steps.tags.outputs.next }}
-          git push ${{ steps.tags.outputs.next }}
+          git push --tags
 
   release-package:
     environment: prod-pypi
-    needs: new-tag
+    needs: new-version
     runs-on: ubuntu-latest
     steps:
       - name: Setup Python
