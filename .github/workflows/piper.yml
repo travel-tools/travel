@@ -110,9 +110,11 @@ jobs:
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@users.noreply.github.com'
       - name: Commit
+        run: |
           git commit -am "[skip ci] Version ${{ steps.tags.outputs.next }}"
           git push
       - name: Tag
+        run: |
           git tag ${{ steps.tags.outputs.next }}
           git push --tags
 
