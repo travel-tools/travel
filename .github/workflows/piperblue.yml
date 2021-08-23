@@ -26,7 +26,7 @@ jobs:
         id: tags
         run: echo "::set-output name=next::$( python devops/github/tags.py ${{ github.repository }} ${{ github.head_ref }} )"
       - name: "Change tag"
-        run: python devops/github/replace.py version=.+, version="${{ steps.tags.outputs.next }}"
+        run: python devops/github/replace.py src/piperblue/package/setup.py version=.+, version=\"${{ steps.tags.outputs.next }}\",
       - name: Pack
         run: |
           cd src/piperblue/package
