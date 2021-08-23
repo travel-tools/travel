@@ -27,7 +27,7 @@ with open(readme_file, "r", encoding="utf-8") as f:
 _NAME="piper-tools"
 setup(
     name=_NAME,
-    version="0.0.0",
+    version="",
     description="A software manager for easy development and distribution of Python code",
     packages=find_packages(),
     package_data={"piper": _get_resources("piper")},
