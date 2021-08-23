@@ -1,10 +1,8 @@
 name: Piper
 on:
-  push:
-    tags: [ piper/* ]
   pull_request:
-    types: [opened, synchronize, reopened]
-    branches: [ dev ]
+    types: [ opened, synchronize, reopened ]
+    branches: [ dev, master ]
   workflow_dispatch:
 
 defaults:
@@ -24,17 +22,24 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.7.11'
+      - name: Install dependencies
+        run: pip install requests==2.26.0
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Get next tag
+        id: tags
+        run: echo "::set-output name=next::$( python devops/github/tags.py ${{ github.repository }} ${{ github.head_ref }} )"
+      - name: "Change tag"
+        run: python devops/github/replace.py src/${{ github.event.repository.name }}/package/setup.py version=.+, version=\"${{ steps.tags.outputs.next }}\",
       - name: Pack
         run: |
-          cd src/piper/package
+          cd src/${{ github.event.repository.name }}/package
           python setup.py sdist
           cp -r dist ${{ github.workspace }}
       - name: Upload dist
         uses: actions/upload-artifact@v2
         with:
-          name: piper-dist
+          name: dist
           path: dist
           if-no-files-found: error
 
@@ -49,14 +54,71 @@ jobs:
       - name: Download dist
         uses: actions/download-artifact@v2
         with:
-          name: piper-dist
+          name: dist
           path: ${{ github.workspace }}/dist
-      - name: Install piper
+      - name: Install package
         run: |
           pip install dist/$( ls dist )
       - uses: actions/checkout@v2
-      - name: Test the Complex Project
-        run: source devops/piper/test.sh
+      - name: Test
+        run: |
+          pip install pytest
+          source devops/${{ github.event.repository.name }}/test.sh
+
+  release-package-on-test:
+    if: ${{ github.base_ref == 'master' && ( startsWith(github.head_ref, 'release/major/') || startsWith(github.head_ref, 'release/minor/') || startsWith(github.head_ref, 'hotfix/major/') || startsWith(github.head_ref, 'hotfix/minor/') ) }}
+    environment: test-pypi
+    needs: test-package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.11'
+      - name: Download dist
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: ${{ github.workspace }}/dist
+      #- name: Release on Test
+      #  uses: pypa/gh-action-pypi-publish@release/v1
+      #  with:
+      #    user: __token__
+      #    password: ${{ secrets.PYPI_TOKEN }}
+      #    repository_url: https://test.pypi.org/legacy/
+
+  new-tag:
+    needs: release-package-on-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Tag
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@users.noreply.github.com'
+          git tag ${{ steps.tags.outputs.next }}
+          git push ${{ steps.tags.outputs.next }}
+
+  release-package:
+    environment: prod-pypi
+    needs: new-tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.11'
+      - name: Download dist
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: ${{ github.workspace }}/dist
+      #- name: Release on Test
+      #  uses: pypa/gh-action-pypi-publish@release/v1
+      #  with:
+      #    user: __token__
+      #    password: ${{ secrets.PYPI_TOKEN }}
 
 
   ##########################################
@@ -64,7 +126,7 @@ jobs:
   ##########################################
 
   build-docker:
-    needs: pack
+    needs: test-package
     runs-on: ubuntu-latest
     steps:
       - name: Set up Docker Buildx
@@ -74,7 +136,7 @@ jobs:
       - name: Download dist
         uses: actions/download-artifact@v2
         with:
-          name: piper-dist
+          name: dist
           path: ${{ github.workspace }}/dist
       - name: Login to GHCR
         uses: docker/login-action@v1
@@ -88,18 +150,20 @@ jobs:
           build-args: |
             DIST=dist
           context: ${{ github.workspace }}
-          file: containers/piper/Dockerfile
+          file: containers/${{ github.event.repository.name }}/Dockerfile
           push: true
-          tags: ghcr.io/piper-tools/piper:${{ github.sha }}
+          tags: ghcr.io/${{ github.repository }}:${{ github.sha }}
 
   test-docker:
     needs: build-docker
     runs-on: ubuntu-latest
-    container: ghcr.io/piper-tools/piper:${{ github.sha }}
+    container: ghcr.io/${{ github.repository }}:${{ github.sha }}
     steps:
       - uses: actions/checkout@v2
-      - name: Test the Complex Project
-        run: source devops/piper/test.sh
+      - name: Test
+        run: |
+          pip install pytest
+          source devops/${{ github.event.repository.name }}/test.sh
 
   clean-docker:
     needs: build-docker
@@ -112,4 +176,4 @@ jobs:
           REGISTRY_PAT: ${{ secrets.REGISTRY_PAT }}
         run: |
           pip install requests==2.26.0
-          python devops/github/registry.py --artifact piper --action delete-all-except-last --keep 5
+          python devops/github/registry.py --artifact ${{ github.event.repository.name }} --action delete-all-except-last --keep 5
