@@ -23,7 +23,7 @@ jobs:
       - uses: octokit/request-action@v2.x
         id: tags
         with:
-          route: GET /repos/${{ github.repository }}/git/refs/tags
+          route: GET /repos/${{ github.repository }}/git/tags
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: "Echo"
