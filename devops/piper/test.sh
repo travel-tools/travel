@@ -1,5 +1,7 @@
 #!/bin/bash
 
+python -m pip install --upgrade pip
+
 cd src/piper/tests/data/complexproject
 piper setup
 cd microservices/second/
