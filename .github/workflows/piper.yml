@@ -72,6 +72,7 @@ jobs:
       - name: Test Windows
         if: ${{ matrix.os == 'windows-latest' }}
         run: devops\${{ github.event.repository.name }}\test.bat
+        shell: cmd
 
   release-package-on-test:
     if: ${{ github.base_ref == 'master' && ( startsWith(github.head_ref, 'release/major/') || startsWith(github.head_ref, 'release/minor/') || startsWith(github.head_ref, 'hotfix/major/') || startsWith(github.head_ref, 'hotfix/minor/') ) }}
@@ -117,6 +118,7 @@ jobs:
       - name: Test Windows
         if: ${{ matrix.os == 'windows-latest' }}
         run: devops\${{ github.event.repository.name }}\test.bat
+        shell: cmd
 
   new-version:
     needs: [test-package-on-test-pypi, pack]
