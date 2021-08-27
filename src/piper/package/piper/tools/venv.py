@@ -12,9 +12,7 @@ from piper.tools.python import main_python as default_python
 logger = logging.getLogger(__name__)
 
 
-_CREATE_VENV = "(" + ") || (".join(["{python} -m venv {venv}",
-                                    "virtualenv -p {python} {venv}",
-                                    "pip install virtualenv && virtualenv -p {python} {venv}"]) + ")"
+_CREATE_VENV = "{python} -m venv {venv} --upgrade-deps"
 
 
 class Virtualenv:
