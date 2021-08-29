@@ -2,6 +2,7 @@ import argparse
 import importlib
 import inspect
 import os
+import re
 from pathlib import Path
 
 import yaml
@@ -9,7 +10,7 @@ from typing import Dict, Any
 from pipertask.task import PiperTask
 
 
-def _read_config(context: str, name: str) -> Dict[str, Any]:
+def _read_config(context: str, name: str) -> (Dict[str, Any], str):
     # Read the pipe file
     with open(os.path.join(context, "pipe.yml")) as p:
         pipe = yaml.load(p, Loader=yaml.SafeLoader) or {}
@@ -25,17 +26,20 @@ def _read_config(context: str, name: str) -> Dict[str, Any]:
     if len(matching) != 1:
         raise ValueError(f"There should be a single task named {name}")
 
+    # Get package name
+    package = re.search(r"^([a-zA-Z0-9\-\._]+)", matching[0]["pipertask"]).group(1)
+
     # Return the config
-    return matching[0].get("config", {})
+    return matching[0].get("config", {}), package
 
 
 def perform(context, name):
 
     # Get configs
-    config = _read_config(context, name)
+    config, package = _read_config(context, name)
 
     # Import the task class
-    module = f"{name}.task"
+    module = f"{package}.task"
     all_tasks = inspect.getmembers(
         importlib.import_module(module),
         lambda member: inspect.isclass(member) and member.__module__ == module and issubclass(member, PiperTask)
@@ -43,7 +47,9 @@ def perform(context, name):
     task = all_tasks[1]
 
     # Perform the task
+    print(f"   TASK {name}   ".center(60, '*'))
     task().perform(Path(context), config)
+    print("*"*60)
 
 
 def main():
