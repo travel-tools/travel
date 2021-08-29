@@ -35,4 +35,4 @@ class Pip(Executable):
                 raise ValueError(f"{pipes} without versions (or pipes) are not allowed here")
             else:
                 all_pipes = read_all_pipes(allow_pipes_from)
-                super().run(f"install -e {[p.setup_py_folder for p in all_pipes.values() if p.name in pipes]}")
+                super().run(f"install -e {' '.join([p.setup_py_folder for p in all_pipes.values() if p.name in pipes])}")
