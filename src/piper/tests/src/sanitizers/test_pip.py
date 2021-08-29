@@ -21,7 +21,7 @@ def test_pip_sanitizer():
     with pytest.raises(AssertionError):
         sanitize_versioned_package("ok || rm -rf *")
     
-    complex = "example>5.4.*,!=6.0.0, <= 6.9.8   "
+    complex = "example>5.4.*, !=6.0.0,  <=6.9.8   "
     assert sanitize_versioned_package(complex) == complex
     with pytest.raises(AssertionError):
         sanitize_versioned_package(complex + ", echo ok && rm -rf *")

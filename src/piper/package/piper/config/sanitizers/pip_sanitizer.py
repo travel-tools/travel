@@ -4,12 +4,13 @@ import re
 from piper.config.sanitizers import asserter
 
 
-_BASE_CHARS = r"^[A-Za-z0-9\-\._]+$"
-_PACKAGE = re.compile(_BASE_CHARS)
-_VERSION = re.compile(_BASE_CHARS)  # To be changed or not?
+_BASE_CHARS = r"[A-Za-z0-9\-\._]+"
+_PACKAGE = re.compile(r"^"+_BASE_CHARS+r"$")
+_VERSION = re.compile(r"^"+_BASE_CHARS+r"$")  # To be changed or not?
 
 _MODIFIERS = r"(==|<|<=|>|>=|!=|===|~=)"
-_VERSIONED_PACKAGE = r"^"+_BASE_CHARS+r"("+_MODIFIERS+_BASE_CHARS+",)*("+_MODIFIERS+_BASE_CHARS+")? *$"
+_VERSIONS_M = r"[A-Za-z0-9\-\._\*]+"
+_VERSIONED_PACKAGE = re.compile(r"^"+_BASE_CHARS+r"("+_MODIFIERS+_VERSIONS_M+", *)*("+_MODIFIERS+_VERSIONS_M+")? *$")
 
 
 def sanitize_package(package: str) -> str:
