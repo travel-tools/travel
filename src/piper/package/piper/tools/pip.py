@@ -1,9 +1,8 @@
-import os
 from typing import List, Union
 
-from piper.config.sanitizers.pip_sanitizer import sanitize_versioned_package
-from piper.tools.executable import Executable
 from piper.config.reader import read_all_pipes
+from piper.config.sanitizers.pip_sanitizer import sanitize_package, sanitize_versioned_package, is_just_package
+from piper.tools.executable import Executable
 
 
 class Pip(Executable):
@@ -35,4 +34,4 @@ class Pip(Executable):
                 raise ValueError(f"{pipes} without versions (or pipes) are not allowed here")
             else:
                 all_pipes = read_all_pipes(allow_pipes_from)
-                super().run(f"install -e {[p.setup_py_folder for p in all_pipes]}")
+                super().run(f"install -e {[p.setup_py_folder for p in all_pipes.values()]}")
