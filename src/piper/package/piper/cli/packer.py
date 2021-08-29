@@ -5,18 +5,22 @@ from distutils.dir_util import copy_tree
 
 import setuptools
 from piper.cli.setupper import Setupper
+from piper.custom.tasks import performer
 from piper.tools.venv import Virtualenv
 
 logger = logging.getLogger(__name__)
 
 
-def pack(context: str, package: str, command: str):
+def pack(context: str, command: str, package: str = None):
 
     # Setup the pipes and dependencies
     current_pipe, all_pipes = Setupper().manage(context, package=package)
 
+    # Pre-pack
+    performer.perform_tasks("pack", "pre", current_pipe)
+
     # Get the right python (this might be useful in case the setup.py uses a particular syntax)
-    env = Virtualenv(all_pipes[package])
+    env = Virtualenv(current_pipe)
 
     # Clean the previous target folder, if existing
     build_folder = current_pipe.build_folder
@@ -38,6 +42,9 @@ def pack(context: str, package: str, command: str):
     # Setup the code
     setup_py = os.path.join(source_build_folder, "setup.py")
     env.python.run(f"{setup_py} {' '.join(command)}", cwd=source_build_folder)  # TODO should check for spaces and commas, or use list!
+
+    # Post-pack
+    performer.perform_tasks("pack", "post", current_pipe)
 
 
 def _copy_folder(source, destination):

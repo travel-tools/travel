@@ -39,6 +39,9 @@ def read_all_pipes(location: str) -> Dict[str, Pipe]:
 
     # Read main pipe file and nested pipe files
     pipes = {pipe.name: pipe for pipe in _read_pipes_from(uppermost)}
+    # Set the root context
+    for p in pipes.values():
+        p.root_context = uppermost
 
     # Build dependencies
     for name in pipes:

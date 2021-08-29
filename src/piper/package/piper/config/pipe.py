@@ -2,27 +2,37 @@ import logging
 import os
 
 from piper.config.sanitizers import python_sanitizer, pip_sanitizer
+from piper.custom.tasks.task import Task
 
 logger = logging.getLogger(__name__)
 
 
 class Pipe:
 
-    def __init__(self, location: str, yml: dict):
+    def __init__(self, location: str, yml: dict, root_context: str = None):
         self.location = location
+        self.root_context = root_context
         self.name = os.path.basename(os.path.normpath(location))
         self.group = []
 
         # Pop the config entries
         config = yml.copy()
         self.python = python_sanitizer.sanitize_version(config.pop("python", None), nullable=True)
-        self.dependencies = {pip_sanitizer.sanitize_package(dep): None for dep in config.pop("dependencies", [])}
-        self.requirements = {pip_sanitizer.sanitize_package(name): pip_sanitizer.sanitize_version(version) for name, version in config.pop("requirements", {}).items()}
+        self.dependencies = {pip_sanitizer.sanitize_package(dep): None for dep in config.pop("dependencies", [])}  # To be filled later
+        self.requirements = [pip_sanitizer.sanitize_versioned_package(req) for req in config.pop("requirements", {})]
+        self.tasks = {
+            phase: {
+                step: [Task(definition) for definition in tasks]
+                for step, tasks in steps.items()
+            }
+            for phase, steps in config.pop("tasks", {}).items()
+        }
 
         # Extra utils
         self.package = self.name  # But could be different
         self.setup_py_folder = os.path.join(self.location, "package")  # But could be different
         self.build_folder = os.path.join(self.location, "build")  # But could be different
+        self.tasks_folder = os.path.join(self.build_folder, "tasks")
         self.requirements_file = os.path.join(self.setup_py_folder, "requirements.txt")
 
         # If there are still configs, they are unknown. Raise an error

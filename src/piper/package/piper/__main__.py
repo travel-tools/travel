@@ -31,8 +31,8 @@ def main():
 
     # Pack
     pack = subparsers.add_parser("pack")
-    pack.add_argument("package", help="Name of the pipe to run setup.py commands")
-    pack.set_defaults(action=lambda args, rest: packer.pack(args.context, args.package, rest))
+    pack.add_argument("--package", help="Name of the pipe to run setup.py commands", required=False)
+    pack.set_defaults(action=lambda args, rest: packer.pack(args.context, rest, package=args.package))
 
     # Release
 
