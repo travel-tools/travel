@@ -31,7 +31,7 @@ def _generate_breath_first(blueprint_file: str, venv: Virtualenv, context: str, 
             if len(blueprint) != 1:
                 raise ValueError(f"Error in '{pipe}': this pipe's blueprint must be a single 'name: version_or_path' dictionary")
             name = pip_sanitizer.sanitize_package(list(blueprint.keys())[0])
-            venv.pip.install(blueprint, allow_local_files=True)
+            venv.pip.install(blueprint, allow_pipes_from=context)
 
             # Generate the blueprint
             command = f'"{_GENERATE_BLUEPRINT}" --context "{pipe_context}" --blueprint {name} --file "{blueprint_file}" --pipe {pipe}'
@@ -50,7 +50,7 @@ def run(context: str):
     venv = Virtualenv(Pipe(location=context, yml={}))
     venv.create()
     version = pip_sanitizer.sanitize_version(pkg_resources.get_distribution("PyYAML").version)
-    venv.pip.install({"PyYAML": version})
+    venv.pip.install(f"PyYAML=={version}")
 
     # Read the blueprint file
     path = os.path.join(context, "blueprint.yml")

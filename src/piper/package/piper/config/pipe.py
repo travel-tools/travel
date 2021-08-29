@@ -9,8 +9,9 @@ logger = logging.getLogger(__name__)
 
 class Pipe:
 
-    def __init__(self, location: str, yml: dict):
+    def __init__(self, location: str, yml: dict, root_context: str = None):
         self.location = location
+        self.root_context = root_context
         self.name = os.path.basename(os.path.normpath(location))
         self.group = []
 

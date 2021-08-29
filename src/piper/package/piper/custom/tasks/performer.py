@@ -16,7 +16,7 @@ def perform_tasks(phase: str, step: str, pipe: Pipe):
         # Create the env for tasks # TODO could be different venvs to avoid conflicts?
         venv = Virtualenv(Pipe(location=pipe.tasks_folder, yml={}))
         venv.create()
-        venv.pip.install({t.pipertask_name: t.pipertask_version for t in tasks}, allow_local_files=True)  # TODO probably nothing should be dict
+        venv.pip.install([t.pipertask for t in tasks], allow_pipes_from=pipe.root_context)
 
         # Perform each task in order
         for task in tasks:
