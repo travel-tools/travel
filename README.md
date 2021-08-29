@@ -28,6 +28,16 @@ All in all, Piper lets you design **proper structure and modularity** for your c
 
 You can find an example of Piper project [here](https://github.com/piper-tools/piper/tree/master/src/piper/tests/data/complexproject).
 
+## Installation
+
+With Python >= 3.7, simply run
+
+```
+pip install piper-tools
+```
+
+From now on, you can use `piper` from command line.
+
 ## Basic Usage
 
 Once you have defined your structure of Pipes (submodules of your project), for instance like in the [example](https://github.com/piper-tools/piper/tree/master/src/piper/tests/data/complexproject) or like this
