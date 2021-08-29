@@ -3,7 +3,7 @@ import os
 from piper.config.reader import read_all_pipes
 
 
-DATA = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "data")
+DATA = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "..", "data")
 
 
 def test_reader():

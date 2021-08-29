@@ -4,7 +4,7 @@ from piper import RESOURCES_LOCATION
 from piper.config.pipe import Pipe
 from piper.tools.venv import Virtualenv
 
-_PERFORM_TASK = os.path.join(RESOURCES_LOCATION, "tasks", "task.py")
+_PERFORM_TASK = os.path.join(RESOURCES_LOCATION, "tasks", "perform.py")
 
 
 def perform_tasks(phase: str, step: str, pipe: Pipe):
