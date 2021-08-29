@@ -4,8 +4,8 @@ from typing import Set
 
 from piper.config.pipe import Pipe
 from piper.config.reader import get_pipe_name, read_all_pipes
+from piper.custom.tasks import performer
 from piper.tools.python import main_python, Python
-
 
 logger = logging.getLogger(__name__)
 
@@ -14,6 +14,13 @@ class PiperCommand(abc.ABC):
 
     def __init__(self, python: Python = main_python):
         self.main_python = python
+
+    @abc.abstractmethod
+    def _phase_name(self) -> str:
+        pass
+
+    def _perform_tasks(self, pipe: Pipe, step: str):
+        return performer.perform_tasks(self._phase_name(), step, pipe)
 
     @abc.abstractmethod
     def _manage(self, pipe: Pipe):
@@ -30,7 +37,9 @@ class PiperCommand(abc.ABC):
                     logger.info("="*60)
                     logger.info(f"=== {p.name.center(52, ' ')} ===")
                     logger.info("="*60)
+                    self._perform_tasks(p, "pre")
                     self._manage(p)
+                    self._perform_tasks(p, "post")
                     logger.info("=" * 60)
                     logger.info("")
                     logger.info("")

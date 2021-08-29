@@ -12,9 +12,7 @@ from piper.tools.python import main_python as default_python
 logger = logging.getLogger(__name__)
 
 
-_CREATE_VENV = "(" + ") || (".join(["{python} -m venv {venv}",
-                                    "virtualenv -p {python} {venv}",
-                                    "pip install virtualenv && virtualenv -p {python} {venv}"]) + ")"
+_CREATE_VENV = "{python} -m venv {venv}"
 
 
 class Virtualenv:
@@ -47,10 +45,10 @@ class Virtualenv:
 
         # Install requirements
         logger.info("Installing requirements...")
-        for pipe in [*self.pipe.flat_dependencies(), self.pipe]:
+        for pipe in self.pipe.flat_dependencies(with_current=True):
             self.pip.run(f"install -e {pipe.setup_py_folder}")
             if pipe.requirements:
-                self.pip.run(f"install {' '.join([f'{name}=={version}' for name, version in pipe.requirements.items()])}")
+                self.pip.install(pipe.requirements)
         logger.info("Done.")
 
     def freeze(self):

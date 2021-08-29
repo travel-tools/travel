@@ -47,25 +47,32 @@ jobs:
 
   test-package:
     needs: pack
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        python: [3.7, 3.8, 3.9]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.7.11'
+          python-version: ${{ matrix.python }}
       - name: Download dist
         uses: actions/download-artifact@v2
         with:
           name: dist
           path: ${{ github.workspace }}/dist
       - name: Install package
-        run: |
-          pip install dist/$( ls dist )
+        run: pip install dist/$( ls dist )
       - uses: actions/checkout@v2
-      - name: Test
-        run: |
-          pip install pytest
-          source devops/${{ github.event.repository.name }}/test.sh
+      - run: pip install pytest
+      - name: Test Unix
+        if: ${{ matrix.os != 'windows-latest' }}
+        run: source devops/${{ github.event.repository.name }}/test.sh
+      - name: Test Windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: devops\${{ github.event.repository.name }}\test.bat
+        shell: cmd
 
   release-package-on-test:
     if: ${{ github.base_ref == 'master' && ( startsWith(github.head_ref, 'release/major/') || startsWith(github.head_ref, 'release/minor/') || startsWith(github.head_ref, 'hotfix/major/') || startsWith(github.head_ref, 'hotfix/minor/') ) }}
@@ -91,19 +98,27 @@ jobs:
 
   test-package-on-test-pypi:
     needs: [release-package-on-test, pack]
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        python: [3.7, 3.8, 3.9]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.7.11'
+          python-version: ${{ matrix.python }}
       - name: Install package
         run: pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ piper-tools==${{ needs.pack.outputs.version }}
       - uses: actions/checkout@v2
-      - name: Test
-        run: |
-          pip install pytest
-          source devops/${{ github.event.repository.name }}/test.sh
+      - run: pip install pytest
+      - name: Test Unix
+        if: ${{ matrix.os != 'windows-latest' }}
+        run: source devops/${{ github.event.repository.name }}/test.sh
+      - name: Test Windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: devops\${{ github.event.repository.name }}\test.bat
+        shell: cmd
 
   new-version:
     needs: [test-package-on-test-pypi, pack]
@@ -122,7 +137,7 @@ jobs:
         uses: actions/checkout@v2
         if: github.event_name != 'pull_request'
       - name: Change version
-        run: python devops/github/replace.py src/${{ github.event.repository.name }}/package/setup.py version=.+, version=\"${{ steps.tags.outputs.next }}\",
+        run: python devops/github/replace.py src/${{ github.event.repository.name }}/package/setup.py version=.+, version=\"${{ needs.pack.outputs.version }}\",
       - name: Configure
         run: |
           git config --global user.name 'GitHub Actions'
@@ -150,7 +165,7 @@ jobs:
         with:
           name: dist
           path: ${{ github.workspace }}/dist
-      - name: Release on Test
+      - name: Release
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__

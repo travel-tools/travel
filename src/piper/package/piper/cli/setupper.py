@@ -8,6 +8,9 @@ from piper.tools.venv import Virtualenv
 
 class Setupper(PiperCommand):
 
+    def _phase_name(self) -> str:
+        return "setup"
+
     def _manage(self, pipe: Pipe):
 
         # Prepare the requirements file

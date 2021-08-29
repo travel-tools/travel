@@ -10,6 +10,7 @@ def replace(file: str, regex: str, replacement: str):
     with open(file, "w") as f:
         f.write(content)
 
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
