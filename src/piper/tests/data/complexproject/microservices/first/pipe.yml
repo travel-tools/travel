@@ -4,7 +4,7 @@ dependencies:
   - common
 
 requirements:
-  jsonargon: 0.1.1
+  - jsonargon==0.1.1
 
 tasks:
 

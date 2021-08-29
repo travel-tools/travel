@@ -48,7 +48,7 @@ class Virtualenv:
         for pipe in self.pipe.flat_dependencies(with_current=True):
             self.pip.run(f"install -e {pipe.setup_py_folder}")
             if pipe.requirements:
-                self.pip.run(f"install {' '.join([f'{name}=={version}' for name, version in pipe.requirements.items()])}")
+                self.pip.install(pipe.requirements)
         logger.info("Done.")
 
     def freeze(self):
