@@ -11,7 +11,7 @@ from piper.tools.venv import Virtualenv
 logger = logging.getLogger(__name__)
 
 
-def pack(context: str, package: str, command: str):
+def pack(context: str, command: str, package: str = None):
 
     # Setup the pipes and dependencies
     current_pipe, all_pipes = Setupper().manage(context, package=package)
@@ -20,7 +20,7 @@ def pack(context: str, package: str, command: str):
     performer.perform_tasks("pack", "pre", current_pipe)
 
     # Get the right python (this might be useful in case the setup.py uses a particular syntax)
-    env = Virtualenv(all_pipes[package])
+    env = Virtualenv(current_pipe)
 
     # Clean the previous target folder, if existing
     build_folder = current_pipe.build_folder

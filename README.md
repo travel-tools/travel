@@ -27,3 +27,55 @@ All in all, Piper lets you design **proper structure and modularity** for your c
 ## Example of Piper Project
 
 You can find an example of Piper project [here](https://github.com/piper-tools/piper/tree/master/src/piper/tests/data/complexproject).
+
+## Basic Usage
+
+Once you have defined your structure of Pipes (submodules of your project), for instance like in the [example](https://github.com/piper-tools/piper/tree/master/src/piper/tests/data/complexproject) or like this
+
+```
+complexproject/
+    common/
+        package/
+        pipe.yml
+    microservices/
+        first/
+            package/
+            pipe.yml
+        second/
+            package/
+            pipe.yml
+        pipe.yml
+    pipe.yml
+```
+
+you can run
+
+```
+piper setup
+```
+
+in the main folder, where the first `pipe.yml` file is located.
+
+This will:
+
+- Understand the dependencies
+- Create the Virtual Environments
+- Install the requirements
+- Install the packages themselves in development mode (so that you can `import` them in their Virtual Environments)
+
+
+You can also create a distribution package with `piper pack [commands]`, which is the equivalent of `python setup.py [commands]`, for instance:
+
+```
+piper pack sdist
+```
+
+in the folder of the Pipe you want to pack. This will create the distribution in the `./build/package/dist` folder.
+
+In any moment, you can run
+
+```
+piper clean
+```
+
+to destroy the Virtual Environments and other build objects.
