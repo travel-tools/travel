@@ -28,10 +28,8 @@ def _generate_breath_first(blueprint_file: str, venv: Virtualenv, context: str, 
 
             # Get the package of the blueprint
             blueprint = properties["blueprint"]
-            if len(blueprint) != 1:
-                raise ValueError(f"Error in '{pipe}': this pipe's blueprint must be a single 'name: version_or_path' dictionary")
-            name = pip_sanitizer.sanitize_package(list(blueprint.keys())[0])
-            venv.pip.install(blueprint, allow_pipes_from=context)
+            name = pip_sanitizer.sanitize_versioned_package(blueprint)
+            venv.pip.install(name, allow_pipes_from=context)
 
             # Generate the blueprint
             command = f'"{_GENERATE_BLUEPRINT}" --context "{pipe_context}" --blueprint {name} --file "{blueprint_file}" --pipe {pipe}'
