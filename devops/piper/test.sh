@@ -8,6 +8,7 @@ cd data/complexproject
 piper setup
 cd microservices/second/
 venv-second/bin/python package/second/__init__.py
-piper clean
 
 piper pack sdist
+
+piper clean
