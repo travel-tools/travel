@@ -21,7 +21,8 @@ class Pip(Executable):
             for req in requirements
             if not is_just_package(req)
         ]
-        super().run(f"install {' '.join(packages)}")
+        if packages:
+            super().run(f"install {' '.join(packages)}")
 
         # Install pipes
         pipes = [
