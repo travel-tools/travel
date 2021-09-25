@@ -1,6 +1,7 @@
 import os
 
 import pytest
+from piper.config.reader import read_all_pipes
 
 
 class ComplexProject:
@@ -15,6 +16,7 @@ class ComplexProject:
         self.pipertask_example = "pipertaskexample"
 
         self.piper_project = os.path.join(data_location, self.name)
+        self.pipes = read_all_pipes(self.piper_project)
 
 
 @pytest.fixture
@@ -25,4 +27,3 @@ def data_location():
 @pytest.fixture
 def complex_project(data_location):
     return ComplexProject(data_location)
-

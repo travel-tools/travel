@@ -8,7 +8,7 @@ from piper.tools.executable import Executable
 class Pip(Executable):
 
     def __init__(self, pre_command: str = None):
-        super().__init__("pip", pre_command=pre_command)
+        super().__init__("pip --disable-pip-version-check", pre_command=pre_command)
 
     def install(self, requirements: Union[List[str], str], allow_pipes_from=None):
 

@@ -1,13 +1,6 @@
-from piper.config.reader import read_all_pipes
-
-
-def _read(complex_project):
-    return read_all_pipes(complex_project.piper_project)
-
-
 def test_finder(complex_project):
     # Number of pipes
-    pipes = _read(complex_project)
+    pipes = complex_project.pipes
     assert len(pipes) == 7
     assert len([
         p for p in pipes.keys() 
@@ -24,7 +17,7 @@ def test_finder(complex_project):
 
 
 def test_structure(complex_project):
-    pipes = _read(complex_project)
+    pipes = complex_project.pipes
     # Root context
     assert len([p for p in pipes.values() if p.root_context != complex_project.piper_project]) == 0
     # Dependencies
@@ -37,5 +30,5 @@ def test_structure(complex_project):
 
 def test_read_tasks(complex_project):
     # Tasks reader
-    pipes = _read(complex_project)
+    pipes = complex_project.pipes
     assert len(pipes[complex_project.first].tasks["setup"]["pre"]) == 2
