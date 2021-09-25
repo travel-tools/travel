@@ -8,7 +8,7 @@ cd data/blueprint/complex
 piper blueprint --local-blueprints ../locals
 cd ../../
 
-cd data/complexproject
+cd complexproject
 piper clean
 piper setup
 cd microservices/second/
