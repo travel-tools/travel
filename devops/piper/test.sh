@@ -4,6 +4,10 @@ set -e
 cd src/piper/tests/
 pytest
 
+cd data/blueprint/complex
+piper blueprint --local-blueprints ../locals
+cd ../../
+
 cd data/complexproject
 piper clean
 piper setup
