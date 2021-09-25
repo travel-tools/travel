@@ -5,6 +5,7 @@ cd src/piper/tests/
 pytest
 
 cd data/complexproject
+piper clean
 piper setup
 cd microservices/second/
 venv-second/bin/python package/second/__init__.py

@@ -3,12 +3,13 @@ from typing import List, Union
 from piper.config.reader import read_all_pipes
 from piper.config.sanitizers.pip_sanitizer import sanitize_package, sanitize_versioned_package, is_just_package
 from piper.tools.executable import Executable
+from piper.tools.python import Python
 
 
 class Pip(Executable):
 
-    def __init__(self, pre_command: str = None):
-        super().__init__("pip", pre_command=pre_command)
+    def __init__(self, python: Python, pre_command: str = None):
+        super().__init__(f"{python.path} -m pip --disable-pip-version-check", pre_command=pre_command)
 
     def install(self, requirements: Union[List[str], str], allow_pipes_from=None):
 
