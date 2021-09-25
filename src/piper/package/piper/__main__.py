@@ -23,7 +23,8 @@ def main():
 
     # Blueprint
     blueprint = subparsers.add_parser("blueprint")
-    blueprint.set_defaults(action=lambda args, rest: blueprinter.run(args.context))
+    blueprint.add_argument("--local-blueprints", help="Extra folders containing the main pipe.yml of the local blueprints to use", nargs="+", required=False)
+    blueprint.set_defaults(action=lambda args, rest: blueprinter.run(args.context, local_blueprints=args.local_blueprints))
 
     # Setup
     setup = subparsers.add_parser("setup")
