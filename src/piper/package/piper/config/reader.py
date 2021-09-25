@@ -6,7 +6,7 @@ from typing import List, Dict
 import yaml
 from piper.config.pipe import Pipe
 
-_PIPE_FILE = "pipe.yml"
+PIPE_FILE = "pipe.yml"
 
 
 logger = logging.getLogger(__name__)
@@ -15,14 +15,14 @@ logger = logging.getLogger(__name__)
 def _read_pipe(location: str) -> Pipe:
 
     # Read the pipe file
-    path = os.path.join(location, _PIPE_FILE)
+    path = os.path.join(location, PIPE_FILE)
     with open(path) as f:
         yml = yaml.load(f, Loader=yaml.SafeLoader) or {}
         return Pipe(location=location, yml=yml)
 
 
 def _has_pipe(location: str) -> bool:
-    return os.path.isfile(os.path.join(location, _PIPE_FILE))
+    return os.path.isfile(os.path.join(location, PIPE_FILE))
 
 
 def get_pipe_name(location: str) -> str:

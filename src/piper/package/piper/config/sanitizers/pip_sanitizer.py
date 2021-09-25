@@ -5,6 +5,7 @@ from piper.config.sanitizers import asserter
 
 
 _BASE_CHARS = r"[A-Za-z0-9\-\._]+"
+_PACKAGE_NAME = re.compile(_BASE_CHARS)
 _PACKAGE = re.compile(r"^"+_BASE_CHARS+r"$")
 _VERSION = re.compile(r"^"+_BASE_CHARS+r"$")  # To be changed or not?
 
@@ -30,3 +31,7 @@ def sanitize_version(version: str, accept_path=False) -> str:
 
 def sanitize_versioned_package(spec: str) -> str:
     return asserter.regex(_VERSIONED_PACKAGE, spec)
+
+
+def get_package_name(spec: str) -> str:
+    return _PACKAGE_NAME.match(spec).group(0)
