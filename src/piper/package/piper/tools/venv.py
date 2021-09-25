@@ -25,9 +25,8 @@ class Virtualenv:
 
         self.pipe = pipe
         self.path = os.path.join(pipe.location, self._name)
-        activate = _get_activate_command(self.path)
-        self.python = Python(path=os.path.join(self.path, "bin" if os.name == "posix" else "Scripts", "python" if os.name == "posix" else "python.exe"), pre_command=activate)
-        self.pip = Pip(pre_command=activate)
+        self.python = Python(path=os.path.join(self.path, "bin" if os.name == "posix" else "Scripts", "python" if os.name == "posix" else "python.exe"))
+        self.pip = Pip(self.python)
 
     def create(self) -> None:
         # Create the virtualenv if it does not exist
@@ -132,14 +131,3 @@ def _is_valid_requirement(requirement: str) -> bool:
 
     # Check if there is one match
     return requirement and not re.match(forbidden_match, requirement)
-
-
-def _get_activate_command(path) -> str:
-    # Get activate command
-    if os.name == "nt":
-        activate = f"{path}\\Scripts\\activate"
-    elif os.name == "posix":
-        activate = f". {path}/bin/activate"
-    else:
-        raise NotImplementedError(f"Operating System {os.name} not supported.")
-    return activate
