@@ -1,7 +1,7 @@
 import logging
 import os
 import shutil
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 import pkg_resources
 import yaml
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 _GENERATE_BLUEPRINT = os.path.join(RESOURCES_LOCATION, "blueprint", "generate.py")
 
 
-def _generate_breath_first(blueprint_file: str, venv: Virtualenv, context: str, yml: Dict[str, Any]):
+def _generate_breath_first(blueprint_file: str, venv: Virtualenv, context: str, yml: Dict[str, Any], local_blueprints: List[str] = None):
 
     # Generate these blueprints
     for pipe, properties in yml.items():
@@ -29,7 +29,7 @@ def _generate_breath_first(blueprint_file: str, venv: Virtualenv, context: str, 
             # Get the package of the blueprint
             blueprint = properties["blueprint"]
             name = pip_sanitizer.sanitize_versioned_package(blueprint)
-            venv.pip.install(name, allow_pipes_from=context)
+            venv.pip.install(name, allow_pipes_from=local_blueprints)
 
             # Generate the blueprint
             command = f'"{_GENERATE_BLUEPRINT}" --context "{pipe_context}" --blueprint {name} --file "{blueprint_file}" --pipe {pipe}'
@@ -39,10 +39,10 @@ def _generate_breath_first(blueprint_file: str, venv: Virtualenv, context: str, 
     for pipe, properties in yml.items():
         pipe_context = os.path.join(context, pipe)
         if "pipes" in properties:
-            _generate_breath_first(blueprint_file, venv, pipe_context, properties["pipes"])
+            _generate_breath_first(blueprint_file, venv, pipe_context, properties["pipes"], local_blueprints=local_blueprints)
 
 
-def run(context: str):
+def run(context: str, local_blueprints: List[str] = None):
 
     # Temporary create a venv
     venv = Virtualenv(Pipe(location=context, yml={}))
@@ -58,7 +58,7 @@ def run(context: str):
         raise ValueError("Blueprint file must not be empty and should contain at least 'pipes' key.")
 
     # Generate
-    _generate_breath_first(path, venv, context, yml["pipes"])
+    _generate_breath_first(path, venv, context, yml["pipes"], local_blueprints=local_blueprints)
 
     # Remove the temporary venv
     shutil.rmtree(venv.path)
