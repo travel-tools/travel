@@ -33,7 +33,7 @@ def pack(context: str, command: str, package: str = None):
     # For all dependencies, copy their code too
     for dep in current_pipe.flat_dependencies():
         # For all code packages, copy it inside the copied setup.py folder
-        for folder in setuptools.find_packages(where=dep.setup_py_folder):
+        for folder in [p for p in setuptools.find_packages(where=dep.setup_py_folder) if "." not in p]:
             _copy_folder(
                 os.path.join(dep.setup_py_folder, folder),
                 os.path.join(source_build_folder)
