@@ -1,8 +1,11 @@
 import os
 import re
+from typing import Optional
 
 from piper.config.sanitizers import asserter
 
+
+LATEST_PIP = "latest"
 
 _BASE_CHARS = r"[A-Za-z0-9\-\.\[,\]_]+"  # Support the package[extra1,extra2] syntax
 _PACKAGE_NAME = re.compile(_BASE_CHARS)
@@ -27,6 +30,13 @@ def sanitize_version(version: str, accept_path=False) -> str:
         return version
     else:
         return asserter.regex(_VERSION, version)
+
+
+def sanitize_pip_version(version: str, nullable: bool = False) -> Optional[str]:
+    if version is None and nullable:
+        return None
+    else:
+        return version == LATEST_PIP or asserter.regex(_VERSION, version)
 
 
 def sanitize_versioned_package(spec: str) -> str:
