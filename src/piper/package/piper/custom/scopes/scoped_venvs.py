@@ -34,3 +34,10 @@ class ScopedVirtualenvs():
     def update_all(self):
         for scope in self.envs.keys():
             self.update(scope)
+
+    def freeze(self, scope: str):
+        self.envs[scope].freeze()
+
+    def freeze_all(self):
+        for scope in self.envs.keys():
+            self.freeze(scope)
