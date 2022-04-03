@@ -43,5 +43,5 @@ def sanitize_versioned_package(spec: str) -> str:
     return asserter.regex(_VERSIONED_PACKAGE, spec)
 
 
-def get_package_name(spec: str) -> str:
-    return _PACKAGE_NAME.match(spec).group(0)
+def get_package_name(spec: str, standardize: bool = False) -> str:
+    return _PACKAGE_NAME.match(spec).group(0).lower().replace("-", "_")
