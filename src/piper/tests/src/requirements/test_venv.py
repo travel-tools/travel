@@ -16,11 +16,11 @@ def test_pip_version(complex_project):
     venv.update()
 
     # Check pip version
-    assert pipe.pip in venv.pip.run("--version", capture=True).stdout
+    assert pipe.pip.version in venv.pip.run("--version", capture=True).stdout
 
     # Force pip version to latest
-    old_pip_version = pipe.pip
-    pipe.pip = LATEST_PIP
+    old_pip_version = pipe.pip.version
+    pipe.pip.version = LATEST_PIP
 
     # Update pip and check if the old version is no more there
     venv.update()
