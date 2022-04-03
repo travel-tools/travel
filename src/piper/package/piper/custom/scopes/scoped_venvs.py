@@ -8,7 +8,7 @@ from piper.tools.python import main_python as default_python
 
 class ScopedVirtualenvs():
 
-    def __init__(self, pipe: Pipe, main_python: Python = default_python):
+    def __init__(self, pipe: Pipe, main_python: Python = default_python, touch_requirements_file: bool = False):
         self.envs = {
             scope: BaseVirtualenv(
                 location=pipe.location,
@@ -16,7 +16,8 @@ class ScopedVirtualenvs():
                 pip_config=pipe.pip,
                 dependencies=pipe.flat_dependencies(with_current=True),
                 requirements_file=os.path.join(pipe.location, f"requirements_{scope}.txt"),
-                main_python=main_python
+                main_python=main_python,
+                touch_requirements_file=touch_requirements_file
             )
             for scope, config in pipe.scopes.items()
         }

@@ -2,6 +2,7 @@ import logging
 import os
 import re
 import subprocess
+from pathlib import Path
 from typing import List
 
 from piper.config.pipe import Pipe
@@ -21,7 +22,7 @@ _CREATE_VENV = "{python} -m venv {venv}"
 
 class BaseVirtualenv:
 
-    def __init__(self, location: str, name_suffix: str, pip_config: PipConfig, dependencies: List[Pipe], requirements_file: str, main_python: Python = default_python):
+    def __init__(self, location: str, name_suffix: str, pip_config: PipConfig, dependencies: List[Pipe], requirements_file: str, main_python: Python = default_python, touch_requirements_file: bool = False):
         self._main_python = main_python
         self._name = f"venv-{name_suffix}"
 
@@ -32,6 +33,11 @@ class BaseVirtualenv:
         self.path = os.path.join(location, self._name)
         self.python = Python(path=os.path.join(self.path, "bin" if os.name == "posix" else "Scripts", "python" if os.name == "posix" else "python.exe"))
         self.pip = Pip(self.python)
+
+        # Prepare the requirements file
+        if touch_requirements_file:
+            if not os.path.isfile(requirements_file):
+                Path(requirements_file).touch()
 
     def create(self) -> None:
         # Create the virtualenv if it does not exist
