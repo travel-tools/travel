@@ -35,9 +35,9 @@ class Pipe:
         self.tasks_folder = os.path.join(self.build_folder, "tasks")
         self.requirements_file = os.path.join(self.setup_py_folder, "requirements.txt")
 
-        # If there are still configs, they are unknown. Raise an error
+        # If there are still configs, they are unknown. Print a warning (for retro-compatibility)
         if config:
-            raise KeyError(f"Unknown configuration in pipe file: {config}")
+            logger.warning(f"Unknown configuration in pipe file \"{self.name}\": {config}")
 
     def fill_dependency_with_pipe(self, pipe):
         self.dependencies[pipe.name] = pipe
