@@ -4,7 +4,7 @@ import re
 from piper.config.sanitizers import asserter
 
 
-_BASE_CHARS = r"[A-Za-z0-9\-\._]+"
+_BASE_CHARS = r"[A-Za-z0-9\-\.\[,\]_]+"  # Support the package[extra1,extra2] syntax
 _PACKAGE_NAME = re.compile(_BASE_CHARS)
 _PACKAGE = re.compile(r"^"+_BASE_CHARS+r"$")
 _VERSION = re.compile(r"^"+_BASE_CHARS+r"$")  # To be changed or not?
