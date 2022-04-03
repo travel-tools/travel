@@ -50,7 +50,7 @@ class Virtualenv:
         if pip_version:
             logger.info("Check pip version...")
             if pip_version == LATEST_PIP:
-                self.pip.run("install pip")
+                self.pip.run("install --upgrade pip")
             else:
                 self.pip.install(f"pip=={pip_version}")
 
