@@ -16,7 +16,7 @@ def test_pip_version(complex_project):
     venv.update()
 
     # Check pip version
-    assert pipe.pip in venv.pip.run("--version").stdout
+    assert pipe.pip in venv.pip.run("--version", capture=True).stdout
 
     # Force pip version to latest
     old_pip_version = pipe.pip
@@ -24,7 +24,7 @@ def test_pip_version(complex_project):
 
     # Update pip and check if the old version is no more there
     venv.update()
-    assert old_pip_version not in venv.pip.run("--version").stdout
+    assert old_pip_version not in venv.pip.run("--version", capture=True).stdout
 
 
 def test_remove_requirements(complex_project):
