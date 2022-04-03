@@ -26,10 +26,6 @@ def test_pip_version(complex_project):
     venv.update()
     assert old_pip_version not in venv.pip.run("--version", capture=True).stdout
 
-    # Cleanup
-    Cleaner().manage_from_pipe(pipe)
-    os.remove(pipe.requirements_file)
-
 
 def test_remove_requirements(complex_project):
 
