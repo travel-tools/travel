@@ -3,6 +3,7 @@ import os
 
 from piper.config.sanitizers import python_sanitizer, pip_sanitizer
 from piper.config.subconfigs.pip import PipConfig
+from piper.config.subconfigs.scopes import ScopeConfig
 from piper.custom.tasks.task import Task
 
 logger = logging.getLogger(__name__)
@@ -28,6 +29,10 @@ class Pipe:
                 for step, tasks in steps.items()
             }
             for phase, steps in config.pop("tasks", {}).items()
+        }
+        self.scopes = {
+            scope: ScopeConfig(scope, scope_config)
+            for scope, scope_config in config.pop("scopes", {}).items()
         }
 
         # Extra utils

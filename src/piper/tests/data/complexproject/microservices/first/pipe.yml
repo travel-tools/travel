@@ -29,3 +29,13 @@ tasks:
         name: make-argonauts-3
         config:
           something: a
+
+scopes:
+
+  notebooks:
+    requirements:
+      - jupyter==1.0.0
+
+  tests:
+    requirements:
+      - pytest==7.1.1
