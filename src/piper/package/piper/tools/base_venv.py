@@ -22,13 +22,14 @@ _CREATE_VENV = "{python} -m venv {venv}"
 
 class BaseVirtualenv:
 
-    def __init__(self, location: str, name_suffix: str, pip_config: PipConfig, dependencies: List[Pipe], requirements_file: str, main_python: Python = default_python, touch_requirements_file: bool = False):
+    def __init__(self, location: str, name_suffix: str, pip_config: PipConfig, dependencies: List[Pipe], requirements_file: str, main_python: Python = default_python, touch_requirements_file: bool = False, extra_requirements: List[str] = None):
         self._main_python = main_python
         self._name = f"venv-{name_suffix}"
 
         self.pip_config = pip_config
         self.dependencies = dependencies
         self.requirements_file = requirements_file
+        self.extra_requirements = extra_requirements
 
         self.path = os.path.join(location, self._name)
         self.python = Python(path=os.path.join(self.path, "bin" if os.name == "posix" else "Scripts", "python" if os.name == "posix" else "python.exe"))
@@ -76,6 +77,10 @@ class BaseVirtualenv:
             if pipe.requirements:
                 self.pip.install(pipe.requirements)
                 explicit_requirements = explicit_requirements + pipe.requirements
+
+        if self.extra_requirements:
+            self.pip.install(self.extra_requirements)
+            explicit_requirements = explicit_requirements + self.extra_requirements
 
         # Uninstall the unnecessary requirements
         installed_requirements = [pip_sanitizer.get_package_name(f) for f in self._freeze()]

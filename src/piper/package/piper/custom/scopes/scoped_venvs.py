@@ -17,7 +17,8 @@ class ScopedVirtualenvs():
                 dependencies=pipe.flat_dependencies(with_current=True),
                 requirements_file=os.path.join(pipe.location, f"requirements_{scope}.txt"),
                 main_python=main_python,
-                touch_requirements_file=touch_requirements_file
+                touch_requirements_file=touch_requirements_file,
+                extra_requirements=config.requirements
             )
             for scope, config in pipe.scopes.items()
         }
