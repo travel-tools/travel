@@ -46,7 +46,7 @@ class Virtualenv:
     def update(self):
 
         # Upgrade pip if required
-        pip_version = self.pipe.pip
+        pip_version = self.pipe.pip.version
         if pip_version:
             logger.info("Check pip version...")
             self.pip.run("install pip" + "" if pip_version == LATEST_PIP else f"=={pip_version}")
