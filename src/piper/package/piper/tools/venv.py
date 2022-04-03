@@ -6,6 +6,7 @@ from typing import List
 
 from piper.config.pipe import Pipe
 from piper.config.sanitizers import pip_sanitizer
+from piper.config.sanitizers.pip_sanitizer import LATEST_PIP
 from piper.tools.pip import Pip
 from piper.tools.python import Python
 from piper.tools.python import main_python as default_python
@@ -43,6 +44,12 @@ class Virtualenv:
             )
 
     def update(self):
+
+        # Upgrade pip if required
+        pip_version = self.pipe.pip
+        if pip_version:
+            logger.info("Check pip version...")
+            self.pip.run("install --upgrade pip" + "" if pip_version == LATEST_PIP else f"=={pip_version}")
 
         # Install requirements
         logger.info("Installing requirements...")
