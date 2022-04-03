@@ -58,7 +58,7 @@ class Virtualenv:
                 explicit_requirements = explicit_requirements + pipe.requirements
 
         # Uninstall the unnecessary requirements
-        installed_requirements = [pip_sanitizer.get_package_name(f) for f in self._freeze()]
+        installed_requirements = [pip_sanitizer.get_package_name(f, standardize=True) for f in self._freeze()]
         necessary_requirements = self._recursive_requirements(explicit_requirements) if explicit_requirements else []
         unnecessary_requirements = set(installed_requirements) - set(necessary_requirements)
         if unnecessary_requirements:
@@ -97,7 +97,7 @@ class Virtualenv:
         def _find_recursively(reqs):
 
             # Parse this level requirements
-            explicit_requirements = [pip_sanitizer.get_package_name(req) for req in reqs]
+            explicit_requirements = [pip_sanitizer.get_package_name(req, standardize=True) for req in reqs]
 
             # Get the implicit requirements, needed by these requirements
             output = self.pip.run(f"show {' '.join(explicit_requirements)}", capture=True).stdout
