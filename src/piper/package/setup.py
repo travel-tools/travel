@@ -32,7 +32,7 @@ setup(
     packages=find_packages(),
     package_data={"piper": _get_resources("piper")},
     install_requires=requirements,
-    python_requires=">=3.7",
+    python_requires=">=3.6",
     entry_points={
         'console_scripts': [
             'piper = piper.__main__:main',
