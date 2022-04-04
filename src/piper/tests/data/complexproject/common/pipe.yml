@@ -1,4 +1,6 @@
 python: 3.7.4
+pip:
+  version: 22.0.3
 
 requirements:
   - PyYAML==5.4.1
