@@ -50,6 +50,6 @@ setup(
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7"
+        "Programming Language :: Python :: 3.6"
     ]
 )

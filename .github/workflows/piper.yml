@@ -65,7 +65,7 @@ jobs:
       - name: Install package
         run: pip install dist/$( ls dist )
       - uses: actions/checkout@v2
-      - run: pip install pytest==7.1.1
+      - run: pip install pytest==7.0.1
       - name: Test Unix
         if: ${{ matrix.os != 'windows-latest' }}
         run: source devops/${{ github.event.repository.name }}/test.sh
@@ -111,7 +111,7 @@ jobs:
       - name: Install package
         run: pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ piper-tools==${{ needs.pack.outputs.version }}
       - uses: actions/checkout@v2
-      - run: pip install pytest==7.1.1
+      - run: pip install pytest==7.0.1
       - name: Test Unix
         if: ${{ matrix.os != 'windows-latest' }}
         run: source devops/${{ github.event.repository.name }}/test.sh
@@ -213,7 +213,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Test
         run: |
-          pip install pytest==7.1.1
+          pip install pytest==7.0.1
           source devops/${{ github.event.repository.name }}/test.sh
 
   clean-docker:
