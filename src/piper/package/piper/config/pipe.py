@@ -2,6 +2,8 @@ import logging
 import os
 
 from piper.config.sanitizers import python_sanitizer, pip_sanitizer
+from piper.config.subconfigs.pip import PipConfig
+from piper.config.subconfigs.scopes import ScopeConfig
 from piper.custom.tasks.task import Task
 
 logger = logging.getLogger(__name__)
@@ -18,6 +20,7 @@ class Pipe:
         # Pop the config entries
         config = yml.copy()
         self.python = python_sanitizer.sanitize_version(config.pop("python", None), nullable=True)
+        self.pip = PipConfig(config.pop("pip", {}))
         self.dependencies = {pip_sanitizer.sanitize_package(dep): None for dep in config.pop("dependencies", [])}  # To be filled later
         self.requirements = [pip_sanitizer.sanitize_versioned_package(req) for req in config.pop("requirements", {})]
         self.tasks = {
@@ -27,6 +30,10 @@ class Pipe:
             }
             for phase, steps in config.pop("tasks", {}).items()
         }
+        self.scopes = {
+            scope: ScopeConfig(scope, scope_config)
+            for scope, scope_config in config.pop("scopes", {}).items()
+        }
 
         # Extra utils
         self.package = self.name  # But could be different
@@ -35,9 +42,9 @@ class Pipe:
         self.tasks_folder = os.path.join(self.build_folder, "tasks")
         self.requirements_file = os.path.join(self.setup_py_folder, "requirements.txt")
 
-        # If there are still configs, they are unknown. Raise an error
+        # If there are still configs, they are unknown. Print a warning (for retro-compatibility)
         if config:
-            raise KeyError(f"Unknown configuration in pipe file: {config}")
+            logger.warning(f"Unknown configuration in pipe file \"{self.name}\": {config}")
 
     def fill_dependency_with_pipe(self, pipe):
         self.dependencies[pipe.name] = pipe

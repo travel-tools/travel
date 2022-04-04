@@ -1,7 +1,30 @@
 import os
 
 from piper.cli.cleaner import Cleaner
+from piper.config.sanitizers.pip_sanitizer import LATEST_PIP
 from piper.tools.venv import Virtualenv
+
+
+def test_pip_version(complex_project):
+
+    # Pipe
+    pipe = complex_project.pipes[complex_project.common]
+
+    # Create the virtualenv
+    venv = Virtualenv(pipe)
+    venv.create()
+    venv.update()
+
+    # Check pip version
+    assert pipe.pip.version in venv.pip.run("--version", capture=True).stdout
+
+    # Force pip version to latest
+    old_pip_version = pipe.pip.version
+    pipe.pip.version = LATEST_PIP
+
+    # Update pip and check if the old version is no more there
+    venv.update()
+    assert old_pip_version not in venv.pip.run("--version", capture=True).stdout
 
 
 def test_remove_requirements(complex_project):
