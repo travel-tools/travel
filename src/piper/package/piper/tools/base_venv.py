@@ -81,7 +81,7 @@ class BaseVirtualenv:
             # Get the freezed requirements and the written requirements
             freezed_requirements = self._freeze()
             with open(self.requirements_file, "r") as f:
-                written_requirements = f.readlines()
+                written_requirements = f.read().splitlines()
             
             # Read the latest_update
             latest_update = LatestUpdate.read(latest_update_path)
