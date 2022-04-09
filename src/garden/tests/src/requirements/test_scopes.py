@@ -6,17 +6,17 @@ from garden.custom.scopes.scoped_venvs import ScopedVirtualenvs
 def test_scopes(complex_project):
 
     # Pipe
-    pipe = complex_project.pipes[complex_project.first]
+    nest = complex_project.nests[complex_project.first]
 
     # Create all scopes
-    scopes = ScopedVirtualenvs(pipe, touch_requirements_file=True)
+    scopes = ScopedVirtualenvs(nest, touch_requirements_file=True)
     scopes.create_all()
     scopes.update_all()
     scopes.freeze_all()
 
     # Verify envs
     for scope in scopes.envs.keys():
-        assert (Path(pipe.location)/f"venv-{pipe.name}-{scope}").is_dir()
+        assert (Path(nest.location)/f"venv-{nest.name}-{scope}").is_dir()
 
     # Check for single env
     for scope, env in scopes.envs.items():
@@ -26,9 +26,9 @@ def test_scopes(complex_project):
             requirements = f.read()
 
         # Are there the extra requirements?
-        for req in pipe.scopes[scope].requirements:
+        for req in nest.scopes[scope].requirements:
             assert req in requirements
 
-        # Are there the pipe requirements?
-        for req in pipe.requirements:
+        # Are there the nest requirements?
+        for req in nest.requirements:
             assert req in requirements

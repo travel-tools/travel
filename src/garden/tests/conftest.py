@@ -1,7 +1,7 @@
 import os
 
 import pytest
-from garden.config.reader import read_all_pipes
+from garden.config.reader import read_all_nests
 
 
 class ComplexProject:
@@ -16,7 +16,7 @@ class ComplexProject:
         self.gardentask_example = "gardentaskexample"
 
         self.garden_project = os.path.join(data_location, self.name)
-        self.pipes = read_all_pipes(self.garden_project)
+        self.nests = read_all_nests(self.garden_project)
 
 
 @pytest.fixture

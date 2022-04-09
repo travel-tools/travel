@@ -1,4 +1,4 @@
-pipes:
+nests:
 
   common:
     blueprint: piperblueexample
@@ -9,7 +9,7 @@ pipes:
       python: 3.7.4
 
   microservices:
-    pipes:
+    nests:
 
       first:
         blueprint: piperblueexample

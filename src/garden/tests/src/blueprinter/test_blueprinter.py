@@ -16,13 +16,13 @@ def test_blueprint(data_location):
     local_blueprints = blueprint_folder/"locals"
     blueprint_file = blueprint_file_location/"blueprint.yml"
 
-    # Create the pipes
+    # Create the nests
     blueprinter.run(blueprint_file_location, local_blueprints=local_blueprints)
 
-    # Check the pipes structure against the blueprint file
+    # Check the nests structure against the blueprint file
     with open(blueprint_file) as f:
         yml = yaml.load(f, Loader=yaml.SafeLoader)
-    _is_created(blueprint_file_location, yml["pipes"])
+    _is_created(blueprint_file_location, yml["nests"])
 
     # Cleanup
     tmp_blueprint_file = blueprint_folder/"blueprint.yml"
@@ -37,6 +37,6 @@ def _is_created(context: Path, yml: Dict[str, Any]):
     assert context.is_dir()
     assert (context/PIPE_FILE).is_file()
 
-    for pipe, properties in yml.items():
-        if "pipes" in properties:
-            _is_created(context/pipe, properties["pipes"])
+    for nest, properties in yml.items():
+        if "nests" in properties:
+            _is_created(context/nest, properties["nests"])

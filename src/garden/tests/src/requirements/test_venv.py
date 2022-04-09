@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 
-import yaml
 from garden.cli.cleaner import Cleaner
 from garden.config.sanitizers.pip_sanitizer import LATEST_PIP
 from garden.tools.base_venv import LATEST_UPDATE
@@ -12,10 +11,10 @@ from garden.tools.venv import Virtualenv
 def test_quick_setup(complex_project):
 
     # Pipe
-    pipe = complex_project.pipes[complex_project.common]
+    nest = complex_project.nests[complex_project.common]
 
     # Create the virtualenv
-    venv = Virtualenv(pipe)
+    venv = Virtualenv(nest)
     venv.create()
     venv.update()
 
@@ -23,7 +22,7 @@ def test_quick_setup(complex_project):
     assert venv.update() is False
 
     # Test that update will be performed first, and then no more
-    pipe.requirements = []
+    nest.requirements = []
     assert venv.update() is True
     venv.freeze()
     assert venv.update() is False
@@ -50,19 +49,19 @@ def test_quick_setup(complex_project):
 def test_pip_version(complex_project):
 
     # Pipe
-    pipe = complex_project.pipes[complex_project.common]
+    nest = complex_project.nests[complex_project.common]
 
     # Create the virtualenv
-    venv = Virtualenv(pipe)
+    venv = Virtualenv(nest)
     venv.create()
     venv.update()
 
     # Check pip version
-    assert pipe.pip.version in venv.pip.run("--version", capture=True).stdout
+    assert nest.pip.version in venv.pip.run("--version", capture=True).stdout
 
     # Force pip version to latest
-    old_pip_version = pipe.pip.version
-    pipe.pip.version = LATEST_PIP
+    old_pip_version = nest.pip.version
+    nest.pip.version = LATEST_PIP
 
     # Update pip and check if the old version is no more there
     venv.update()
@@ -71,17 +70,17 @@ def test_pip_version(complex_project):
 
 def test_remove_requirements(complex_project):
 
-    # Common pipe
-    pipe = complex_project.pipes[complex_project.common]
+    # Common nest
+    nest = complex_project.nests[complex_project.common]
 
     # Create the virtualenv
-    venv = Virtualenv(pipe)
+    venv = Virtualenv(nest)
     venv.create()
     venv.update()
 
     # Check the requirement file
     venv.freeze()
-    with open(pipe.requirements_file, "r") as f:
+    with open(nest.requirements_file, "r") as f:
         right_requirements = f.read()
 
     # Install manually a requirement
@@ -90,16 +89,16 @@ def test_remove_requirements(complex_project):
     # Check that this function removes the manually inserted requirements
     venv.update()
     venv.freeze()
-    with open(pipe.requirements_file, "r") as f:
+    with open(nest.requirements_file, "r") as f:
         now_requirements = f.read()
     assert right_requirements == now_requirements
 
-    # Remove requirements from the pipe
-    old_requirements = pipe.requirements
-    pipe.requirements = ["pandas==1.3.3"]
+    # Remove requirements from the nest
+    old_requirements = nest.requirements
+    nest.requirements = ["pandas==1.3.3"]
     venv.update()
     venv.freeze()
-    with open(pipe.requirements_file, "r") as f:
+    with open(nest.requirements_file, "r") as f:
         now_requirements = f.read()
     assert "pandas" in now_requirements
     assert "python-dateutil" in now_requirements
@@ -108,6 +107,6 @@ def test_remove_requirements(complex_project):
         assert r not in now_requirements
 
     # Clean everything
-    Cleaner().manage_from_pipe(pipe)
-    os.remove(pipe.requirements_file)
+    Cleaner().manage_from_nest(nest)
+    os.remove(nest.requirements_file)
 
