@@ -2,10 +2,10 @@ version: "3"
 
 services:
 
-  piper:
+  garden:
 
     build:
       context: "./../.."
-      dockerfile: "containers/piper/Dockerfile.source"
+      dockerfile: "containers/garden/Dockerfile.source"
 
-    image: "piper"
+    image: "garden"

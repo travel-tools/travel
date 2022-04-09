@@ -4,7 +4,7 @@ ARG TAG="3.7.4"
 FROM python:${TAG}
 
 # Copy the dist
-ARG DIST="src/piper/package/dist"
+ARG DIST="src/garden/package/dist"
 COPY ${DIST} dist/
 
 # Install the package

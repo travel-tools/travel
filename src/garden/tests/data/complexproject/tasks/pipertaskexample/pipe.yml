@@ -1,0 +1,4 @@
+python: 3.7.4
+
+requirements:
+  - gardentask==0.1.0

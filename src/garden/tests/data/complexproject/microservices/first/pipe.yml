@@ -1,0 +1,41 @@
+python: 3.7.4
+
+dependencies:
+  - common
+
+requirements:
+  - jsonargon==0.1.1
+
+tasks:
+
+  clean:
+    pre:
+      - gardentask: gardentaskexample
+        name: deep-clean
+
+  setup:
+    pre:
+      - gardentask: gardentaskexample
+        name: make-argonauts-1
+        config:
+          something: a
+      - gardentask: gardentaskexample
+        name: make-argonauts-2
+        config:
+          something: g
+
+    post:
+      - gardentask: gardentaskexample
+        name: make-argonauts-3
+        config:
+          something: a
+
+scopes:
+
+  notebooks:
+    requirements:
+      - jupyter==1.0.0
+
+  tests:
+    requirements:
+      - pytest==7.1.1
