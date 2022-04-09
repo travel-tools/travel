@@ -5,7 +5,7 @@ from garden.custom.scopes.scoped_venvs import ScopedVirtualenvs
 
 def test_scopes(complex_project):
 
-    # Pipe
+    # Nest
     nest = complex_project.nests[complex_project.first]
 
     # Create all scopes

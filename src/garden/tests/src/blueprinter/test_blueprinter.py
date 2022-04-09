@@ -5,7 +5,7 @@ from typing import Dict, Any
 
 import yaml
 from garden.cli import blueprinter
-from garden.config.reader import PIPE_FILE
+from garden.config.reader import NEST_FILE
 
 
 def test_blueprint(data_location):
@@ -35,7 +35,7 @@ def test_blueprint(data_location):
 def _is_created(context: Path, yml: Dict[str, Any]):
 
     assert context.is_dir()
-    assert (context/PIPE_FILE).is_file()
+    assert (context/NEST_FILE).is_file()
 
     for nest, properties in yml.items():
         if "nests" in properties:

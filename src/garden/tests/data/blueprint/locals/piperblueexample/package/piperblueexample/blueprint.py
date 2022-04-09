@@ -1,10 +1,10 @@
 import os
 from typing import Dict, Any
 
-from piperblue.blueprint import PiperBlueprint
+from piperblue.blueprint import NestrBlueprint
 
 
-class PiperBlueprintExample(PiperBlueprint):
+class NestrBlueprintExample(NestrBlueprint):
 
     def get_file_and_folders_renamings(self, context: str, config: Dict[str, Any]) -> Dict[str, str]:
 
