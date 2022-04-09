@@ -19,6 +19,7 @@ def pack(context: str, command: str, target: str = None, setup: bool = True):
         current_pipe, all_pipes = Setupper().manage(context, target=target)
     else:
         current_pipe, all_pipes = parse_pipes(context, target)
+        Virtualenv(current_pipe).create()
 
     # Pre-pack
     performer.perform_tasks("pack", "pre", current_pipe)
