@@ -177,7 +177,7 @@ jobs:
   ##########################################
 
   build-docker:
-    needs: test-package
+    needs: pack
     runs-on: ubuntu-latest
     steps:
       - name: Set up Docker Buildx
