@@ -17,7 +17,7 @@ class LatestUpdate:
     @classmethod
     def read(cls, path):
         with open(path, "r") as f:
-            yml = yaml.parse(f, yaml.SafeLoader)
+            yml = yaml.load(f, yaml.SafeLoader) or {}
         return cls(yml)
 
     def write(self, path):
