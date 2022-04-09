@@ -22,4 +22,4 @@ class LatestUpdate:
 
     def write(self, path):
         with open(path, "w") as f:
-            yaml.dump(self, f)
+            yaml.dump(vars(self), f)
