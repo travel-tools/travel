@@ -7,7 +7,7 @@ from pathlib import Path
 
 import yaml
 from typing import Dict, Any
-from pipertask.task import GardenTask
+from pipertask.task import PiperTask
 
 
 def _read_config(context: str, name: str) -> (Dict[str, Any], str):
@@ -42,7 +42,7 @@ def perform(context, name):
     module = f"{package}.task"
     all_tasks = inspect.getmembers(
         importlib.import_module(module),
-        lambda member: inspect.isclass(member) and member.__module__ == module and issubclass(member, GardenTask)
+        lambda member: inspect.isclass(member) and member.__module__ == module and issubclass(member, PiperTask)
     )[0]
     task = all_tasks[1]
 
