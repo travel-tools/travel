@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 _CREATE_VENV = "{python} -m venv {venv}"
-LATEST_UPDATE = "latest_update.txt"
+LATEST_UPDATE = "latest_update.yml"
 
 
 class BaseVirtualenv:
