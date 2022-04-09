@@ -11,4 +11,4 @@ class Task:
 
         # If there are still configs, they are unknown. Raise an error
         if yml:
-            raise KeyError(f"Unknown configuration in pipe file, task {self.name}: {yml}")
+            raise KeyError(f"Unknown configuration in nest file, task {self.name}: {yml}")

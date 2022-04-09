@@ -4,81 +4,81 @@ from pathlib import Path
 from typing import List, Dict
 
 import yaml
-from garden.config.pipe import Pipe
+from garden.config.nest import Nest
 
-PIPE_FILE = "pipe.yml"
+NEST_FILE = "nest.yml"
 
 
 logger = logging.getLogger(__name__)
 
 
-def _read_pipe(location: str) -> Pipe:
+def _read_nest(location: str) -> Nest:
 
-    # Read the pipe file
-    path = os.path.join(location, PIPE_FILE)
+    # Read the nest file
+    path = os.path.join(location, NEST_FILE)
     with open(path) as f:
         yml = yaml.load(f, Loader=yaml.SafeLoader) or {}
-        return Pipe(location=location, yml=yml)
+        return Nest(location=location, yml=yml)
 
 
-def _has_pipe(location: str) -> bool:
-    return os.path.isfile(os.path.join(location, PIPE_FILE))
+def _has_nest(location: str) -> bool:
+    return os.path.isfile(os.path.join(location, NEST_FILE))
 
 
-def get_pipe_name(location: str) -> str:
+def get_nest_name(location: str) -> str:
     return os.path.basename(os.path.normpath(location))
 
 
-def read_all_pipes(location: str) -> Dict[str, Pipe]:
+def read_all_nests(location: str) -> Dict[str, Nest]:
 
-    # Find the uppermost (parent) pipe file
+    # Find the uppermost (parent) nest file
     uppermost = location
-    while _has_pipe(location):
+    while _has_nest(location):
         uppermost = location
         location = str(Path(location).parent)
 
-    # Read main pipe file and nested pipe files
-    pipes = {pipe.name: pipe for pipe in _read_pipes_from(uppermost)}
+    # Read main nest file and nested nest files
+    nests = {nest.name: nest for nest in _read_nests_from(uppermost)}
     # Set the root context
-    for p in pipes.values():
-        p.root_context = uppermost
+    for n in nests.values():
+        n.root_context = uppermost
 
     # Build dependencies
-    for name in pipes:
-        for pipe in pipes.values():
-            if name in pipe.dependencies:
-                pipe.fill_dependency_with_pipe(pipes[name])
-    return pipes
+    for name in nests:
+        for nest in nests.values():
+            if name in nest.dependencies:
+                nest.fill_dependency_with_nest(nests[name])
+    return nests
 
 
-def parse_pipes(location: str, target: str = None) -> (Pipe, Pipe):
+def parse_nests(location: str, target: str = None) -> (Nest, Nest):
 
-    # Read the target pipe and all the pipes
-    target = target or get_pipe_name(location)
-    pipes = read_all_pipes(location)
+    # Read the target nest and all the nests
+    target = target or get_nest_name(location)
+    nests = read_all_nests(location)
 
-    # Manage this target pipe
-    if target not in pipes:
-        raise ValueError(f"The specified pipe \"{target}\" does not exist in {location}")
-    pipe = pipes[target]
-    return pipe, pipes
+    # Manage this target nest
+    if target not in nests:
+        raise ValueError(f"The specified nest \"{target}\" does not exist in {location}")
+    nest = nests[target]
+    return nest, nests
 
 
-def _read_pipes_from(location: str) -> List[Pipe]:
+def _read_nests_from(location: str) -> List[Nest]:
 
-    # Read the local pipe
+    # Read the local nest
     group = []
-    pipe = _read_pipe(location)
+    nest = _read_nest(location)
 
-    # Read all pipes recursively
-    pipes = [pipe]
+    # Read all nests recursively
+    nests = [nest]
     for directory in os.listdir(location):
         current = os.path.join(location, directory)
-        if _has_pipe(current):
-            children = _read_pipes_from(current)
+        if _has_nest(current):
+            children = _read_nests_from(current)
             group = group + children
-            pipes = pipes + children
+            nests = nests + children
 
     # Set the nested group
-    pipe.group = group
-    return pipes
+    nest.group = group
+    return nests

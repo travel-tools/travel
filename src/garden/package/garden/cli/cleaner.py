@@ -3,7 +3,7 @@ import os
 import shutil
 
 from garden.cli.base import GardenCommand
-from garden.config.pipe import Pipe
+from garden.config.nest import Nest
 from garden.custom.scopes.scoped_venvs import ScopedVirtualenvs
 from garden.tools.venv import Virtualenv
 
@@ -15,24 +15,24 @@ class Cleaner(GardenCommand):
     def _phase_name(self):
         return "clean"
 
-    def _perform_tasks(self, pipe: Pipe, step: str):
+    def _perform_tasks(self, nest: Nest, step: str):
         if step == "post":
             pass
         else:
-            super()._perform_tasks(pipe, step)
+            super()._perform_tasks(nest, step)
 
-    def _manage(self, pipe: Pipe):
+    def _manage(self, nest: Nest):
 
-        logger.info(f"Cleaning {pipe.name}")
+        logger.info(f"Cleaning {nest.name}")
         to_remove = [
-            os.path.join(pipe.setup_py_folder, f"{pipe.package}.egg-info"),     # egg-info
-            Virtualenv(pipe).path,                                              # venv folder
-            pipe.build_folder                                                   # artifacts build folder
+            os.path.join(nest.setup_py_folder, f"{nest.package}.egg-info"),     # egg-info
+            Virtualenv(nest).path,                                              # venv folder
+            nest.build_folder                                                   # artifacts build folder
         ]
 
         # If with scopes, remove them too
-        if pipe.scopes:
-            scopes = ScopedVirtualenvs(pipe)
+        if nest.scopes:
+            scopes = ScopedVirtualenvs(nest)
             for env in scopes.envs.values():
                 to_remove.append(env.path)
 

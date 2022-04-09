@@ -5,27 +5,27 @@ import sys
 from pathlib import Path
 
 import yaml
-from piperblue.blueprint import PiperBlueprint
+from nestrblue.blueprint import PiperBlueprint
 
 
-def _find(yml, pipe):
+def _find(yml, nest):
     try:
-        for p, properties in yml.items():
-            if p == pipe:
+        for n, properties in yml.items():
+            if n == nest:
                 return properties
-            found = _find(yml[p], pipe)
+            found = _find(yml[n], nest)
             if found:
                 return found
     except:
         return None
 
 
-def _generate(file: str, blueprint_name: str, pipe: str, context: str):
+def _generate(file: str, blueprint_name: str, nest: str, context: str):
 
     # Find the config
     with open(file) as f:
         yml = yaml.load(f, Loader=yaml.SafeLoader)
-    properties = _find(yml, pipe)
+    properties = _find(yml, nest)
     config = properties.get("config")
 
     # Import the blueprint class
@@ -49,12 +49,12 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--file")
     parser.add_argument("--context")
-    parser.add_argument("--pipe")
+    parser.add_argument("--nest")
     parser.add_argument("--blueprint")
     args = parser.parse_args()
 
     # Generate
-    _generate(args.file, args.blueprint, args.pipe, args.context)
+    _generate(args.file, args.blueprint, args.nest, args.context)
 
 
 if __name__ == '__main__':

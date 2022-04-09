@@ -9,7 +9,7 @@ from garden.custom.tasks.task import Task
 logger = logging.getLogger(__name__)
 
 
-class Pipe:
+class Nest:
 
     def __init__(self, location: str, yml: dict, root_context: str = None):
         self.location = location
@@ -44,21 +44,21 @@ class Pipe:
 
         # If there are still configs, they are unknown. Print a warning (for retro-compatibility)
         if config:
-            logger.warning(f"Unknown configuration in pipe file \"{self.name}\": {config}")
+            logger.warning(f"Unknown configuration in nest file \"{self.name}\": {config}")
 
-    def fill_dependency_with_pipe(self, pipe):
-        self.dependencies[pipe.name] = pipe
+    def fill_dependency_with_nest(self, nest):
+        self.dependencies[nest.name] = nest
 
     def flat_dependencies(self, with_current: bool = False):
 
-        def visit(pipe, visited, level=0):
-            for dep in pipe.dependencies.values():
+        def visit(nest, visited, level=0):
+            for dep in nest.dependencies.values():
                 visited[dep] = max(level, visited.get(dep, level))
                 visit(dep, visited, level=level+1)
             return visited
 
-        pipes = visit(self, {})
-        dependencies = [pipe for pipe, level in sorted(pipes.items(), key=lambda x: x[1], reverse=True)]
+        nests = visit(self, {})
+        dependencies = [nest for nest, level in sorted(nests.items(), key=lambda x: x[1], reverse=True)]
         if with_current:
             dependencies.append(self)
         return dependencies

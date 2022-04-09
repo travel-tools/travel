@@ -11,14 +11,14 @@ from gardentask.task import GardenTask
 
 
 def _read_config(context: str, name: str) -> (Dict[str, Any], str):
-    # Read the pipe file
-    with open(os.path.join(context, "pipe.yml")) as p:
-        pipe = yaml.load(p, Loader=yaml.SafeLoader) or {}
+    # Read the nest file
+    with open(os.path.join(context, "nest.yml")) as n:
+        nest = yaml.load(n, Loader=yaml.SafeLoader) or {}
 
     # Get all the tasks with matching name
     matching = [
         task
-        for step in pipe.get("tasks", {}).values()
+        for step in nest.get("tasks", {}).values()
         for tasks in step.values()
         for task in tasks
         if task.get("name") == name

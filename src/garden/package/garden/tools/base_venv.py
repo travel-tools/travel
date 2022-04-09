@@ -5,7 +5,7 @@ import subprocess
 from pathlib import Path
 from typing import List
 
-from garden.config.pipe import Pipe
+from garden.config.nest import Nest
 from garden.config.sanitizers import pip_sanitizer
 from garden.config.sanitizers.pip_sanitizer import LATEST_PIP
 from garden.config.subconfigs.pip import PipConfig
@@ -24,7 +24,7 @@ LATEST_UPDATE = "latest_update.yml"
 
 class BaseVirtualenv:
 
-    def __init__(self, location: str, name_suffix: str, pip_config: PipConfig, dependencies: List[Pipe], requirements_file: str, main_python: Python = default_python, touch_requirements_file: bool = False, extra_requirements: List[str] = None):
+    def __init__(self, location: str, name_suffix: str, pip_config: PipConfig, dependencies: List[Nest], requirements_file: str, main_python: Python = default_python, touch_requirements_file: bool = False, extra_requirements: List[str] = None):
         self._main_python = main_python
         self._name = f"venv-{name_suffix}"
 
@@ -69,8 +69,8 @@ class BaseVirtualenv:
                 self.pip.install(f"pip=={pip_version}")
 
         # Compute current requirements
-        dependency_names = [pipe.name for pipe in self.dependencies]
-        explicit_requirements = [req for pipe in self.dependencies for req in pipe.requirements]
+        dependency_names = [nest.name for nest in self.dependencies]
+        explicit_requirements = [req for nest in self.dependencies for req in nest.requirements]
         if self.extra_requirements:
             explicit_requirements = explicit_requirements + self.extra_requirements
 
@@ -95,12 +95,12 @@ class BaseVirtualenv:
 
         # Install requirements
         logger.info("Installing requirements...")
-        for pipe in self.dependencies:
-            # Install the pipe's package
-            self.pip.run(f"install -e {pipe.setup_py_folder}")
+        for nest in self.dependencies:
+            # Install the nest's package
+            self.pip.run(f"install -e {nest.setup_py_folder}")
             # Install the explicit requirements
-            if pipe.requirements:
-                self.pip.install(pipe.requirements)
+            if nest.requirements:
+                self.pip.install(nest.requirements)
 
         if self.extra_requirements:
             self.pip.install(self.extra_requirements)

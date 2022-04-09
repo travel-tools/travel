@@ -1,6 +1,6 @@
 import os
 
-from garden.config.pipe import Pipe
+from garden.config.nest import Nest
 from garden.tools.base_venv import BaseVirtualenv
 from garden.tools.python import Python
 from garden.tools.python import main_python as default_python
@@ -8,19 +8,19 @@ from garden.tools.python import main_python as default_python
 
 class ScopedVirtualenvs():
 
-    def __init__(self, pipe: Pipe, main_python: Python = default_python, touch_requirements_file: bool = False):
+    def __init__(self, nest: Nest, main_python: Python = default_python, touch_requirements_file: bool = False):
         self.envs = {
             scope: BaseVirtualenv(
-                location=pipe.location,
-                name_suffix=f"{pipe.name}-{scope}",
-                pip_config=pipe.pip,
-                dependencies=pipe.flat_dependencies(with_current=True),
-                requirements_file=os.path.join(pipe.location, f"requirements_{scope}.txt"),
+                location=nest.location,
+                name_suffix=f"{nest.name}-{scope}",
+                pip_config=nest.pip,
+                dependencies=nest.flat_dependencies(with_current=True),
+                requirements_file=os.path.join(nest.location, f"requirements_{scope}.txt"),
                 main_python=main_python,
                 touch_requirements_file=touch_requirements_file,
                 extra_requirements=config.requirements
             )
-            for scope, config in pipe.scopes.items()
+            for scope, config in nest.scopes.items()
         }
 
     def create(self, scope: str):

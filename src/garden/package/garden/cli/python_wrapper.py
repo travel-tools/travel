@@ -10,11 +10,11 @@ logger = logging.getLogger(__name__)
 
 def run(context: str, package: str, command: str):
 
-    # Setup the pipes and dependencies
-    current_pipe, all_pipes = Setupper().manage(context, package=package)
+    # Setup the nests and dependencies
+    current_nest, all_nests = Setupper().manage(context, package=package)
 
     # Run the code
-    env = Virtualenv(all_pipes[package])
+    env = Virtualenv(all_nests[package])
     if os.path.isdir(env.path):
         python = env.python
     else:
