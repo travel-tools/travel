@@ -20,4 +20,6 @@ piper clean
 
 piper pack --no-setup sdist
 ( venv-second/bin/python -m second && exit 1 ) || echo No setup ok
+venv-second/bin/python -m pip install build/package/dist/second-0.0.0.tar.gz
+venv-second/bin/python -m second
 piper clean
