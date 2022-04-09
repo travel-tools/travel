@@ -5,7 +5,7 @@ from garden.config.sanitizers.pip_sanitizer import sanitize_versioned_package
 class Task:
 
     def __init__(self, yml):
-        self.gardentask = sanitize_versioned_package(yml.pop("gardentask"))
+        self.pipertask = sanitize_versioned_package(yml.pop("pipertask"))
         self.name = sanitize_name(yml.pop("name"))
         self.config = yml.pop("config", {})
 

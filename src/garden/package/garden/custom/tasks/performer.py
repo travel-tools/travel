@@ -31,7 +31,7 @@ def perform_tasks(phase: str, step: str, nest: Nest):
         venv.pip.install(f"PyYAML=={version}")
 
         # Install the gardentasks
-        venv.pip.install([t.gardentask for t in tasks], allow_nests_from=nest.root_context)
+        venv.pip.install([t.pipertask for t in tasks], allow_nests_from=nest.root_context)
 
         # Perform each task in order
         for task in tasks:

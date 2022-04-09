@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Dict, Any
 
-from gardentask.task import GardenTask
+from pipertask.task import GardenTask
 
 
 class GardenTaskExample(GardenTask):

@@ -7,7 +7,7 @@ from pathlib import Path
 
 import yaml
 from typing import Dict, Any
-from gardentask.task import GardenTask
+from pipertask.task import GardenTask
 
 
 def _read_config(context: str, name: str) -> (Dict[str, Any], str):
@@ -27,7 +27,7 @@ def _read_config(context: str, name: str) -> (Dict[str, Any], str):
         raise ValueError(f"There should be a single task named {name}")
 
     # Get package name
-    package = re.search(r"^([a-zA-Z0-9\-\._]+)", matching[0]["gardentask"]).group(1)
+    package = re.search(r"^([a-zA-Z0-9\-\._]+)", matching[0]["pipertask"]).group(1)
 
     # Return the config
     return matching[0].get("config", {}), package
