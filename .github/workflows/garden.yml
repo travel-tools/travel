@@ -136,8 +136,6 @@ jobs:
       - name: Checkout from branch
         uses: actions/checkout@v2
         if: github.event_name != 'pull_request'
-      - name: Change version
-        run: python devops/github/replace.py src/${{ github.event.repository.name }}/package/setup.py version=.+, version=\"${{ needs.pack.outputs.version }}\",
       - name: Configure
         run: |
           git config --global user.name 'GitHub Actions'
