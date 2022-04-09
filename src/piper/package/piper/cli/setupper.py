@@ -17,16 +17,18 @@ class Setupper(PiperCommand):
         # Create the virtualenv
         venv = Virtualenv(pipe, touch_requirements_file=True)
         venv.create()
-        venv.update()
+        updated = venv.update()
 
         # Pip freeze
-        venv.freeze()
+        if updated:
+            venv.freeze()
 
         # Create the scopes
         if pipe.scopes:
             scopes = ScopedVirtualenvs(pipe, touch_requirements_file=True)
             for scope in pipe.scopes:
                 scopes.create(scope)
-                scopes.update(scope)
-                scopes.freeze(scope)
+                updated = scopes.update(scope)
+                if updated:
+                    scopes.freeze(scope)
 

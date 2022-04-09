@@ -30,8 +30,8 @@ class ScopedVirtualenvs():
         for scope in self.envs.keys():
             self.create(scope)
 
-    def update(self, scope: str):
-        self.envs[scope].update()
+    def update(self, scope: str) -> bool:
+        return self.envs[scope].update()
 
     def update_all(self):
         for scope in self.envs.keys():

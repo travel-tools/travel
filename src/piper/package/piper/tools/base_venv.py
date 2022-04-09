@@ -9,6 +9,7 @@ from piper.config.pipe import Pipe
 from piper.config.sanitizers import pip_sanitizer
 from piper.config.sanitizers.pip_sanitizer import LATEST_PIP
 from piper.config.subconfigs.pip import PipConfig
+from piper.tools.outputs.latest_updates import LatestUpdate
 from piper.tools.pip import Pip
 from piper.tools.python import Python
 from piper.tools.python import main_python as default_python
@@ -18,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 _CREATE_VENV = "{python} -m venv {venv}"
+LATEST_UPDATE = "latest_update.yml"
 
 
 class BaseVirtualenv:
@@ -31,6 +33,7 @@ class BaseVirtualenv:
         self.requirements_file = requirements_file
         self.extra_requirements = extra_requirements
 
+        self.location = location
         self.path = os.path.join(location, self._name)
         self.python = Python(path=os.path.join(self.path, "bin" if os.name == "posix" else "Scripts", "python" if os.name == "posix" else "python.exe"))
         self.pip = Pip(self.python)
@@ -54,7 +57,7 @@ class BaseVirtualenv:
                 )
             )
 
-    def update(self):
+    def update(self) -> bool:
 
         # Upgrade pip if required
         pip_version = self.pip_config.version
@@ -65,22 +68,42 @@ class BaseVirtualenv:
             else:
                 self.pip.install(f"pip=={pip_version}")
 
+        # Compute current requirements
+        dependency_names = [pipe.name for pipe in self.dependencies]
+        explicit_requirements = [req for pipe in self.dependencies for req in pipe.requirements]
+        if self.extra_requirements:
+            explicit_requirements = explicit_requirements + self.extra_requirements
+
+        # If there is already a requirements file and a latest_update file, check: we might skip the update!
+        latest_update_path = Path(self.path)/LATEST_UPDATE
+        if Path(self.requirements_file).is_file() and latest_update_path.is_file():
+
+            # Get the freezed requirements and the written requirements
+            freezed_requirements = self._freeze()
+            with open(self.requirements_file, "r") as f:
+                written_requirements = f.read().splitlines()
+            
+            # Read the latest_update
+            latest_update = LatestUpdate.read(latest_update_path)
+
+            # If there is nothing to update, exit!
+            if (set(freezed_requirements) == set(written_requirements)
+                    and set(dependency_names) == set(latest_update.dependencies)
+                    and set(explicit_requirements) == set(latest_update.requirements)):
+                logger.info("Virtualenv is already up-to-date!")
+                return False
+
         # Install requirements
         logger.info("Installing requirements...")
-        explicit_requirements = []
         for pipe in self.dependencies:
-
             # Install the pipe's package
             self.pip.run(f"install -e {pipe.setup_py_folder}")
-
             # Install the explicit requirements
             if pipe.requirements:
                 self.pip.install(pipe.requirements)
-                explicit_requirements = explicit_requirements + pipe.requirements
 
         if self.extra_requirements:
             self.pip.install(self.extra_requirements)
-            explicit_requirements = explicit_requirements + self.extra_requirements
 
         # Uninstall the unnecessary requirements
         installed_requirements = [pip_sanitizer.get_package_name(f) for f in self._freeze()]
@@ -91,7 +114,14 @@ class BaseVirtualenv:
             logger.warning(f"Unnecessary requirements found, they will be uninstalled: {to_uninstall}")
             self.pip.run(f"uninstall -y {to_uninstall}")
 
+        # Save the latest update
+        LatestUpdate.create(
+            requirements=explicit_requirements,
+            dependencies=dependency_names
+        ).write(latest_update_path)
+
         logger.info("Done.")
+        return True
 
     def _freeze(self) -> List[str]:
 

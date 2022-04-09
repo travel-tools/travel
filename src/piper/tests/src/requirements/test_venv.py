@@ -1,8 +1,50 @@
 import os
+from pathlib import Path
 
+import yaml
 from piper.cli.cleaner import Cleaner
 from piper.config.sanitizers.pip_sanitizer import LATEST_PIP
+from piper.tools.base_venv import LATEST_UPDATE
+from piper.tools.outputs.latest_updates import LatestUpdate
 from piper.tools.venv import Virtualenv
+
+
+def test_quick_setup(complex_project):
+
+    # Pipe
+    pipe = complex_project.pipes[complex_project.common]
+
+    # Create the virtualenv
+    venv = Virtualenv(pipe)
+    venv.create()
+    venv.update()
+
+    # Test that no update will be performed on another update
+    assert venv.update() is False
+
+    # Test that update will be performed first, and then no more
+    pipe.requirements = []
+    assert venv.update() is True
+    venv.freeze()
+    assert venv.update() is False
+
+    # Test update in case of venv mismatch
+    venv.pip.install("jsonargon==0.1.1")
+    assert venv.update() is True
+    assert venv.update() is False
+
+    # Remove the file
+    latest_update_path = Path(venv.path)/LATEST_UPDATE
+    os.remove(latest_update_path)
+    assert venv.update() is True
+    assert venv.update() is False
+
+    # Test update in case of dependencies mismatch (simulate a change on filesystem)
+    update = LatestUpdate.read(latest_update_path)
+    update.dependencies = ["fake"]
+    update.write(latest_update_path)
+    assert venv.update() is True
+    assert venv.update() is False
 
 
 def test_pip_version(complex_project):
@@ -68,3 +110,4 @@ def test_remove_requirements(complex_project):
     # Clean everything
     Cleaner().manage_from_pipe(pipe)
     os.remove(pipe.requirements_file)
+
