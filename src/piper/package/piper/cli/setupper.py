@@ -28,6 +28,7 @@ class Setupper(PiperCommand):
             scopes = ScopedVirtualenvs(pipe, touch_requirements_file=True)
             for scope in pipe.scopes:
                 scopes.create(scope)
-                scopes.update(scope)
-                scopes.freeze(scope)
+                updated = scopes.update(scope)
+                if updated:
+                    scopes.freeze(scope)
 
