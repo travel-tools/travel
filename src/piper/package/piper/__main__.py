@@ -32,8 +32,9 @@ def main():
 
     # Pack
     pack = subparsers.add_parser("pack")
-    pack.add_argument("--package", help="Name of the pipe to run setup.py commands", required=False)
-    pack.set_defaults(action=lambda args, rest: packer.pack(args.context, rest, package=args.package))
+    pack.add_argument("--target", help="Name of the pipe to run setup.py commands", required=False)
+    pack.add_argument("--no-setup", help="Do not update the venvs", required=False, action="store_true")
+    pack.set_defaults(action=lambda args, rest: packer.pack(args.context, rest, target=args.target, setup=not args.no_setup))
 
     # Release
 

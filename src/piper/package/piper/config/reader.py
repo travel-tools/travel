@@ -51,6 +51,19 @@ def read_all_pipes(location: str) -> Dict[str, Pipe]:
     return pipes
 
 
+def parse_pipes(location: str, target: str = None) -> (Pipe, Pipe):
+
+    # Read the target pipe and all the pipes
+    target = target or get_pipe_name(location)
+    pipes = read_all_pipes(location)
+
+    # Manage this target pipe
+    if target not in pipes:
+        raise ValueError(f"The specified pipe \"{target}\" does not exist in {location}")
+    pipe = pipes[target]
+    return pipe, pipes
+
+
 def _read_pipes_from(location: str) -> List[Pipe]:
 
     # Read the local pipe

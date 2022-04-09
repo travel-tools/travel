@@ -5,16 +5,21 @@ from distutils.dir_util import copy_tree
 
 import setuptools
 from piper.cli.setupper import Setupper
+from piper.config.reader import parse_pipes
 from piper.custom.tasks import performer
 from piper.tools.venv import Virtualenv
 
 logger = logging.getLogger(__name__)
 
 
-def pack(context: str, command: str, package: str = None):
+def pack(context: str, command: str, target: str = None, setup: bool = True):
 
     # Setup the pipes and dependencies
-    current_pipe, all_pipes = Setupper().manage(context, package=package)
+    if setup:
+        current_pipe, all_pipes = Setupper().manage(context, target=target)
+    else:
+        current_pipe, all_pipes = parse_pipes(context, target)
+        Virtualenv(current_pipe).create()
 
     # Pre-pack
     performer.perform_tasks("pack", "pre", current_pipe)

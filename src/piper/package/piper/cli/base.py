@@ -3,7 +3,7 @@ import logging
 from typing import Set
 
 from piper.config.pipe import Pipe
-from piper.config.reader import get_pipe_name, read_all_pipes
+from piper.config.reader import get_pipe_name, read_all_pipes, parse_pipes
 from piper.custom.tasks import performer
 from piper.tools.python import main_python, Python
 
@@ -54,15 +54,7 @@ class PiperCommand(abc.ABC):
     def manage_from_pipe(self, pipe: Pipe):
         self._manage_from_pipe_recursive(pipe, done=set())
 
-    def manage(self, context: str, package: str = None) -> (Pipe, Pipe):
-
-        # Read the target pipe and all the pipes
-        target = package or get_pipe_name(context)
-        pipes = read_all_pipes(context)
-
-        # Manage this target pipe
-        if target not in pipes:
-            raise ValueError(f"The specified pipe does not exist: {context}")
-        pipe = pipes[target]
+    def manage(self, context: str, target: str = None) -> (Pipe, Pipe):
+        pipe, pipes = parse_pipes(context, target)
         self.manage_from_pipe(pipe)
         return pipe, pipes
