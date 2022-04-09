@@ -25,6 +25,7 @@ def test_quick_setup(complex_project):
     # Test that update will be performed first, and then no more
     pipe.requirements = []
     assert venv.update() is True
+    venv.freeze()
     assert venv.update() is False
 
     # Test update in case of venv mismatch
