@@ -1,14 +1,11 @@
 import logging
 import os
 import re
-import shutil
 import subprocess
 from pathlib import Path
 from typing import List
 
-import yaml
 from piper.config.pipe import Pipe
-from piper.config.reader import read_pipe
 from piper.config.sanitizers import pip_sanitizer
 from piper.config.sanitizers.pip_sanitizer import LATEST_PIP
 from piper.config.subconfigs.pip import PipConfig
