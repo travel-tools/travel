@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+
+  travel:
+
+    build:
+      context: "./../.."
+      dockerfile: "containers/travel/Dockerfile"
+      args:
+        - DIST=src/travel/package/dist/
+
+    image: "travel"
