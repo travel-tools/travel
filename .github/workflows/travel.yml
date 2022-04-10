@@ -75,7 +75,7 @@ jobs:
         shell: cmd
 
 #  release-package-on-test:
-    if: ${{ github.base_ref == 'master' && ( startsWith(github.head_ref, 'release/major/') || startsWith(github.head_ref, 'release/minor/') || startsWith(github.head_ref, 'hotfix/major/') || startsWith(github.head_ref, 'hotfix/minor/') ) }}
+#    if: ${{ github.base_ref == 'master' && ( startsWith(github.head_ref, 'release/major/') || startsWith(github.head_ref, 'release/minor/') || startsWith(github.head_ref, 'hotfix/major/') || startsWith(github.head_ref, 'hotfix/minor/') ) }}
 #    environment: test-pypi
 #    needs: test-package
 #    runs-on: ubuntu-latest
