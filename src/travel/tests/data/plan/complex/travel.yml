@@ -1,5 +1,5 @@
 common:
-  plan: gh:audreyfeldroy/cookiecutter-pypackage
+  plan: gh:travel-tools/cookiecutter-travelplan
   config:
     name: common
     description: bla
@@ -7,13 +7,13 @@ common:
 microservices:
 
   first:
-    plan: gh:audreyfeldroy/cookiecutter-pypackage
+    plan: gh:travel-tools/cookiecutter-travelplan
     config:
-      name: common
+      name: first
       description: bla
 
   second:
-    plan: gh:audreyfeldroy/cookiecutter-pypackage
+    plan: gh:travel-tools/cookiecutter-travelplan
     config:
-      name: common
+      name: second
       description: bla

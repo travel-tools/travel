@@ -15,30 +15,33 @@ _PLAN = "plan"
 _TRAVEL_FILE = "travel.yml"
 _CONFIG = "config"
 _CHECKOUT = "checkout"
+_DIRECTORY = "directory"
 
 
 def _is_a_plan(properties):
     return _PLAN in properties and isinstance(properties[_PLAN], str)
 
 
-def _generate_breath_first(folder: str, yml: Dict[str, Any], local_plans: List[str] = None):
+def _generate_breath_first(folder: str, yml: Dict[str, Any]):
 
     # Generate these plans
     for bag, properties in yml.items():
 
         # Get the folder where the bag will be created
-        bag = name_sanitizer.sanitize_name(bag)
-        bag_folder = os.path.join(folder, bag)
+        name_sanitizer.sanitize_name(bag)
 
         # Is it a plan?
         if _is_a_plan(properties):
+
             # Create it
+            plan = properties[_PLAN]
             cookiecutter(
-                properties[_PLAN],
-                output_dir=bag_folder,
+                template=plan,
+                output_dir=folder,
                 no_input=True,
                 extra_context=properties[_CONFIG],
-                checkout=properties.get(_CHECKOUT)
+                checkout=properties.get(_CHECKOUT),
+                directory=properties.get(_DIRECTORY)
             )
 
     # Create the "folder" bag.yml file
@@ -50,10 +53,10 @@ def _generate_breath_first(folder: str, yml: Dict[str, Any], local_plans: List[s
     for bag, properties in yml.items():
         bag_folder = os.path.join(folder, bag)
         if not _is_a_plan(properties):
-            _generate_breath_first(bag_folder, properties, local_plans=local_plans)
+            _generate_breath_first(bag_folder, properties)
 
 
-def run(context: str, name: str, local_plans: List[str] = None):
+def run(context: str, name: str):
 
     # Read the travel file
     travel_file = os.path.join(context, _TRAVEL_FILE)
@@ -65,11 +68,12 @@ def run(context: str, name: str, local_plans: List[str] = None):
     # Generate
     folder = os.path.join(context, name)
     try:
-        _generate_breath_first(folder, yml, local_plans=local_plans)
+        _generate_breath_first(folder, yml)
     except OutputDirExistsException as e:
         # If the error is just because the folder exists, exit
         raise e
     except Exception as e:
         # Remove in case of any other error
-        shutil.rmtree(folder)
+        if Path(folder).is_dir():
+            shutil.rmtree(folder)
         raise e
