@@ -4,8 +4,8 @@
 cd src\travel\tests\
 pytest
 
-cd data\blueprint\complex
-travel blueprint --local-blueprints ..\locals
+cd data\plan\complex
+travel plan test
 cd ..\..\
 
 cd complexproject
