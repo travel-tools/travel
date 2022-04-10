@@ -1,0 +1,19 @@
+common:
+  plan: gh:travel-tools/cookiecutter-travelplan
+  config:
+    name: common
+    description: bla
+
+microservices:
+
+  first:
+    plan: gh:travel-tools/cookiecutter-travelplan
+    config:
+      name: first
+      description: bla
+
+  second:
+    plan: gh:travel-tools/cookiecutter-travelplan
+    config:
+      name: second
+      description: bla
