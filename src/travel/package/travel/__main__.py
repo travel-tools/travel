@@ -25,8 +25,7 @@ def main():
     # Plan
     plan = subparsers.add_parser("plan")
     plan.add_argument("name", help="Main bag name (name of the project)")
-    plan.add_argument("--local-plans", help="Extra folders containing the main bag.yml of the local plans to use", nargs="+", required=False)
-    plan.set_defaults(action=lambda args, rest: planner.run(args.context, args.name, local_plans=args.local_plans))
+    plan.set_defaults(action=lambda args, rest: planner.run(args.context, args.name))
 
     # Setup
     setup = subparsers.add_parser("setup")
