@@ -1,6 +1,6 @@
 import logging
 
-from garden.config.sanitizers import pip_sanitizer
+from travel.config.sanitizers import pip_sanitizer
 
 
 logger = logging.getLogger(__name__)

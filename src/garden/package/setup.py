@@ -4,7 +4,7 @@ import os
 
 # Function to retrieve resources files
 def _get_resources(package_name):
-    # Get all the resources (also on nested levels)
+    # Get all the resources (also on baged levels)
     res_paths = os.path.join(package_name, "resources")
     all_resources = [os.path.join(folder, file) for folder, _, files in os.walk(res_paths) for file in files]
     # Remove the prefix: start just from "resources"
@@ -24,24 +24,24 @@ with open(readme_file, "r", encoding="utf-8") as f:
 
 
 # Package configuration
-_NAME="garden"
+_NAME="travel"
 setup(
     name=_NAME,
     version="0.0.0",
     description="A software manager for easy development and distribution of Python code",
     packages=find_packages(),
-    package_data={"garden": _get_resources("garden")},
+    package_data={"travel": _get_resources("travel")},
     install_requires=requirements,
     python_requires=">=3.7",
     entry_points={
         'console_scripts': [
-            'garden = garden.__main__:main',
+            'travel = travel.__main__:main',
         ],
     },
 
     long_description=readme,
     long_description_content_type="text/markdown",
-    url="https://github.com/garden-tools/garden",
+    url="https://github.com/travel-tools/travel",
     author="Federico Pugliese",
     author_email="federico.pugliese.wr@gmail.com",
     license="Apache Software License, Version 2.0",

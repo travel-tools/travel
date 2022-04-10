@@ -1,6 +1,6 @@
 import re
 
-from garden.config.sanitizers import asserter
+from travel.config.sanitizers import asserter
 
 _NAME = re.compile(r"^[A-Za-z0-9\-\._]+$")
 

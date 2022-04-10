@@ -1,5 +1,5 @@
-from garden.config.sanitizers.name_sanitizer import sanitize_name
-from garden.config.sanitizers.pip_sanitizer import sanitize_versioned_package
+from travel.config.sanitizers.name_sanitizer import sanitize_name
+from travel.config.sanitizers.pip_sanitizer import sanitize_versioned_package
 
 
 class Task:
@@ -11,4 +11,4 @@ class Task:
 
         # If there are still configs, they are unknown. Raise an error
         if yml:
-            raise KeyError(f"Unknown configuration in nest file, task {self.name}: {yml}")
+            raise KeyError(f"Unknown configuration in bag file, task {self.name}: {yml}")

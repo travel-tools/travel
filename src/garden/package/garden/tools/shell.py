@@ -36,7 +36,7 @@ class Shell:
 
         output = Queue()
 
-        def nest(std, stream):
+        def bag(std, stream):
             # Blocking for loop: the stream will be empty only on process termination
             for line in stream:
                 output.put((std, line))
@@ -55,9 +55,9 @@ class Shell:
         )
 
         # Start the producers
-        stdout = Thread(target=nest, args=(_STDOUT, process.stdout))
+        stdout = Thread(target=bag, args=(_STDOUT, process.stdout))
         stdout.start()
-        stderr = Thread(target=nest, args=(_STDERR, process.stderr))
+        stderr = Thread(target=bag, args=(_STDERR, process.stderr))
         stderr.start()
 
         # Be the consumer

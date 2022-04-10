@@ -4,8 +4,8 @@ from pathlib import Path
 from typing import Dict, Any
 
 import yaml
-from garden.cli import blueprinter
-from garden.config.reader import NEST_FILE
+from travel.cli import blueprinter
+from travel.config.reader import BAG_FILE
 
 
 def test_blueprint(data_location):
@@ -16,13 +16,13 @@ def test_blueprint(data_location):
     local_blueprints = blueprint_folder/"locals"
     blueprint_file = blueprint_file_location/"blueprint.yml"
 
-    # Create the nests
+    # Create the bags
     blueprinter.run(blueprint_file_location, local_blueprints=local_blueprints)
 
-    # Check the nests structure against the blueprint file
+    # Check the bags structure against the blueprint file
     with open(blueprint_file) as f:
         yml = yaml.load(f, Loader=yaml.SafeLoader)
-    _is_created(blueprint_file_location, yml["nests"])
+    _is_created(blueprint_file_location, yml["bags"])
 
     # Cleanup
     tmp_blueprint_file = blueprint_folder/"blueprint.yml"
@@ -35,8 +35,8 @@ def test_blueprint(data_location):
 def _is_created(context: Path, yml: Dict[str, Any]):
 
     assert context.is_dir()
-    assert (context/NEST_FILE).is_file()
+    assert (context/BAG_FILE).is_file()
 
-    for nest, properties in yml.items():
-        if "nests" in properties:
-            _is_created(context/nest, properties["nests"])
+    for bag, properties in yml.items():
+        if "bags" in properties:
+            _is_created(context/bag, properties["bags"])

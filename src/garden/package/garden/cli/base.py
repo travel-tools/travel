@@ -2,15 +2,15 @@ import abc
 import logging
 from typing import Set
 
-from garden.config.nest import Nest
-from garden.config.reader import get_nest_name, read_all_nests, parse_nests
-from garden.custom.tasks import performer
-from garden.tools.python import main_python, Python
+from travel.config.bag import Nest
+from travel.config.reader import get_bag_name, read_all_bags, parse_bags
+from travel.custom.tasks import performer
+from travel.tools.python import main_python, Python
 
 logger = logging.getLogger(__name__)
 
 
-class GardenCommand(abc.ABC):
+class TravelCommand(abc.ABC):
 
     def __init__(self, python: Python = main_python):
         self.main_python = python
@@ -19,42 +19,42 @@ class GardenCommand(abc.ABC):
     def _phase_name(self) -> str:
         pass
 
-    def _perform_tasks(self, nest: Nest, step: str):
-        return performer.perform_tasks(self._phase_name(), step, nest)
+    def _perform_tasks(self, bag: Nest, step: str):
+        return performer.perform_tasks(self._phase_name(), step, bag)
 
     @abc.abstractmethod
-    def _manage(self, nest: Nest):
+    def _manage(self, bag: Nest):
         pass
 
-    def _manage_from_nest_recursive(self, nest: Nest, done: Set[Nest]):
+    def _manage_from_bag_recursive(self, bag: Nest, done: Set[Nest]):
 
-        if not nest.group:
+        if not bag.group:
 
-            # Manage dependencies first, then the nest
-            for n in [*nest.flat_dependencies(), nest]:
-                if n not in done:
+            # Manage dependencies first, then the bag
+            for b in [*bag.flat_dependencies(), bag]:
+                if b not in done:
                     logger.info("")
                     logger.info("="*60)
-                    logger.info(f"=== {n.name.center(52, ' ')} ===")
+                    logger.info(f"=== {b.name.center(52, ' ')} ===")
                     logger.info("="*60)
-                    self._perform_tasks(n, "pre")
-                    self._manage(n)
-                    self._perform_tasks(n, "post")
+                    self._perform_tasks(b, "pre")
+                    self._manage(b)
+                    self._perform_tasks(b, "post")
                     logger.info("=" * 60)
                     logger.info("")
                     logger.info("")
-                    done.add(n)
+                    done.add(b)
 
         else:
 
             # Manage each element of the group
-            for nest in nest.group:
-                self._manage_from_nest_recursive(nest, done=done)
+            for bag in bag.group:
+                self._manage_from_bag_recursive(bag, done=done)
 
-    def manage_from_nest(self, nest: Nest):
-        self._manage_from_nest_recursive(nest, done=set())
+    def manage_from_bag(self, bag: Nest):
+        self._manage_from_bag_recursive(bag, done=set())
 
     def manage(self, context: str, target: str = None) -> (Nest, Nest):
-        nest, nests = parse_nests(context, target)
-        self.manage_from_nest(nest)
-        return nest, nests
+        bag, bags = parse_bags(context, target)
+        self.manage_from_bag(bag)
+        return bag, bags

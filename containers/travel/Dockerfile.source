@@ -1,6 +1,6 @@
 FROM python:3.7.4
 
-ARG SRC="src/garden/package"
+ARG SRC="src/travel/package"
 WORKDIR application
 
 # Pre-install requirements, so that this sub-image is cached - no need to re-download it upon code-only change.
@@ -9,7 +9,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Prepare package installation copying sources
 COPY ${SRC}/setup.py ${SRC}/MANIFEST.in ${SRC}/README.md .
-COPY ${SRC}/garden garden/
+COPY ${SRC}/travel travel/
 
 # Install the package
 RUN pip install -e .

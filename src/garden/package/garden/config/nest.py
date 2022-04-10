@@ -1,10 +1,10 @@
 import logging
 import os
 
-from garden.config.sanitizers import python_sanitizer, pip_sanitizer
-from garden.config.subconfigs.pip import PipConfig
-from garden.config.subconfigs.scopes import ScopeConfig
-from garden.custom.tasks.task import Task
+from travel.config.sanitizers import python_sanitizer, pip_sanitizer
+from travel.config.subconfigs.pip import PipConfig
+from travel.config.subconfigs.scopes import ScopeConfig
+from travel.custom.tasks.task import Task
 
 logger = logging.getLogger(__name__)
 
@@ -44,21 +44,21 @@ class Nest:
 
         # If there are still configs, they are unknown. Print a warning (for retro-compatibility)
         if config:
-            logger.warning(f"Unknown configuration in nest file \"{self.name}\": {config}")
+            logger.warning(f"Unknown configuration in bag file \"{self.name}\": {config}")
 
-    def fill_dependency_with_nest(self, nest):
-        self.dependencies[nest.name] = nest
+    def fill_dependency_with_bag(self, bag):
+        self.dependencies[bag.name] = bag
 
     def flat_dependencies(self, with_current: bool = False):
 
-        def visit(nest, visited, level=0):
-            for dep in nest.dependencies.values():
+        def visit(bag, visited, level=0):
+            for dep in bag.dependencies.values():
                 visited[dep] = max(level, visited.get(dep, level))
                 visit(dep, visited, level=level+1)
             return visited
 
-        nests = visit(self, {})
-        dependencies = [nest for nest, level in sorted(nests.items(), key=lambda x: x[1], reverse=True)]
+        bags = visit(self, {})
+        dependencies = [bag for bag, level in sorted(bags.items(), key=lambda x: x[1], reverse=True)]
         if with_current:
             dependencies.append(self)
         return dependencies

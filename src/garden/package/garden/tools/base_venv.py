@@ -5,15 +5,15 @@ import subprocess
 from pathlib import Path
 from typing import List
 
-from garden.config.nest import Nest
-from garden.config.sanitizers import pip_sanitizer
-from garden.config.sanitizers.pip_sanitizer import LATEST_PIP
-from garden.config.subconfigs.pip import PipConfig
-from garden.tools.outputs.latest_updates import LatestUpdate
-from garden.tools.pip import Pip
-from garden.tools.python import Python
-from garden.tools.python import main_python as default_python
-from garden.tools.shell import Shell
+from travel.config.bag import Nest
+from travel.config.sanitizers import pip_sanitizer
+from travel.config.sanitizers.pip_sanitizer import LATEST_PIP
+from travel.config.subconfigs.pip import PipConfig
+from travel.tools.outputs.latest_updates import LatestUpdate
+from travel.tools.pip import Pip
+from travel.tools.python import Python
+from travel.tools.python import main_python as default_python
+from travel.tools.shell import Shell
 
 logger = logging.getLogger(__name__)
 
@@ -69,8 +69,8 @@ class BaseVirtualenv:
                 self.pip.install(f"pip=={pip_version}")
 
         # Compute current requirements
-        dependency_names = [nest.name for nest in self.dependencies]
-        explicit_requirements = [req for nest in self.dependencies for req in nest.requirements]
+        dependency_names = [bag.name for bag in self.dependencies]
+        explicit_requirements = [req for bag in self.dependencies for req in bag.requirements]
         if self.extra_requirements:
             explicit_requirements = explicit_requirements + self.extra_requirements
 
@@ -95,12 +95,12 @@ class BaseVirtualenv:
 
         # Install requirements
         logger.info("Installing requirements...")
-        for nest in self.dependencies:
-            # Install the nest's package
-            self.pip.run(f"install -e {nest.setup_py_folder}")
+        for bag in self.dependencies:
+            # Install the bag's package
+            self.pip.run(f"install -e {bag.setup_py_folder}")
             # Install the explicit requirements
-            if nest.requirements:
-                self.pip.install(nest.requirements)
+            if bag.requirements:
+                self.pip.install(bag.requirements)
 
         if self.extra_requirements:
             self.pip.install(self.extra_requirements)

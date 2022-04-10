@@ -1,7 +1,7 @@
 import re
 from typing import Optional
 
-from garden.config.sanitizers import asserter
+from travel.config.sanitizers import asserter
 
 _VERSION = re.compile(r"^\d+\.\d+.\d+$")
 

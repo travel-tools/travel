@@ -1,4 +1,4 @@
-name: Garden
+name: Travel
 on:
   pull_request:
     types: [ opened, synchronize, reopened ]
@@ -109,7 +109,7 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: Install package
-        run: pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/garden==${{ needs.pack.outputs.version }}
+        run: pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/travel==${{ needs.pack.outputs.version }}
       - uses: actions/checkout@v2
       - run: pip install pytest==7.1.1
       - name: Test Unix

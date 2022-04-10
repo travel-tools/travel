@@ -1,7 +1,7 @@
 import logging
 import subprocess
 
-from garden.tools.shell import Shell
+from travel.tools.shell import Shell
 
 logger = logging.getLogger(__name__)
 

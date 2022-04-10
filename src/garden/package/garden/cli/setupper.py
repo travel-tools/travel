@@ -1,21 +1,21 @@
 import os
 from pathlib import Path
 
-from garden.cli.base import GardenCommand
-from garden.config.nest import Nest
-from garden.custom.scopes.scoped_venvs import ScopedVirtualenvs
-from garden.tools.venv import Virtualenv
+from travel.cli.base import TravelCommand
+from travel.config.bag import Nest
+from travel.custom.scopes.scoped_venvs import ScopedVirtualenvs
+from travel.tools.venv import Virtualenv
 
 
-class Setupper(GardenCommand):
+class Setupper(TravelCommand):
 
     def _phase_name(self) -> str:
         return "setup"
 
-    def _manage(self, nest: Nest):
+    def _manage(self, bag: Nest):
 
         # Create the virtualenv
-        venv = Virtualenv(nest, touch_requirements_file=True)
+        venv = Virtualenv(bag, touch_requirements_file=True)
         venv.create()
         updated = venv.update()
 
@@ -24,9 +24,9 @@ class Setupper(GardenCommand):
             venv.freeze()
 
         # Create the scopes
-        if nest.scopes:
-            scopes = ScopedVirtualenvs(nest, touch_requirements_file=True)
-            for scope in nest.scopes:
+        if bag.scopes:
+            scopes = ScopedVirtualenvs(bag, touch_requirements_file=True)
+            for scope in bag.scopes:
                 scopes.create(scope)
                 updated = scopes.update(scope)
                 if updated:

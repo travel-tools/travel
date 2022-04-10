@@ -4,7 +4,7 @@ import os
 
 # Function to retrieve resources files
 def _get_resources(package_name):
-    # Get all the resources (also on nested levels)
+    # Get all the resources (also on baged levels)
     res_paths = os.path.join(package_name, "resources")
     all_resources = [os.path.join(folder, file) for folder, _, files in os.walk(res_paths) for file in files]
     # Remove the prefix: start just from "resources"
@@ -20,10 +20,10 @@ with open(requirements_file, "r") as f:
 
 # Package configuration
 setup(
-    name="gardentaskexample",
+    name="traveltaskexample",
     version="0.0.0",
-    description="An example of Garden Task",
+    description="An example of Travel Task",
     packages=find_packages(),
-    package_data={"gardentaskexample": _get_resources("gardentaskexample")},
+    package_data={"traveltaskexample": _get_resources("traveltaskexample")},
     install_requires=requirements
 )

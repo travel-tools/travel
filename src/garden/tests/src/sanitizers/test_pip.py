@@ -1,5 +1,5 @@
 import pytest
-from garden.config.sanitizers.pip_sanitizer import sanitize_package, sanitize_version, sanitize_versioned_package
+from travel.config.sanitizers.pip_sanitizer import sanitize_package, sanitize_version, sanitize_versioned_package
 
 
 def test_pip_sanitizer():

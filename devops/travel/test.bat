@@ -1,25 +1,25 @@
 @echo off
 
 
-cd src\garden\tests\
+cd src\travel\tests\
 pytest
 
 cd data\blueprint\complex
-garden blueprint --local-blueprints ..\locals
+travel blueprint --local-blueprints ..\locals
 cd ..\..\
 
 cd complexproject
-garden clean
-garden setup
+travel clean
+travel setup
 cd microservices\second
 venv-second\Scripts\python -m second
 
-garden pack sdist
+travel pack sdist
 
-garden clean
+travel clean
 
-garden pack --no-setup sdist
+travel pack --no-setup sdist
 ( venv-second\Scripts\python -m second && exit 1 ) || echo No setup ok
 venv-second\Scripts\python -m pip install build\package\dist\second-0.0.0.tar.gz
 venv-second\Scripts\python -m second
-garden clean
+travel clean

@@ -1,4 +1,4 @@
-nests:
+bags:
 
   common:
     blueprint: piperblueexample
@@ -9,7 +9,7 @@ nests:
       python: 3.7.4
 
   microservices:
-    nests:
+    bags:
 
       first:
         blueprint: piperblueexample

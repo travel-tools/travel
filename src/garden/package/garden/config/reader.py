@@ -4,81 +4,81 @@ from pathlib import Path
 from typing import List, Dict
 
 import yaml
-from garden.config.nest import Nest
+from travel.config.bag import Nest
 
-NEST_FILE = "nest.yml"
+BAG_FILE = "bag.yml"
 
 
 logger = logging.getLogger(__name__)
 
 
-def _read_nest(location: str) -> Nest:
+def _read_bag(location: str) -> Nest:
 
-    # Read the nest file
-    path = os.path.join(location, NEST_FILE)
+    # Read the bag file
+    path = os.path.join(location, BAG_FILE)
     with open(path) as f:
         yml = yaml.load(f, Loader=yaml.SafeLoader) or {}
         return Nest(location=location, yml=yml)
 
 
-def _has_nest(location: str) -> bool:
-    return os.path.isfile(os.path.join(location, NEST_FILE))
+def _has_bag(location: str) -> bool:
+    return os.path.isfile(os.path.join(location, BAG_FILE))
 
 
-def get_nest_name(location: str) -> str:
+def get_bag_name(location: str) -> str:
     return os.path.basename(os.path.normpath(location))
 
 
-def read_all_nests(location: str) -> Dict[str, Nest]:
+def read_all_bags(location: str) -> Dict[str, Nest]:
 
-    # Find the uppermost (parent) nest file
+    # Find the uppermost (parent) bag file
     uppermost = location
-    while _has_nest(location):
+    while _has_bag(location):
         uppermost = location
         location = str(Path(location).parent)
 
-    # Read main nest file and nested nest files
-    nests = {nest.name: nest for nest in _read_nests_from(uppermost)}
+    # Read main bag file and baged bag files
+    bags = {bag.name: bag for bag in _read_bags_from(uppermost)}
     # Set the root context
-    for n in nests.values():
-        n.root_context = uppermost
+    for b in bags.values():
+        b.root_context = uppermost
 
     # Build dependencies
-    for name in nests:
-        for nest in nests.values():
-            if name in nest.dependencies:
-                nest.fill_dependency_with_nest(nests[name])
-    return nests
+    for name in bags:
+        for bag in bags.values():
+            if name in bag.dependencies:
+                bag.fill_dependency_with_bag(bags[name])
+    return bags
 
 
-def parse_nests(location: str, target: str = None) -> (Nest, Nest):
+def parse_bags(location: str, target: str = None) -> (Nest, Nest):
 
-    # Read the target nest and all the nests
-    target = target or get_nest_name(location)
-    nests = read_all_nests(location)
+    # Read the target bag and all the bags
+    target = target or get_bag_name(location)
+    bags = read_all_bags(location)
 
-    # Manage this target nest
-    if target not in nests:
-        raise ValueError(f"The specified nest \"{target}\" does not exist in {location}")
-    nest = nests[target]
-    return nest, nests
+    # Manage this target bag
+    if target not in bags:
+        raise ValueError(f"The specified bag \"{target}\" does not exist in {location}")
+    bag = bags[target]
+    return bag, bags
 
 
-def _read_nests_from(location: str) -> List[Nest]:
+def _read_bags_from(location: str) -> List[Nest]:
 
-    # Read the local nest
+    # Read the local bag
     group = []
-    nest = _read_nest(location)
+    bag = _read_bag(location)
 
-    # Read all nests recursively
-    nests = [nest]
+    # Read all bags recursively
+    bags = [bag]
     for directory in os.listdir(location):
         current = os.path.join(location, directory)
-        if _has_nest(current):
-            children = _read_nests_from(current)
+        if _has_bag(current):
+            children = _read_bags_from(current)
             group = group + children
-            nests = nests + children
+            bags = bags + children
 
-    # Set the nested group
-    nest.group = group
-    return nests
+    # Set the baged group
+    bag.group = group
+    return bags

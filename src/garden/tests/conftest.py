@@ -1,7 +1,7 @@
 import os
 
 import pytest
-from garden.config.reader import read_all_nests
+from travel.config.reader import read_all_bags
 
 
 class ComplexProject:
@@ -13,10 +13,10 @@ class ComplexProject:
         self.microservices = "microservices"
         self.first = "first"
         self.second = "second"
-        self.gardentask_example = "gardentaskexample"
+        self.traveltask_example = "traveltaskexample"
 
-        self.garden_project = os.path.join(data_location, self.name)
-        self.nests = read_all_nests(self.garden_project)
+        self.travel_project = os.path.join(data_location, self.name)
+        self.bags = read_all_bags(self.travel_project)
 
 
 @pytest.fixture

@@ -52,7 +52,7 @@ if __name__ == '__main__':
     artifact = args.artifact
 
     registry = GitHubRegistry(
-        organization="garden-tools",
+        organization="travel-tools",
         type=args.type,
         personal_access_token=("federicopugliese", os.environ["REGISTRY_PAT"])
     )

@@ -11,14 +11,14 @@ from pipertask.task import PiperTask
 
 
 def _read_config(context: str, name: str) -> (Dict[str, Any], str):
-    # Read the nest file
-    with open(os.path.join(context, "nest.yml")) as n:
-        nest = yaml.load(n, Loader=yaml.SafeLoader) or {}
+    # Read the bag file
+    with open(os.path.join(context, "bag.yml")) as b:
+        bag = yaml.load(b, Loader=yaml.SafeLoader) or {}
 
     # Get all the tasks with matching name
     matching = [
         task
-        for step in nest.get("tasks", {}).values()
+        for step in bag.get("tasks", {}).values()
         for tasks in step.values()
         for task in tasks
         if task.get("name") == name
