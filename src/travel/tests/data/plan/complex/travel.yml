@@ -1,0 +1,19 @@
+common:
+  plan: gh:audreyfeldroy/cookiecutter-pypackage
+  config:
+    name: common
+    description: bla
+
+microservices:
+
+  first:
+    plan: gh:audreyfeldroy/cookiecutter-pypackage
+    config:
+      name: common
+      description: bla
+
+  second:
+    plan: gh:audreyfeldroy/cookiecutter-pypackage
+    config:
+      name: common
+      description: bla
