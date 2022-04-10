@@ -4,7 +4,7 @@ import os
 
 # Function to retrieve resources files
 def _get_resources(package_name):
-    # Get all the resources (also on baged levels)
+    # Get all the resources (also on nested levels)
     res_paths = os.path.join(package_name, "resources")
     all_resources = [os.path.join(folder, file) for folder, _, files in os.walk(res_paths) for file in files]
     # Remove the prefix: start just from "resources"
