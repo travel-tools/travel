@@ -3,7 +3,7 @@ import os
 import shutil
 
 from travel.cli.base import TravelCommand
-from travel.config.bag import Nest
+from travel.config.bag import Bag
 from travel.custom.scopes.scoped_venvs import ScopedVirtualenvs
 from travel.tools.venv import Virtualenv
 
@@ -15,13 +15,13 @@ class Cleaner(TravelCommand):
     def _phase_name(self):
         return "clean"
 
-    def _perform_tasks(self, bag: Nest, step: str):
+    def _perform_tasks(self, bag: Bag, step: str):
         if step == "post":
             pass
         else:
             super()._perform_tasks(bag, step)
 
-    def _manage(self, bag: Nest):
+    def _manage(self, bag: Bag):
 
         logger.info(f"Cleaning {bag.name}")
         to_remove = [

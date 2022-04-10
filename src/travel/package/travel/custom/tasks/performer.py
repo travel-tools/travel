@@ -3,7 +3,7 @@ import os
 
 import pkg_resources
 from travel import RESOURCES_LOCATION
-from travel.config.bag import Nest
+from travel.config.bag import Bag
 from travel.config.sanitizers import pip_sanitizer
 from travel.tools.venv import Virtualenv
 
@@ -13,7 +13,7 @@ _PERFORM_TASK = os.path.join(RESOURCES_LOCATION, "tasks", "perform.py")
 logger = logging.getLogger(__name__)
 
 
-def perform_tasks(phase: str, step: str, bag: Nest):
+def perform_tasks(phase: str, step: str, bag: Bag):
 
     # Get tasks
     tasks = bag.tasks.get(phase, {}).get(step, {})
@@ -23,7 +23,7 @@ def perform_tasks(phase: str, step: str, bag: Nest):
         logger.info("*"*60)
         logger.info(f"   TASKS {phase}: {step}   ".center(60, "*"))
         logger.info("*" * 60)
-        venv = Virtualenv(Nest(location=bag.tasks_folder, yml={}))
+        venv = Virtualenv(Bag(location=bag.tasks_folder, yml={}))
         venv.create()
 
         # Install PyYAML for the performer

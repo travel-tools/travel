@@ -7,7 +7,7 @@ from typing import Dict, Any, List
 import pkg_resources
 import yaml
 from travel import RESOURCES_LOCATION
-from travel.config.bag import Nest
+from travel.config.bag import Bag
 from travel.config.reader import BAG_FILE
 from travel.config.sanitizers import pip_sanitizer, name_sanitizer
 from travel.tools.venv import Virtualenv
@@ -52,7 +52,7 @@ def _generate_breath_first(blueprint_file: str, venv: Virtualenv, context: str, 
 def run(context: str, local_blueprints: List[str] = None):
 
     # Temporary create a venv
-    venv = Virtualenv(Nest(location=context, yml={}))
+    venv = Virtualenv(Bag(location=context, yml={}))
     venv.create()
     version = pip_sanitizer.sanitize_version(pkg_resources.get_distribution("PyYAML").version)
     venv.pip.install(f"PyYAML=={version}")

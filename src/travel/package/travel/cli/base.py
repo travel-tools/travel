@@ -2,7 +2,7 @@ import abc
 import logging
 from typing import Set
 
-from travel.config.bag import Nest
+from travel.config.bag import Bag
 from travel.config.reader import get_bag_name, read_all_bags, parse_bags
 from travel.custom.tasks import performer
 from travel.tools.python import main_python, Python
@@ -19,14 +19,14 @@ class TravelCommand(abc.ABC):
     def _phase_name(self) -> str:
         pass
 
-    def _perform_tasks(self, bag: Nest, step: str):
+    def _perform_tasks(self, bag: Bag, step: str):
         return performer.perform_tasks(self._phase_name(), step, bag)
 
     @abc.abstractmethod
-    def _manage(self, bag: Nest):
+    def _manage(self, bag: Bag):
         pass
 
-    def _manage_from_bag_recursive(self, bag: Nest, done: Set[Nest]):
+    def _manage_from_bag_recursive(self, bag: Bag, done: Set[Bag]):
 
         if not bag.group:
 
@@ -51,10 +51,10 @@ class TravelCommand(abc.ABC):
             for bag in bag.group:
                 self._manage_from_bag_recursive(bag, done=done)
 
-    def manage_from_bag(self, bag: Nest):
+    def manage_from_bag(self, bag: Bag):
         self._manage_from_bag_recursive(bag, done=set())
 
-    def manage(self, context: str, target: str = None) -> (Nest, Nest):
+    def manage(self, context: str, target: str = None) -> (Bag, Bag):
         bag, bags = parse_bags(context, target)
         self.manage_from_bag(bag)
         return bag, bags

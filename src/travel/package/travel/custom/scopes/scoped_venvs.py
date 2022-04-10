@@ -1,6 +1,6 @@
 import os
 
-from travel.config.bag import Nest
+from travel.config.bag import Bag
 from travel.tools.base_venv import BaseVirtualenv
 from travel.tools.python import Python
 from travel.tools.python import main_python as default_python
@@ -8,7 +8,7 @@ from travel.tools.python import main_python as default_python
 
 class ScopedVirtualenvs():
 
-    def __init__(self, bag: Nest, main_python: Python = default_python, touch_requirements_file: bool = False):
+    def __init__(self, bag: Bag, main_python: Python = default_python, touch_requirements_file: bool = False):
         self.envs = {
             scope: BaseVirtualenv(
                 location=bag.location,

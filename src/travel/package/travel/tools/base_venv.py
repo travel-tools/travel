@@ -5,7 +5,7 @@ import subprocess
 from pathlib import Path
 from typing import List
 
-from travel.config.bag import Nest
+from travel.config.bag import Bag
 from travel.config.sanitizers import pip_sanitizer
 from travel.config.sanitizers.pip_sanitizer import LATEST_PIP
 from travel.config.subconfigs.pip import PipConfig
@@ -24,7 +24,7 @@ LATEST_UPDATE = "latest_update.yml"
 
 class BaseVirtualenv:
 
-    def __init__(self, location: str, name_suffix: str, pip_config: PipConfig, dependencies: List[Nest], requirements_file: str, main_python: Python = default_python, touch_requirements_file: bool = False, extra_requirements: List[str] = None):
+    def __init__(self, location: str, name_suffix: str, pip_config: PipConfig, dependencies: List[Bag], requirements_file: str, main_python: Python = default_python, touch_requirements_file: bool = False, extra_requirements: List[str] = None):
         self._main_python = main_python
         self._name = f"venv-{name_suffix}"
 

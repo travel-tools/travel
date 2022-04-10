@@ -10,7 +10,7 @@ from travel.tools.venv import Virtualenv
 
 def test_quick_setup(complex_project):
 
-    # Nest
+    # Bag
     bag = complex_project.bags[complex_project.common]
 
     # Create the virtualenv
@@ -48,7 +48,7 @@ def test_quick_setup(complex_project):
 
 def test_pip_version(complex_project):
 
-    # Nest
+    # Bag
     bag = complex_project.bags[complex_project.common]
 
     # Create the virtualenv

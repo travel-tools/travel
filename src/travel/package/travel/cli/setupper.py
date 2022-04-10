@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 from travel.cli.base import TravelCommand
-from travel.config.bag import Nest
+from travel.config.bag import Bag
 from travel.custom.scopes.scoped_venvs import ScopedVirtualenvs
 from travel.tools.venv import Virtualenv
 
@@ -12,7 +12,7 @@ class Setupper(TravelCommand):
     def _phase_name(self) -> str:
         return "setup"
 
-    def _manage(self, bag: Nest):
+    def _manage(self, bag: Bag):
 
         # Create the virtualenv
         venv = Virtualenv(bag, touch_requirements_file=True)

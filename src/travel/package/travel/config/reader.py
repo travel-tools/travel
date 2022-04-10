@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import List, Dict
 
 import yaml
-from travel.config.bag import Nest
+from travel.config.bag import Bag
 
 BAG_FILE = "bag.yml"
 
@@ -12,13 +12,13 @@ BAG_FILE = "bag.yml"
 logger = logging.getLogger(__name__)
 
 
-def _read_bag(location: str) -> Nest:
+def _read_bag(location: str) -> Bag:
 
     # Read the bag file
     path = os.path.join(location, BAG_FILE)
     with open(path) as f:
         yml = yaml.load(f, Loader=yaml.SafeLoader) or {}
-        return Nest(location=location, yml=yml)
+        return Bag(location=location, yml=yml)
 
 
 def _has_bag(location: str) -> bool:
@@ -29,7 +29,7 @@ def get_bag_name(location: str) -> str:
     return os.path.basename(os.path.normpath(location))
 
 
-def read_all_bags(location: str) -> Dict[str, Nest]:
+def read_all_bags(location: str) -> Dict[str, Bag]:
 
     # Find the uppermost (parent) bag file
     uppermost = location
@@ -51,7 +51,7 @@ def read_all_bags(location: str) -> Dict[str, Nest]:
     return bags
 
 
-def parse_bags(location: str, target: str = None) -> (Nest, Nest):
+def parse_bags(location: str, target: str = None) -> (Bag, Bag):
 
     # Read the target bag and all the bags
     target = target or get_bag_name(location)
@@ -64,7 +64,7 @@ def parse_bags(location: str, target: str = None) -> (Nest, Nest):
     return bag, bags
 
 
-def _read_bags_from(location: str) -> List[Nest]:
+def _read_bags_from(location: str) -> List[Bag]:
 
     # Read the local bag
     group = []

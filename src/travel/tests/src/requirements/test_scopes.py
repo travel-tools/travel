@@ -5,7 +5,7 @@ from travel.custom.scopes.scoped_venvs import ScopedVirtualenvs
 
 def test_scopes(complex_project):
 
-    # Nest
+    # Bag
     bag = complex_project.bags[complex_project.first]
 
     # Create all scopes

@@ -9,7 +9,7 @@ from travel.custom.tasks.task import Task
 logger = logging.getLogger(__name__)
 
 
-class Nest:
+class Bag:
 
     def __init__(self, location: str, yml: dict, root_context: str = None):
         self.location = location
