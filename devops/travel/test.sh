@@ -4,7 +4,7 @@ set -e
 cd src/travel/tests/
 pytest
 
-cd data/blueprint/complex
+cd data/plan/complex
 travel plan test
 cd ../../
 
