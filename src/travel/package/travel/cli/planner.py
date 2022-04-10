@@ -15,6 +15,7 @@ _PLAN = "plan"
 _TRAVEL_FILE = "travel.yml"
 _CONFIG = "config"
 _CHECKOUT = "checkout"
+_DIRECTORY = "directory"
 
 
 def _is_a_plan(properties):
@@ -27,18 +28,20 @@ def _generate_breath_first(folder: str, yml: Dict[str, Any], local_plans: List[s
     for bag, properties in yml.items():
 
         # Get the folder where the bag will be created
-        bag = name_sanitizer.sanitize_name(bag)
-        bag_folder = os.path.join(folder, bag)
+        name_sanitizer.sanitize_name(bag)
 
         # Is it a plan?
         if _is_a_plan(properties):
+
             # Create it
+            plan = properties[_PLAN]
             cookiecutter(
-                properties[_PLAN],
-                output_dir=bag_folder,
+                template=plan,
+                output_dir=folder,
                 no_input=True,
                 extra_context=properties[_CONFIG],
-                checkout=properties.get(_CHECKOUT)
+                checkout=properties.get(_CHECKOUT),
+                directory=properties.get(_DIRECTORY)
             )
 
     # Create the "folder" bag.yml file
@@ -71,5 +74,6 @@ def run(context: str, name: str, local_plans: List[str] = None):
         raise e
     except Exception as e:
         # Remove in case of any other error
-        shutil.rmtree(folder)
+        if Path(folder).is_dir():
+            shutil.rmtree(folder)
         raise e
