@@ -2,7 +2,7 @@ import argparse
 import logging
 import os
 
-from travel.cli import python_wrapper, packer, planner
+from travel.cli import python_wrapper, packer, planner, adder
 from travel.cli.cleaner import Cleaner
 from travel.cli.setupper import Setupper
 
@@ -26,6 +26,15 @@ def main():
     plan = subparsers.add_parser("plan")
     plan.add_argument("name", help="Main bag name (name of the project)")
     plan.set_defaults(action=lambda args, rest: planner.run(args.context, args.name))
+
+    # Add
+    plan = subparsers.add_parser("add")
+    plan.add_argument("plan", help="Plan URL or path")
+    plan.add_argument("--checkout", help="Name of the branch to checkout", required=False)
+    plan.add_argument("--directory", help="Name of the directory in the plan to use", required=False)
+    plan.add_argument("--no-input", help="Do not ask for inputs", required=False, action="store_true")
+    plan.add_argument("--config", help="Config in key=value format", nargs="+", required=False)
+    plan.set_defaults(action=lambda args, rest: adder.run(args.context, args.plan, checkout=args.checkout, directory=args.directory, no_input=args.no_input, config=args.config))
 
     # Setup
     setup = subparsers.add_parser("setup")

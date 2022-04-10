@@ -6,6 +6,7 @@ pytest
 
 cd data\plan\complex
 travel plan test
+travel add gh:travel-tools/cookiecutter-travelplan --no-input
 cd ..\..\
 
 cd complexproject
