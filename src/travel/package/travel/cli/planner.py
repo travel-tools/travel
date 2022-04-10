@@ -14,6 +14,11 @@ logger = logging.getLogger(__name__)
 _PLAN = "plan"
 _TRAVEL_FILE = "travel.yml"
 _CONFIG = "config"
+_CHECKOUT = "checkout"
+
+
+def _is_a_plan(properties):
+    return _PLAN in properties and isinstance(properties[_PLAN], str)
 
 
 def _generate_breath_first(folder: str, yml: Dict[str, Any], local_plans: List[str] = None):
@@ -26,12 +31,15 @@ def _generate_breath_first(folder: str, yml: Dict[str, Any], local_plans: List[s
         bag_folder = os.path.join(folder, bag)
 
         # Is it a plan?
-        if _PLAN in properties:
-
-            # Get the package of the plan
-            plan = properties[_PLAN]
-            config = properties[_CONFIG]
-            cookiecutter(plan, output_dir=bag_folder, no_input=True, extra_context=config)
+        if _is_a_plan(properties):
+            # Create it
+            cookiecutter(
+                properties[_PLAN],
+                output_dir=bag_folder,
+                no_input=True,
+                extra_context=properties[_CONFIG],
+                checkout=properties.get(_CHECKOUT)
+            )
 
     # Create the "folder" bag.yml file
     bag_file = os.path.join(folder, BAG_FILE)
@@ -41,7 +49,7 @@ def _generate_breath_first(folder: str, yml: Dict[str, Any], local_plans: List[s
     # Generate the subbags
     for bag, properties in yml.items():
         bag_folder = os.path.join(folder, bag)
-        if not (_PLAN in properties and isinstance(properties[_PLAN], str)):
+        if not _is_a_plan(properties):
             _generate_breath_first(bag_folder, properties, local_plans=local_plans)
 
 
