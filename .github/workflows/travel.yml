@@ -74,54 +74,54 @@ jobs:
         run: devops\${{ github.event.repository.name }}\test.bat
         shell: cmd
 
-  release-package-on-test:
-    if: ${{ github.base_ref == 'master' && ( startsWith(github.head_ref, 'release/major/') || startsWith(github.head_ref, 'release/minor/') || startsWith(github.head_ref, 'hotfix/major/') || startsWith(github.head_ref, 'hotfix/minor/') ) }}
-    environment: test-pypi
-    needs: test-package
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.7.11'
-      - name: Download dist
-        uses: actions/download-artifact@v2
-        with:
-          name: dist
-          path: ${{ github.workspace }}/dist
-      - name: Release on Test
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_TOKEN }}
-          repository_url: https://test.pypi.org/legacy/
-
-  test-package-on-test-pypi:
-    needs: [release-package-on-test, pack]
-    strategy:
-      matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-        python: [3.7, 3.8, 3.9]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-      - name: Install package
-        run: pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/travel==${{ needs.pack.outputs.version }}
-      - uses: actions/checkout@v2
-      - run: pip install pytest==7.1.1
-      - name: Test Unix
-        if: ${{ matrix.os != 'windows-latest' }}
-        run: source devops/${{ github.event.repository.name }}/test.sh
-      - name: Test Windows
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: devops\${{ github.event.repository.name }}\test.bat
-        shell: cmd
+#  release-package-on-test:
+#    if: ${{ github.base_ref == 'master' && ( startsWith(github.head_ref, 'release/major/') || startsWith(github.head_ref, 'release/minor/') || startsWith(github.head_ref, 'hotfix/major/') || startsWith(github.head_ref, 'hotfix/minor/') ) }}
+#    environment: test-pypi
+#    needs: test-package
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Setup Python
+#        uses: actions/setup-python@v2
+#        with:
+#          python-version: '3.7.11'
+#      - name: Download dist
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: dist
+#          path: ${{ github.workspace }}/dist
+#      - name: Release on Test
+#        uses: pypa/gh-action-pypi-publish@release/v1
+#        with:
+#          user: __token__
+#          password: ${{ secrets.PYPI_TOKEN }}
+#          repository_url: https://test.pypi.org/legacy/
+#
+#  test-package-on-test-pypi:
+#    needs: [release-package-on-test, pack]
+#    strategy:
+#      matrix:
+#        os: [macos-latest, ubuntu-latest, windows-latest]
+#        python: [3.7, 3.8, 3.9]
+#    runs-on: ${{ matrix.os }}
+#    steps:
+#      - name: Setup Python
+#        uses: actions/setup-python@v2
+#        with:
+#          python-version: ${{ matrix.python }}
+#      - name: Install package
+#        run: pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/travel==${{ needs.pack.outputs.version }}
+#      - uses: actions/checkout@v2
+#      - run: pip install pytest==7.1.1
+#      - name: Test Unix
+#        if: ${{ matrix.os != 'windows-latest' }}
+#        run: source devops/${{ github.event.repository.name }}/test.sh
+#      - name: Test Windows
+#        if: ${{ matrix.os == 'windows-latest' }}
+#        run: devops\${{ github.event.repository.name }}\test.bat
+#        shell: cmd
 
   new-version:
-    needs: [test-package-on-test-pypi, pack]
+    needs: [test-package]
     runs-on: ubuntu-latest
     steps:
       - name: Setup Python
