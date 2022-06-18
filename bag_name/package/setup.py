@@ -1,5 +1,5 @@
-import os
 from setuptools import setup, find_packages
+import os
 
 
 # Read requirements
@@ -9,9 +9,12 @@ with open(requirements_file, "r") as f:
 
 
 # Package configuration
-setup(name="second",
-      version="0.0.0",
-      description="A second package",
-      packages=find_packages(),
-      include_package_data=True,
-      install_requires=requirements)
+_NAME = "bag_name"
+setup(
+    name=_NAME,
+    version="0.0.0",
+    description="A Python Package",
+    packages=find_packages(),
+    include_package_data=True,
+    install_requires=requirements
+)

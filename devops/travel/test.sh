@@ -21,6 +21,6 @@ travel clean
 
 travel pack --no-setup sdist
 ( venv-second/bin/python -m second && exit 1 ) || echo No setup ok
-venv-second/bin/python -m pip install build/package/dist/second-0.0.0.tar.gz
-venv-second/bin/python -m second
+python -m pip install build/package/dist/second-0.0.0.tar.gz
+python -m second
 travel clean

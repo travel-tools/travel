@@ -13,4 +13,5 @@ setup(name="first",
       version="0.0.0",
       description="A first package",
       packages=find_packages(),
+      include_package_data=True,
       install_requires=requirements)
