@@ -10,11 +10,11 @@ from travel.config.bag import Bag
 from travel.config.reader import parse_bags
 from travel.custom.tasks import performer
 from travel.tools.python import main_python
-from travel.tools.venv import Virtualenv
 
 logger = logging.getLogger(__name__)
 
 MANIFEST = "MANIFEST.in"
+SETUP_PY = "setup.py"
 
 
 def _find_code_and_data(dep: Bag):
@@ -43,7 +43,7 @@ def _find_code_and_data(dep: Bag):
 
 def create_egg_info(current_bag: Bag):
     for bag in current_bag.flat_dependencies(with_current=True):
-        setup_py = os.path.join(bag.setup_py_folder)
+        setup_py = os.path.join(bag.setup_py_folder, SETUP_PY)
         main_python.run(f"{setup_py} egg_info", cwd=bag.setup_py_folder)
 
 
@@ -92,7 +92,7 @@ def pack(context: str, command: str, target: str = None, setup: bool = True):
             f.writelines(manifest)
 
     # Setup the code
-    setup_py = os.path.join(source_build_folder, "setup.py")
+    setup_py = os.path.join(source_build_folder, SETUP_PY)
     main_python.run(f"{setup_py} {' '.join(command)}", cwd=source_build_folder)  # TODO should check for spaces and commas, or use list!
 
     # Post-pack
