@@ -1,3 +1,5 @@
+import itertools
+import json
 import logging
 import os
 import shutil
@@ -74,6 +76,7 @@ def pack(context: str, command: str, target: str = None, setup: bool = True):
     Path(manifest_file).touch(exist_ok=True)
 
     # For all dependencies, copy their code and package_data too
+    manifest_first_time = True
     for dep in current_bag.flat_dependencies():
 
         # Find code packages and package_data
@@ -89,6 +92,11 @@ def pack(context: str, command: str, target: str = None, setup: bool = True):
         # Store the package_data information
         manifest = [f"include {d}/*" for d in data]
         with open(manifest_file, "a") as f:
+            # Write the comment for ease of documentation
+            if manifest and manifest_first_time:
+                f.write(f"\n#travel-dependency")
+                manifest_first_time = False
+            # Add each package_data
             f.write("\n"+"\n".join(manifest))  # Add a \n in case file is not ending with that
 
     # Setup the code
