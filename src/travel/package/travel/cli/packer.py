@@ -41,14 +41,21 @@ def _find_code_and_data(dep: Bag):
     return list(code_packages), list(package_data)
 
 
+def create_egg_info(current_bag: Bag):
+    for bag in current_bag.flat_dependencies(with_current=True):
+        setup_py = os.path.join(bag.setup_py_folder)
+        main_python.run(f"{setup_py} egg_info", cwd=bag.setup_py_folder)
+
+
 def pack(context: str, command: str, target: str = None, setup: bool = True):
 
     # Setup the bags and dependencies
     if setup:
         current_bag, all_bags = Setupper().manage(context, target=target)
     else:
+        # If no setup, create just the egg_info folder for SOURCES.txt information for each dependency (and current)
         current_bag, all_bags = parse_bags(context, target)
-        Virtualenv(current_bag).create()
+        create_egg_info(current_bag)
 
     # Pre-pack
     performer.perform_tasks("pack", "pre", current_bag)
