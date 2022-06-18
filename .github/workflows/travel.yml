@@ -122,7 +122,7 @@ jobs:
 
   new-version:
     if: ${{ github.base_ref == 'master' && ( startsWith(github.head_ref, 'release/major/') || startsWith(github.head_ref, 'release/minor/') || startsWith(github.head_ref, 'hotfix/major/') || startsWith(github.head_ref, 'hotfix/minor/') ) }}
-    needs: [test-package]
+    needs: [test-package, pack]
     runs-on: ubuntu-latest
     steps:
       - name: Setup Python
