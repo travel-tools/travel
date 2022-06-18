@@ -31,7 +31,7 @@ You can find an example of Travel project [here](https://github.com/travel-tools
 
 ## Installation
 
-With Python >= 3.7, simply run
+With Python >= 3.7 < 3.10, simply run
 
 ```
 pip install travel
