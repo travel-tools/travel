@@ -89,7 +89,7 @@ def pack(context: str, command: str, target: str = None, setup: bool = True):
         # Store the package_data information
         manifest = [f"include {d}/*" for d in data]
         with open(manifest_file, "a") as f:
-            f.writelines(manifest)
+            f.write("\n"+"\n".join(manifest))  # Add a \n in case file is not ending with that
 
     # Setup the code
     setup_py = os.path.join(source_build_folder, SETUP_PY)
