@@ -32,7 +32,6 @@ def perform_tasks(phase: str, step: str, bag: Bag):
         # Append common args (context, task) and join the config section
         base_command = f"-m {task.python_module} --context \"{bag.location}\" --task \"{task.name}\" "
         base_command = base_command + " ".join([f"--{key} \"{value}\"" for key, value in task.config.items()])
-        logger.info(base_command)
 
         # Perform
         venv.python.run(base_command, cwd=bag.location)
