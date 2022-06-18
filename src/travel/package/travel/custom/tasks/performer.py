@@ -21,7 +21,7 @@ def perform_tasks(phase: str, step: str, bag: Bag):
 
         # Create the env
         log_title(logger, f"{task.name}", char='-')
-        task_folder = os.path.join(bag.root_context, f"task-{task.package}")
+        task_folder = os.path.join(bag.build_folder, f"task-{task.package}")
         os.makedirs(task_folder, exist_ok=True)
         venv = Virtualenv(Bag(location=task_folder, yml={}))
         venv.create()
@@ -30,8 +30,9 @@ def perform_tasks(phase: str, step: str, bag: Bag):
         venv.pip.install([task.package], allow_bags_from=bag.root_context)
 
         # Append common args (context, task) and join the config section
-        base_command = f"-m {task.python_module} --context \"{bag.location}\" --task \"{task.name}\""
+        base_command = f"-m {task.python_module} --context \"{bag.location}\" --task \"{task.name}\" "
         base_command = base_command + " ".join([f"--{key} \"{value}\"" for key, value in task.config.items()])
+        logger.info(base_command)
 
         # Perform
         venv.python.run(base_command, cwd=bag.location)
