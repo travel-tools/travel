@@ -17,11 +17,11 @@ def perform_tasks(phase: str, step: str, bag: Bag):
         log_title(logger, f"TASKS {phase}: {step}")
 
     # For each task
-    for task in [Task(t) for t in tasks]:
+    for task in tasks:
 
         # Create the env
         log_title(logger, f"{task.name}", char='-')
-        task_folder = os.path.join(bag.tasks_folder, f"task-{task.package}")
+        task_folder = os.path.join(bag.root_context, f"task-{task.package}")
         os.makedirs(task_folder, exist_ok=True)
         venv = Virtualenv(Bag(location=task_folder, yml={}))
         venv.create()
@@ -37,4 +37,5 @@ def perform_tasks(phase: str, step: str, bag: Bag):
         venv.python.run(base_command, cwd=bag.location)
         log_title(logger, f"END {task.name}", char='-', ending=True)
 
-    log_title(logger, f"END TASKS {phase}: {step}", ending=True)
+    if tasks:
+        log_title(logger, f"END TASKS {phase}: {step}", ending=True)

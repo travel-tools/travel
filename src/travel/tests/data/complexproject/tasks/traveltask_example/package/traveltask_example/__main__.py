@@ -12,7 +12,7 @@ def parse_arguments() -> dict:
 
     # Parse arguments
     parser = argparse.ArgumentParser()
-    for name, kind in fields:
+    for name, kind in fields.items():
         parser.add_argument(f"--{name}", type=kind)
 
     # Convert to dictionary
