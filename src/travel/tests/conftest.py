@@ -13,7 +13,7 @@ class ComplexProject:
         self.microservices = "microservices"
         self.first = "first"
         self.second = "second"
-        self.traveltask_example = "traveltaskexample"
+        self.traveltask_example = "traveltask_example"
 
         self.travel_project = os.path.join(data_location, self.name)
         self.bags = read_all_bags(self.travel_project)
