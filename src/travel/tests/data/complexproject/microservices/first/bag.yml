@@ -10,22 +10,23 @@ tasks:
 
   clean:
     pre:
-      - pipertask: traveltaskexample
+      - task: traveltask_example
         name: deep-clean
 
   setup:
     pre:
-      - pipertask: traveltaskexample
+      - task: traveltask_example
         name: make-argonauts-1
         config:
           something: a
-      - pipertask: traveltaskexample
+      - task: traveltask_example
         name: make-argonauts-2
         config:
           something: g
+          number: 100
 
     post:
-      - pipertask: traveltaskexample
+      - task: traveltask_example
         name: make-argonauts-3
         config:
           something: a
