@@ -29,7 +29,12 @@ class Cleaner(TravelCommand):
             Virtualenv(bag).path,                                              # venv folder
             bag.build_folder                                                   # artifacts build folder
         ]
-        to_remove = to_remove + get_egg_info_folders(bag.setup_py_folder)      # egg_info(s)
+        to_remove = to_remove + [                                              # egg_info(s)
+            os.path.join(bag.setup_py_folder, f)
+            for f in get_egg_info_folders(bag.setup_py_folder)
+        ]
+
+        print(to_remove)
 
         # If with scopes, remove them too
         if bag.scopes:
