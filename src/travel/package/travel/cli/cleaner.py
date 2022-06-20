@@ -3,6 +3,7 @@ import os
 import shutil
 
 from travel.cli.base import TravelCommand
+from travel.cli.utils.package import get_egg_info_folders
 from travel.config.bag import Bag
 from travel.custom.scopes.scoped_venvs import ScopedVirtualenvs
 from travel.tools.venv import Virtualenv
@@ -25,10 +26,10 @@ class Cleaner(TravelCommand):
 
         logger.info(f"Cleaning {bag.name}")
         to_remove = [
-            os.path.join(bag.setup_py_folder, f"{bag.package}.egg-info"),     # egg-info
             Virtualenv(bag).path,                                              # venv folder
             bag.build_folder                                                   # artifacts build folder
         ]
+        to_remove = to_remove + get_egg_info_folders(bag.setup_py_folder)      # egg_info(s)
 
         # If with scopes, remove them too
         if bag.scopes:
