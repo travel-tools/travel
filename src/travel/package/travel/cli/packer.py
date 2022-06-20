@@ -1,5 +1,3 @@
-import itertools
-import json
 import logging
 import os
 import shutil
@@ -8,6 +6,7 @@ from pathlib import Path
 
 import setuptools
 from travel.cli.setupper import Setupper
+from travel.cli.utils.package import get_egg_info_folders, EGG_INFO_SUFFIX
 from travel.config.bag import Bag
 from travel.config.reader import parse_bags
 from travel.custom.tasks import performer
@@ -19,10 +18,10 @@ MANIFEST = "MANIFEST.in"
 SETUP_PY = "setup.py"
 
 
-def _find_code_and_data(dep: Bag):
+def _find_code_and_data(dep: Bag, package: str):
 
     # Get all the files that should be in the dependency (code and package_data)
-    egg_info = f"{dep.package}.egg-info"
+    egg_info = f"{package}EGG_INFO_SUFFIX"
     sources = os.path.join(dep.setup_py_folder, egg_info, "SOURCES.txt")  # This file is created by setup
     with open(sources, "r") as f:
         files = f.read().splitlines()
@@ -30,7 +29,7 @@ def _find_code_and_data(dep: Bag):
     # Get just the unique folders starting with the package name (and are not egg info)
     folders = set([
         os.path.dirname(f) for f in files
-        if f.startswith(dep.package) and not f.startswith(egg_info)
+        if f.startswith(package) and not f.startswith(egg_info)
     ])
 
     # Find code packages
@@ -47,6 +46,15 @@ def create_egg_info(current_bag: Bag):
     for bag in current_bag.flat_dependencies(with_current=True):
         setup_py = os.path.join(bag.setup_py_folder, SETUP_PY)
         main_python.run(f"{setup_py} egg_info", cwd=bag.setup_py_folder)
+
+
+def _get_package_name(bag: Bag) -> str:
+    # Get egg info folder (this function is always called after setup.py egg_info
+    egg_infos = get_egg_info_folders(bag.setup_py_folder)
+    if len(egg_infos) > 1:
+        raise RuntimeError("WARNING: multiple egg_info. Run a 'travel clean' and than this command again.")
+    # Get just the package name, removing the last part (EGG_INFO_SUFFIX)
+    return egg_infos[0][:-len(EGG_INFO_SUFFIX)]
 
 
 def pack(context: str, command: str, target: str = None, setup: bool = True):
@@ -80,7 +88,8 @@ def pack(context: str, command: str, target: str = None, setup: bool = True):
     for dep in current_bag.flat_dependencies():
 
         # Find code packages and package_data
-        code, data = _find_code_and_data(dep)
+        package = _get_package_name(dep)
+        code, data = _find_code_and_data(dep, package)
 
         # Copy it inside the copied setup.py folder
         for folder in code:

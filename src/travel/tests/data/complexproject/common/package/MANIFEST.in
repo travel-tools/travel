@@ -1,2 +1,2 @@
 include requirements.txt
-recursive-include common/resources *
+recursive-include pcommon/resources *
