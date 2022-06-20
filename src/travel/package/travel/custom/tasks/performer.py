@@ -3,7 +3,6 @@ import os
 
 from travel.cli.console.output import log_title
 from travel.config.bag import Bag
-from travel.custom.tasks.task import Task
 from travel.tools.venv import Virtualenv
 
 logger = logging.getLogger(__name__)
