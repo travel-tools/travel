@@ -9,7 +9,7 @@ with open(requirements_file, "r") as f:
 
 
 # Package configuration
-setup(name="common",
+setup(name="pcommon",
       version="0.0.0",
       description="A common package",
       packages=find_packages(),
