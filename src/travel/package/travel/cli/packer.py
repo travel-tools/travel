@@ -21,7 +21,7 @@ SETUP_PY = "setup.py"
 def _find_code_and_data(dep: Bag, package: str):
 
     # Get all the files that should be in the dependency (code and package_data)
-    egg_info = f"{package}EGG_INFO_SUFFIX"
+    egg_info = f"{package}{EGG_INFO_SUFFIX}"
     sources = os.path.join(dep.setup_py_folder, egg_info, "SOURCES.txt")  # This file is created by setup
     with open(sources, "r") as f:
         files = f.read().splitlines()
