@@ -20,7 +20,7 @@ def perform_tasks(phase: str, step: str, bag: Bag):
 
         # Create the env
         log_title(logger, f"{task.name}", char='-')
-        task_folder = os.path.join(bag.build_folder, f"task-{task.package}")
+        task_folder = os.path.join(bag.build_folder, f"task-{task.package.split('==')[0]}")
         os.makedirs(task_folder, exist_ok=True)
         venv = Virtualenv(Bag(location=task_folder, yml={}))
         venv.create()
