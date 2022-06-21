@@ -108,9 +108,14 @@ def pack(context: str, command: str, target: str = None, setup: bool = True):
             # Add each package_data
             f.write("\n"+"\n".join(manifest))  # Add a \n in case file is not ending with that
 
-    # Setup the code
-    setup_py = os.path.join(source_build_folder, SETUP_PY)
-    main_python.run(f"{setup_py} {' '.join(command)}", cwd=source_build_folder)  # TODO should check for spaces and commas, or use list!
+    # Instead of pack
+    skip = performer.perform_tasks("pack", "instead", current_bag)
+
+    # If no instead steps
+    if not skip:
+        # Setup the code
+        setup_py = os.path.join(source_build_folder, SETUP_PY)
+        main_python.run(f"{setup_py} {' '.join(command)}", cwd=source_build_folder)  # TODO should check for spaces and commas, or use list!
 
     # Post-pack
     performer.perform_tasks("pack", "post", current_bag)

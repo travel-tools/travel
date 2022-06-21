@@ -39,6 +39,7 @@ class Bag:
         # self.package = self.name  # But could be different  # TODO: cannot be inferred here
         self.setup_py_folder = os.path.join(self.location, "package")  # But could be different
         self.build_folder = os.path.join(self.location, "build")  # But could be different
+        self.dist_folder = os.path.join(self.build_folder, "package", "dist")  # But could be different
         self.tasks_folder = os.path.join(self.build_folder, "tasks")
         self.requirements_file = os.path.join(self.setup_py_folder, "requirements.txt")
 

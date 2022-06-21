@@ -8,7 +8,7 @@ from travel.tools.venv import Virtualenv
 logger = logging.getLogger(__name__)
 
 
-def perform_tasks(phase: str, step: str, bag: Bag):
+def perform_tasks(phase: str, step: str, bag: Bag) -> bool:
 
     # Get tasks
     tasks = bag.tasks.get(phase, {}).get(step, [])
@@ -38,3 +38,6 @@ def perform_tasks(phase: str, step: str, bag: Bag):
 
     if tasks:
         log_title(logger, f"END TASKS {phase}: {step}", ending=True)
+        return True
+
+    return False

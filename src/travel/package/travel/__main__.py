@@ -2,7 +2,7 @@ import argparse
 import logging
 import os
 
-from travel.cli import python_wrapper, packer, planner, adder
+from travel.cli import packer, planner, adder, takeoffer
 from travel.cli.cleaner import Cleaner
 from travel.cli.setupper import Setupper
 
@@ -46,7 +46,10 @@ def main():
     pack.add_argument("--no-setup", help="Do not update the venvs", required=False, action="store_true")
     pack.set_defaults(action=lambda args, rest: packer.pack(args.context, rest, target=args.target, setup=not args.no_setup))
 
-    # Release
+    # Takeoff
+    takeoff = subparsers.add_parser("takeoff")
+    takeoff.add_argument("--target", help="Name of the bag to run setup.py commands", required=False)
+    takeoff.set_defaults(action=lambda args, rest: takeoffer.take_off(args.context, rest, target=args.target))
 
     # # Python
     # python = subparsers.add_parser("python")

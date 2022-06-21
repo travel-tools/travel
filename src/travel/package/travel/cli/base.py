@@ -3,7 +3,7 @@ import logging
 from typing import Set
 
 from travel.config.bag import Bag
-from travel.config.reader import get_bag_name, read_all_bags, parse_bags
+from travel.config.reader import parse_bags
 from travel.custom.tasks import performer
 from travel.tools.python import main_python, Python
 
@@ -19,7 +19,7 @@ class TravelCommand(abc.ABC):
     def _phase_name(self) -> str:
         pass
 
-    def _perform_tasks(self, bag: Bag, step: str):
+    def _perform_tasks(self, bag: Bag, step: str) -> bool:
         return performer.perform_tasks(self._phase_name(), step, bag)
 
     @abc.abstractmethod
@@ -38,7 +38,8 @@ class TravelCommand(abc.ABC):
                     logger.info(f"=== {b.name.center(52, ' ')} ===")
                     logger.info("="*60)
                     self._perform_tasks(b, "pre")
-                    self._manage(b)
+                    if not self._perform_tasks(b, "instead"):
+                        self._manage(b)
                     self._perform_tasks(b, "post")
                     logger.info("=" * 60)
                     logger.info("")
