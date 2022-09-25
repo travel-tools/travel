@@ -9,6 +9,7 @@ from travel.config.bag import Bag
 from travel.config.sanitizers import pip_sanitizer
 from travel.config.sanitizers.pip_sanitizer import LATEST_PIP
 from travel.config.subconfigs.pip import PipConfig
+from travel.requirements.tree import RequirementTree
 from travel.tools.outputs.latest_updates import LatestUpdate
 from travel.tools.pip import Pip
 from travel.tools.python import Python
@@ -107,7 +108,7 @@ class BaseVirtualenv:
 
         # Uninstall the unnecessary requirements
         installed_requirements = [pip_sanitizer.get_package_name(f) for f in self._freeze()]
-        necessary_requirements = self._recursive_requirements(explicit_requirements) if explicit_requirements else []
+        necessary_requirements = RequirementTree(explicit_requirements).get_flat_requirements() if explicit_requirements else []
         unnecessary_requirements = set(installed_requirements) - set(necessary_requirements)
         if unnecessary_requirements:
             to_uninstall = ' '.join(list(unnecessary_requirements))
@@ -146,30 +147,6 @@ class BaseVirtualenv:
             for requirement in real_requirements:
                 f.write(requirement + "\n")
             logger.info(f"Freezing {real_requirements}")
-
-    def _recursive_requirements(self, requirements: List[str]) -> List[str]:
-
-        def _find_recursively(reqs):
-
-            # Parse this level requirements
-            explicit_requirements = [pip_sanitizer.get_package_name(req) for req in reqs]
-
-            # Get the implicit requirements, needed by these requirements
-            output = self.pip.run(f"show {' '.join(explicit_requirements)}", capture=True).stdout
-            implicit = [
-                req
-                for line in re.sub("[\r\n]+", "\n", output).split("\n") if line.startswith("Requires: ")
-                for req in line.replace("Requires: ", "").split(", ") if req
-            ]
-
-            # If any implicit, recursively get their implicit ones; else return it simply
-            if implicit:
-                requires = explicit_requirements + _find_recursively(implicit)
-            else:
-                requires = explicit_requirements
-            return requires
-
-        return list(set(_find_recursively(requirements)))
 
 
 def _is_valid_requirement(requirement: str) -> bool:
