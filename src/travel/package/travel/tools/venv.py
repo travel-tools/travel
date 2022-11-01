@@ -1,4 +1,4 @@
-from travel.config.bag import Bag
+from travel.config.bags.bag import Bag
 from travel.tools.base_venv import BaseVirtualenv
 from travel.tools.python import Python
 from travel.tools.python import main_python as default_python

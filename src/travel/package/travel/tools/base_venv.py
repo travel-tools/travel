@@ -5,7 +5,7 @@ import subprocess
 from pathlib import Path
 from typing import List
 
-from travel.config.bag import Bag
+from travel.config.bags.bag import Bag
 from travel.config.sanitizers import pip_sanitizer
 from travel.config.sanitizers.pip_sanitizer import LATEST_PIP
 from travel.config.subconfigs.pip import PipConfig

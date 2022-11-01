@@ -2,7 +2,7 @@ import abc
 import logging
 from typing import Set
 
-from travel.config.bag import Bag
+from travel.config.bags.bag import Bag
 from travel.config.reader import parse_bags
 from travel.custom.tasks import performer
 from travel.tools.python import main_python, Python

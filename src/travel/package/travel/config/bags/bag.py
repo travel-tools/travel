@@ -1,26 +1,21 @@
 import logging
 import os
 
-from travel.config.sanitizers import python_sanitizer, pip_sanitizer
-from travel.config.subconfigs.pip import PipConfig
+from travel.config.bags.base_bag import BaseBag
+from travel.config.sanitizers import pip_sanitizer
 from travel.config.subconfigs.scopes import ScopeConfig
 from travel.custom.tasks.task import Task
 
 logger = logging.getLogger(__name__)
 
 
-class Bag:
+class Bag(BaseBag):
 
     def __init__(self, location: str, yml: dict, root_context: str = None):
-        self.location = location
-        self.root_context = root_context
-        self.name = os.path.basename(os.path.normpath(location))
-        self.group = []
+        super().__init__(location, root_context)
 
         # Pop the config entries
         config = yml.copy()
-        self.python = python_sanitizer.sanitize_version(config.pop("python", None), nullable=True)
-        self.pip = PipConfig(config.pop("pip", {}))
         self.dependencies = {pip_sanitizer.sanitize_package(dep): None for dep in config.pop("dependencies", [])}  # To be filled later
         self.requirements = [pip_sanitizer.sanitize_versioned_package(req) for req in config.pop("requirements", {})]
         self.tasks = {
@@ -63,9 +58,3 @@ class Bag:
         if with_current:
             dependencies.append(self)
         return dependencies
-
-    def __str__(self):
-        return str(vars(self))
-
-    def __repr__(self):
-        return str(self)

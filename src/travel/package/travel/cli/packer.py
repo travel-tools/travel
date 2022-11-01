@@ -7,7 +7,7 @@ from pathlib import Path
 import setuptools
 from travel.cli.setupper import Setupper
 from travel.cli.utils.package import get_egg_info_folders, EGG_INFO_SUFFIX
-from travel.config.bag import Bag
+from travel.config.bags.bag import Bag
 from travel.config.reader import parse_bags
 from travel.custom.tasks import performer
 from travel.tools.python import main_python

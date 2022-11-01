@@ -1,5 +1,5 @@
 from travel.cli.base import TravelCommand
-from travel.config.bag import Bag
+from travel.config.bags.bag import Bag
 from travel.custom.scopes.scoped_venvs import ScopedVirtualenvs
 from travel.tools.venv import Virtualenv
 

@@ -4,7 +4,7 @@ import shutil
 
 from travel.cli.base import TravelCommand
 from travel.cli.utils.package import get_egg_info_folders
-from travel.config.bag import Bag
+from travel.config.bags.bag import Bag
 from travel.custom.scopes.scoped_venvs import ScopedVirtualenvs
 from travel.tools.venv import Virtualenv
 

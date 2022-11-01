@@ -20,7 +20,7 @@ class Pip(Executable):
         packages = [
             f'{sanitize_versioned_package(req)}'
             for req in requirements
-            if not is_just_package(req)
+            if not is_just_package(req)  # i.e. with version --> not a bag
         ]
         if packages:
             super().run(f"install {' '.join(packages)}")
@@ -29,7 +29,7 @@ class Pip(Executable):
         bags = [
             f'{sanitize_package(req)}'
             for req in requirements
-            if is_just_package(req)
+            if is_just_package(req)  # i.e. no version --> bag
         ]
         if bags:
             if not allow_bags_from:

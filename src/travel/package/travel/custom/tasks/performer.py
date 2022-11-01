@@ -2,7 +2,7 @@ import logging
 import os
 
 from travel.cli.console.output import log_title
-from travel.config.bag import Bag
+from travel.config.bags.bag import Bag
 from travel.tools.venv import Virtualenv
 
 logger = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ def perform_tasks(phase: str, step: str, bag: Bag) -> bool:
         log_title(logger, f"{task.name}", char='-')
         task_folder = os.path.join(bag.build_folder, f"task-{task.package.split('==')[0]}")
         os.makedirs(task_folder, exist_ok=True)
-        venv = Virtualenv(Bag(location=task_folder, yml={}))
+        venv = Virtualenv(PackageBag(location=task_folder, yml={}))
         venv.create()
 
         # Install the package
