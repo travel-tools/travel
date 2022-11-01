@@ -2,7 +2,7 @@ import argparse
 import logging
 import os
 
-from travel.cli import packer, planner, adder, takeoffer
+from travel.cli import packer, planner, adder, takeoffer, configurer
 from travel.cli.cleaner import Cleaner
 from travel.cli.setupper import Setupper
 
@@ -17,6 +17,11 @@ def main():
     parser.add_argument("--context", default=os.getcwd(), help="Path to the folder containing the bag.yml file")
     parser.set_defaults(action=lambda args: parser.parse_args(["-h"]))
     subparsers = parser.add_subparsers()
+
+    # Config
+    config = subparsers.add_parser("config")
+    config.add_argument("action", help="'add' or 'remove'")
+    config.set_defaults(action=lambda args, rest: configurer.configure(args.action, rest))
 
     # Clean
     clean = subparsers.add_parser("clean")

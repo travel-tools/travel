@@ -24,14 +24,10 @@ class EnvironmentConfig:
             logger.warning(f"Unknown configuration in global travel config: {config}")
 
 
-def _read(path: str = None):
+def _read(path: str = None) -> EnvironmentConfig:
 
     # Get global travel config from env var or default location
-    if not path:
-        path = os.environ.get(
-            "TRAVEL_CONFIG_PATH",
-            Path.home()/_TRAVEL_FOLDER/_TRAVEL_FILE
-        )
+    path = Path(path or get_config_file_path())
 
     # If file exists, read it, or return an empty config
     if path.exists():
@@ -41,6 +37,13 @@ def _read(path: str = None):
         yml = {}
 
     return EnvironmentConfig(yml)
+
+
+def get_config_file_path() -> Path:
+    return Path(os.environ.get(
+        "TRAVEL_CONFIG_PATH",
+        Path.home()/_TRAVEL_FOLDER/_TRAVEL_FILE
+    ))
 
 
 travel_config = _read()
