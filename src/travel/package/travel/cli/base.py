@@ -1,32 +1,29 @@
 import abc
 import logging
-from typing import Set
+from typing import Set, List
 
 from travel.config.bag import Bag
+from travel.config.project import Project
 from travel.config.reader import parse_bags
 from travel.custom.tasks import performer
-from travel.tools.python import main_python, Python
 
 logger = logging.getLogger(__name__)
 
 
 class TravelCommand(abc.ABC):
 
-    def __init__(self, python: Python = main_python):
-        self.main_python = python
-
     @abc.abstractmethod
     def _phase_name(self) -> str:
         pass
 
-    def _perform_tasks(self, bag: Bag, step: str) -> bool:
+    def _perform_tasks(self, bag: Bag, project: Project, step: str) -> bool:
         return performer.perform_tasks(self._phase_name(), step, bag)
 
     @abc.abstractmethod
-    def _manage(self, bag: Bag):
+    def _manage(self, bag: Bag, project: Project):
         pass
 
-    def _manage_from_bag_recursive(self, bag: Bag, done: Set[Bag]):
+    def _manage_from_bag_recursive(self, bag: Bag, project: Project, done: Set[Bag]):
 
         if not bag.group:
 
@@ -37,10 +34,10 @@ class TravelCommand(abc.ABC):
                     logger.info("="*60)
                     logger.info(f"=== {b.name.center(52, ' ')} ===")
                     logger.info("="*60)
-                    self._perform_tasks(b, "pre")
+                    self._perform_tasks(b, project, "pre")
                     if not self._perform_tasks(b, "instead"):
-                        self._manage(b)
-                    self._perform_tasks(b, "post")
+                        self._manage(b, project)
+                    self._perform_tasks(b, project, "post")
                     logger.info("=" * 60)
                     logger.info("")
                     logger.info("")
@@ -52,10 +49,15 @@ class TravelCommand(abc.ABC):
             for bag in bag.group:
                 self._manage_from_bag_recursive(bag, done=done)
 
-    def manage_from_bag(self, bag: Bag):
-        self._manage_from_bag_recursive(bag, done=set())
+    def manage_from_bag(self, bag: Bag, project: Project):
+        self._manage_from_bag_recursive(bag, project, done=set())
 
-    def manage(self, context: str, target: str = None) -> (Bag, Bag):
-        bag, bags = parse_bags(context, target)
-        self.manage_from_bag(bag)
+    def manage(self, context: str, target: str = None) -> (Bag, List[Bag]):
+
+        # Read the entire project
+        project = Project(context)
+        bag, bags = parse_bags(context, target=target, bags=project.bags)
+
+        # Perform the action
+        self.manage_from_bag(bag, project)
         return bag, bags
