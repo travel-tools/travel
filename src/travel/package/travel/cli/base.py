@@ -35,7 +35,7 @@ class TravelCommand(abc.ABC):
                     logger.info(f"=== {b.name.center(52, ' ')} ===")
                     logger.info("="*60)
                     self._perform_tasks(b, project, "pre")
-                    if not self._perform_tasks(b, "instead"):
+                    if not self._perform_tasks(b, project, "instead"):
                         self._manage(b, project)
                     self._perform_tasks(b, project, "post")
                     logger.info("=" * 60)
@@ -47,7 +47,7 @@ class TravelCommand(abc.ABC):
 
             # Manage each element of the group
             for bag in bag.group:
-                self._manage_from_bag_recursive(bag, done=done)
+                self._manage_from_bag_recursive(bag, project, done=done)
 
     def manage_from_bag(self, bag: Bag, project: Project):
         self._manage_from_bag_recursive(bag, project, done=set())
