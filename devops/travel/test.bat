@@ -11,6 +11,12 @@ cd ..\..\
 
 cd complexproject
 travel --debug clean
+
+echo python: 2.7.1 > bag.yml
+( travel setup && exit 1 ) || echo Wrong python ok
+
+python -c "import sys; print('python: ' + sys.version.split(' ')[0])" > bag.yml
+
 travel --debug setup
 cd microservices\second
 venv-second\Scripts\python -m second

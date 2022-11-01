@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 from travel.cli.cleaner import Cleaner
+from travel.config.project import Project
 from travel.config.sanitizers.pip_sanitizer import LATEST_PIP
 from travel.tools.base_venv import LATEST_UPDATE
 from travel.tools.outputs.latest_updates import LatestUpdate
@@ -107,6 +108,6 @@ def test_remove_requirements(complex_project):
         assert r not in now_requirements
 
     # Clean everything
-    Cleaner().manage_from_bag(bag)
+    Cleaner().manage_from_bag(bag, Project(complex_project.travel_project))
     os.remove(bag.requirements_file)
 
