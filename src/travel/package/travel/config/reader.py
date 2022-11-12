@@ -29,16 +29,21 @@ def get_bag_name(location: str) -> str:
     return os.path.basename(os.path.normpath(location))
 
 
-def read_all_bags(location: str) -> Dict[str, Bag]:
-
+def find_root_bag_location(location: str) -> str:
     # Find the uppermost (parent) bag file
     uppermost = location
     while _has_bag(location):
         uppermost = location
         location = str(Path(location).parent)
+    return uppermost
 
-    # Read main bag file and baged bag files
+
+def read_all_bags(location: str) -> Dict[str, Bag]:
+
+    # Read root bag file and bagged bag files
+    uppermost = find_root_bag_location(location)
     bags = {bag.name: bag for bag in _read_bags_from(uppermost)}
+
     # Set the root context
     for b in bags.values():
         b.root_context = uppermost
@@ -51,11 +56,11 @@ def read_all_bags(location: str) -> Dict[str, Bag]:
     return bags
 
 
-def parse_bags(location: str, target: str = None) -> (Bag, Bag):
+def parse_bags(location: str, target: str = None, bags: List[Bag] = None) -> (Bag, List[Bag]):
 
     # Read the target bag and all the bags
     target = target or get_bag_name(location)
-    bags = read_all_bags(location)
+    bags = bags or read_all_bags(location)
 
     # Manage this target bag
     if target not in bags:
