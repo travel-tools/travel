@@ -1,5 +1,6 @@
 import logging
 import functools
+from typing import List
 
 import yaml
 from travel.config.environment.configuration import get_config_file_path
@@ -7,11 +8,9 @@ from travel.config.environment.configuration import get_config_file_path
 logger = logging.getLogger(__name__)
 
 
-def from_string_to_config(config: str, remove: bool) -> dict:
+def from_string_to_config(words: List[str], remove: bool) -> dict:
 
-    words = config.split(" ")
-
-    if not config or not config.strip():
+    if not words:
         raise ValueError("Provide at least a value to add/remove after 'travel config add/remove'")
     if not remove and len(words) < 2:
         raise ValueError("Provide at least two values, e.g. travel config add <key> <value>")
@@ -22,7 +21,7 @@ def from_string_to_config(config: str, remove: bool) -> dict:
     return functools.reduce(lambda x, y: {y: x}, reversed(words))
 
 
-def configure(action: str, config: str):
+def configure(action: str, config: List[str]):
 
     path = get_config_file_path()
 

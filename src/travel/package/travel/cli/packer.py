@@ -3,6 +3,7 @@ import os
 import shutil
 from distutils.dir_util import copy_tree
 from pathlib import Path
+from typing import List
 
 import setuptools
 from travel.cli.setupper import Setupper
@@ -57,7 +58,7 @@ def _get_package_name(bag: Bag) -> str:
     return egg_infos[0][:-len(EGG_INFO_SUFFIX)]
 
 
-def pack(context: str, command: str, target: str = None, setup: bool = True):
+def pack(context: str, command: List[str], target: str = None, setup: bool = True):
 
     # Setup the bags and dependencies
     if setup:
