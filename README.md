@@ -8,6 +8,7 @@ The main features that Travel adds to Python are:
 - **Reproducibility** (clear, transparent **dependency management**)
 - Robust **development-lifecycle**, from prototyping to distribution
 - Possibility to have different scoped Virtual Environment (e.g. for development, for testing, for notebooks...) with additional requirements
+- Link multiple and different **versions of Python** to different projects
 
 Travel is inspired by what **[Maven](https://maven.apache.org/)** is for Java and uses [Pip](https://github.com/pypa/pip) and [Virtual Environments](https://docs.python.org/3/library/venv.html).
 
@@ -22,6 +23,8 @@ Instead:
 - Travel ensures that when you run a Python script, all its **requirements are installed**. Along with reproducibility, this makes room for **easy collaboration** between developers.
 
 - Also, while with standard tools it's hard to have multiple packages, one requiring another, with Travel this is a matter of **few YAML files**. You can **split your project** in several packages instead of having tons of requirements, code replication and/or single package-monoliths. 
+
+- Travel manages multiple versions of Python, so that you can work on several projects with different versions. You can install them and then link them to the specific projects you want.
 
 All in all, Travel lets you design **proper structure and modularity** for your code. No worries about imports and low-level stuff.
 
@@ -101,3 +104,39 @@ travel clean
 ```
 
 to destroy the Virtual Environments and other build objects.
+
+## Configure Multiple Versions of Python
+
+By default, Travel will create virtual envs with the same Python you have installed travel with.
+
+However, you can specify a different version either with:
+
+- `TRAVEL_PYTHON_PATH` environment variable, pointing to the Python exe
+- Travel Configuration
+
+### Multiple Python versions with Travel Configuration
+
+Once you have installed your different Python versions with your preferred method and in your preferred location, Travel 
+just need to know where you have installed them.
+
+```
+travel config add python <version> <path>
+```
+
+e.g.
+
+```
+travel config add python 3.7.4 C:\Users\name\python37\python.exe
+```
+
+This will save the path in a `.travel/config.yml` your home directory, e.g. `C:\Users\name\.travel\config.yml`.
+
+You can specify a different config location with a `TRAVEL_CONFIG_PATH` environment variable.
+
+This will let Travel know which Python to use when you specify
+
+```
+python: <version>
+```
+
+in your project root `bag.yml`.
