@@ -6,6 +6,8 @@ from travel.cli import packer, planner, adder, takeoffer, configurer
 from travel.cli.cleaner import Cleaner
 from travel.cli.setupper import Setupper
 
+from travel.cli.configurer import ADD, REMOVE, LIST
+
 logger = logging.getLogger(__name__)
 
 
@@ -20,7 +22,7 @@ def main():
 
     # Config
     config = subparsers.add_parser("config")
-    config.add_argument("apply", help="'add' or 'remove'")
+    config.add_argument("apply", help=f"'{ADD}', '{REMOVE}', '{LIST}'")
     config.set_defaults(action=lambda args, rest: configurer.configure(args.apply, rest))
 
     # Clean

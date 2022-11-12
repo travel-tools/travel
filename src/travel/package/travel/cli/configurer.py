@@ -7,16 +7,15 @@ from travel.config.environment.configuration import get_config_file_path
 
 logger = logging.getLogger(__name__)
 
+ADD = "add"
+REMOVE = "remove"
+LIST = "list"
 
-def from_string_to_config(words: List[str], remove: bool) -> dict:
 
-    if not words:
-        raise ValueError("Provide at least a value to add/remove after 'travel config add/remove'")
-    if not remove and len(words) < 2:
+def list_to_nested_dict(words: List[str]) -> dict:
+
+    if len(words) < 2:
         raise ValueError("Provide at least two values, e.g. travel config add <key> <value>")
-
-    if remove:
-        words.append(None)
 
     return functools.reduce(lambda x, y: {y: x}, reversed(words))
 
@@ -32,14 +31,36 @@ def configure(action: str, config: List[str]):
     else:
         current = {}
 
-    # Get the additional config to add (or remove)
-    additional_config = from_string_to_config(config, action == "remove")
-    new_config = _merge_dictionaries(current, additional_config)
+    if action == LIST:
 
-    # Write it
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "w") as f:
-        yaml.dump(new_config, f, default_flow_style=False)
+        logger.info(yaml.dump(current, default_flow_style=False))
+
+    else:
+
+        # Check config
+        if not config:
+            raise ValueError("Provide at least a value to add/remove after 'travel config add/remove'")
+
+        if action == ADD:
+            # Get the additional config to add
+            additional_config = list_to_nested_dict(config)
+            new_config = _merge_dictionaries(current, additional_config)
+        elif action == REMOVE:
+            # Navigate the current configuration up to find the right dict to remove the key from
+            visiting = current
+            for word in config[:-1]:  # If possible, navigate
+                visiting = visiting.get(word, {})
+            # Remove the key from the dict (if existing)
+            key_to_remove = config[-1]
+            visiting.pop(key_to_remove, None)
+            new_config = current
+        else:
+            raise ValueError(f"Invalid action: just {ADD}, {REMOVE}, {LIST}")
+
+        # Write it
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, "w") as f:
+            yaml.dump(new_config, f, default_flow_style=False)
 
 
 def _merge_dictionaries(main_dict: dict, new_dict: dict, merging_lists: bool = False) -> dict:
