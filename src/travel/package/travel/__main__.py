@@ -20,8 +20,8 @@ def main():
 
     # Config
     config = subparsers.add_parser("config")
-    config.add_argument("action", help="'add' or 'remove'")
-    config.set_defaults(action=lambda args, rest: configurer.configure(args.action, rest))
+    config.add_argument("apply", help="'add' or 'remove'")
+    config.set_defaults(action=lambda args, rest: configurer.configure(args.apply, rest))
 
     # Clean
     clean = subparsers.add_parser("clean")
