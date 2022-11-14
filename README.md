@@ -129,7 +129,7 @@ e.g.
 travel config add python 3.7.4 C:\Users\name\python37\python.exe
 ```
 
-This will save the path in a `.travel/config.yml` your home directory, e.g. `C:\Users\name\.travel\config.yml`.
+This will save the path in a `.travel/config.yml` inside your home directory, e.g. `C:\Users\name\.travel\config.yml`.
 
 You can specify a different config location with a `TRAVEL_CONFIG_PATH` environment variable.
 
