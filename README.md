@@ -116,8 +116,8 @@ However, you can specify a different version either with:
 
 ### Multiple Python versions with Travel Configuration
 
-Once you have installed your different Python versions with your preferred method and in your preferred location, Travel 
-just need to know where you have installed them.
+Once you have installed your different Python versions with your preferred method and into your preferred location, Travel 
+just needs to know where you have installed them.
 
 ```
 travel config add python <version> <path>
