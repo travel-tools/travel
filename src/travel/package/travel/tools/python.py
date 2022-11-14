@@ -16,4 +16,5 @@ class Python(Executable):
     def replace_process(self, command: List[str]):
         os.execv(self.path, [os.path.basename(os.path.normpath(self.path)), *command])
 
+
 main_python = Python()
